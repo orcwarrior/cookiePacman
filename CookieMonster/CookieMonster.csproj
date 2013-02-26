@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4BC585C7-F72C-4387-8782-77BF19D66D50}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CookieMonster</RootNamespace>
+    <AssemblyName>CookieMonster</AssemblyName>
+    <ManifestCertificateThumbprint>EFB0778E324A6772143B577508989E5D9E4EDF58</ManifestCertificateThumbprint>
+    <ManifestKeyFile>CookieMonster_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <TargetZone>LocalIntranet</TargetZone>
+    <SignManifests>true</SignManifests>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <PublishUrl>D:\Documents and Settings\orcwarrior.THEMODDE-9A4949\Desktop\cm\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <DocumentationFile>
+    </DocumentationFile>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <DocumentationFile>bin\Documentation_CookieMonster.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>bin\Release\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.Compatibility, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>bin\Release\OpenTK.Compatibility.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>bin\Release\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickFont, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\QuickFont\QuickFont\bin\Release\QuickFont.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CookieMonster_Objects\Camera.cs" />
+    <Compile Include="CookieMonster_Objects\Configuration.cs" />
+    <Compile Include="CookieMonster_Objects\databaseManager.cs" />
+    <Compile Include="CookieMonster_Objects\Debug.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Bomb.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Cliffs.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\CollisionSystem.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Enemies\Enemy.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Enemies\enemyRanged.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Enemies\Lazer.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Enemies\Quickie.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Enemies\Thief.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Enemies\Wizard.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\GameManager.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\GameMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CookieMonster_Objects\Gameplay\GUI.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\MOB.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\MusicPlayer.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\neighborReport.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Paths.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Player.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Portal.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\PowerUp.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Projectile.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Statistics.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\statusScreen.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\tipWindow.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Waynet\ShortestWay.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Waynet\Way.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Waynet\Waynet.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\Waynet\Waypoint.cs" />
+    <Compile Include="CookieMonster_Objects\hashHelper.cs" />
+    <Compile Include="CookieMonster_Objects\highscoresManager.cs" />
+    <Compile Include="CookieMonster_Objects\InputManager.cs" />
+    <Compile Include="CookieMonster_Objects\Lang.cs" />
+    <Compile Include="CookieMonster_Objects\Layer.cs" />
+    <Compile Include="CookieMonster_Objects\Light.cs" />
+    <Compile Include="CookieMonster_Objects\lightingEngine.cs" />
+    <Compile Include="CookieMonster_Objects\Menu\Menu_Input_Item.cs" />
+    <Compile Include="CookieMonster_Objects\Menu\Menu_Item.cs" />
+    <Compile Include="CookieMonster_Objects\Profile.cs" />
+    <Compile Include="CookieMonster_Objects\radialGradient.cs" />
+    <Compile Include="CookieMonster_Objects\Savegame.cs" />
+    <Compile Include="CookieMonster_Objects\TextManager.cs" />
+    <Compile Include="CookieMonster_Objects\VideoPlayer\BinkGL.cs" />
+    <Compile Include="CookieMonster_Objects\VideoPlayer\VideoPlayer.cs" />
+    <Compile Include="CookieMonster_Objects\Menu\Menu.cs" />
+    <Compile Include="CookieMonster_Objects\Menu\Menu_Instances.cs" />
+    <Compile Include="CookieMonster_Objects\Menu\Menu_Manager.cs" />
+    <Compile Include="CookieMonster_Objects\Obj.cs" />
+    <Compile Include="CookieMonster_Objects\Obj_Animation.cs" />
+    <Compile Include="CookieMonster_Objects\Sound.cs" />
+    <Compile Include="CookieMonster_Objects\SoundManager.cs" />
+    <Compile Include="CookieMonster_Objects\Timer.cs" />
+    <Compile Include="CookieMonster_Objects\Viewport.cs" />
+    <Compile Include="DLL\Bass.cs" />
+    <Compile Include="DLL\Bink.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="SimpleEngine\Core.cs" />
+    <Compile Include="SimpleEngine\Effect.cs" />
+    <Compile Include="SimpleEngine\Group.cs" />
+    <Compile Include="TextureLoaders\Helper.cs" />
+    <Compile Include="SimpleEngine\Image.cs" />
+    <Compile Include="SimpleEngine\IParticleSystem.cs" />
+    <Compile Include="SimpleEngine\IProperties.cs" />
+    <Compile Include="SimpleEngine\IWidget.cs" />
+    <Compile Include="SimpleEngine\Sprite.cs" />
+    <Compile Include="SimpleEngine\Types.cs" />
+    <Compile Include="SimpleEngine\VBO.cs" />
+    <Compile Include="TextureLoaders\DDSLoader.cs" />
+    <Compile Include="TextureLoaders\LoaderStatics.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <BaseApplicationManifest Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
