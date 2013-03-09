@@ -8,7 +8,8 @@ using OpenTK.Graphics;
 namespace CookieMonster
 {
 	static class BinkGL
-	{
+    {
+        static EngineApp.Game engine { get { return CookieMonster_Objects.engineReference.getEngine(); } }
 		static Int32 Get_desktop_color_depth()
 		{
 			return GraphicsContext.CurrentContext.GraphicsMode.Depth;
@@ -44,7 +45,7 @@ namespace CookieMonster
 			//
 			rad_3d.rendering_dc = DisplayDevice.Default;
 			rad_3d.context = Create_gl_context();
-			rad_3d.window = EngineApp.Game.self.windowHandle;
+			rad_3d.window = engine.windowHandle;
 
 			return( rad_3d );			
 		}
@@ -63,7 +64,7 @@ namespace CookieMonster
 		{
 			if ( rad_3d != null)
 			{ // Swap buffers:
-				EngineApp.Game.self.SwapBuffers();
+				engine.SwapBuffers();
 			}
 		}
 		public static void Resize_RAD_3D( RAD3D rad_3d,
@@ -805,10 +806,10 @@ namespace CookieMonster
             // set dst posx/y to position that will render video in the center of screen
             try
             {
-                int hlp = (int)(EngineApp.Game.self.Width / 2 - src.binkRef->Width / 2);
+                int hlp = (int)(engine.Width / 2 - src.binkRef->Width / 2);
                 //if (hlp < 0) hlp = 0;
                 UInt32 dstx = (uint)Math.Max(hlp, 0);
-                hlp = (int)(EngineApp.Game.self.Height / 2 - src.binkRef->Height / 2);
+                hlp = (int)(engine.Height / 2 - src.binkRef->Height / 2);
                 if (hlp < 0) hlp = 0;
                 UInt32 dsty = (uint)Math.Max(hlp, 0);
                 // Decompress the Bink frame.
@@ -836,7 +837,11 @@ namespace CookieMonster
             }
             catch (Exception e)
             {
-                //new CookieMonster.CookieMonster_Objects.DebugMsg("EXCEPTION[Bink.ProcessFrame]: " + e.Message);  
+                try // exception catched mostly cause of wrong binkBufferOpen flags
+                {   // so re-create bink buffer using different flag (1)
+                    src.recreateBinkBuffer();
+                }
+                catch { }
             }
                 DLL.Bink.BinkNextFrame(src.binkRef);
         }

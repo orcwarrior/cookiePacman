@@ -158,9 +158,9 @@ namespace CookieMonster.CookieMonster_Objects
             oldstate = enemyState;
         }
 
-        public void Render()
+        public void prepareRender()
         {
-            base.Render();
+            base.prepareRender();
         }
         public override void Kill()
         {

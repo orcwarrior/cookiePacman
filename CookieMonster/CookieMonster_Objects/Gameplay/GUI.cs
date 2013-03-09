@@ -6,7 +6,7 @@ using QuickFont;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class GUI
+    class GUI : engineReference
     {
         QFont guiFont = TextManager.newQFont("Rumpelstiltskin.ttf", 25);
         QFont livesFont = TextManager.newQFont("Rumpelstiltskin.ttf", 30);
@@ -30,8 +30,8 @@ namespace CookieMonster.CookieMonster_Objects
         {
             const int textFromDownLine = 70;
             const int textKeyHints = 85;
-            Viewport act = Game.self.activeViewport;
-            TextManager txtMan = Game.self.textMenager;
+            Viewport act = engine.activeViewport;
+            TextManager txtMan = engine.textMenager;
             double y_bg = 0.8575;
             double y_obj = 0.90;
             background = new Obj("../data/Textures/GAME/GUI/BG.dds", 0.5, y_bg, Obj.align.CENTER_X);
@@ -95,7 +95,8 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void prepareRender()
         {
-            GameManager gm = Game.self.gameManager;
+            engine.activeViewport.currentAddingLayer = Layer.imgFG;
+            GameManager gm = engine.gameManager;
             double y_obj = 0.90;
             background.prepareRender();
             for (int i = 0; i < PUBackgrounds.Count; i++)
@@ -175,8 +176,8 @@ namespace CookieMonster.CookieMonster_Objects
             }
             if (gm.PC.lives - l - 1 > 1)
             {
-                TextManager txtMan = Game.self.textMenager;
-                Viewport act = Game.self.activeViewport;
+                TextManager txtMan = engine.textMenager;
+                Viewport act = engine.activeViewport;
                 if (restLives == null)
                     restLives = new Text(livesFont, (float)(startX + 10 + l * stepX), (float)(act.height - 70), "+" + (gm.PC.lives - maxLives - 2).ToString());
                 else restLives.changeText("+" + (gm.PC.lives - maxLives - 2));
@@ -184,13 +185,14 @@ namespace CookieMonster.CookieMonster_Objects
                 restLives.Update();
             }
 
-            Points.msg = Lang.cur.punkty + Game.self.gameManager.statistics.lvlPoints.ToString() + " / " + (Game.self.gameManager.Map.cookiesCount * Statistics.ptsPerCookie).ToString();
+            Points.msg = Lang.cur.punkty + engine.gameManager.statistics.lvlPoints.ToString() + " / " + (engine.gameManager.Map.cookiesCount * Statistics.ptsPerCookie).ToString();
             Points.Update();
 
-            if (Game.self.gameManager.canStartNextLevel)
+            if (engine.gameManager.canStartNextLevel)
             {
                 enterButtonToNextLevel.prepareRender();
             }
+            engine.activeViewport.currentAddingLayer = -1;
         }
     }
 }

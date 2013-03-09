@@ -6,6 +6,7 @@ namespace CookieMonster.CookieMonster_Objects
 {
     class Timer : IDisposable
     {
+        static protected Game engine { get { return engineReference.getEngine(); } }
         static Timers_Manager timeMgr;
         /// <summary>
         /// Zero Timer is special timer that will always return current time as 0
@@ -112,7 +113,7 @@ namespace CookieMonster.CookieMonster_Objects
         /// </summary>
         private void isGameTimerOrNot()
         {
-            if (Game.self.gameManager == null || !((Game.self.gameState & Game.game_state.Game) == Game.game_state.Game) || Game.self.gameManager.gamePaused)
+            if (engine.gameManager == null || !((engine.gameState & Game.game_state.Game) == Game.game_state.Game) || engine.gameManager.gamePaused)
                 isIngameTimer = false;
             else
                 isIngameTimer = true;
@@ -260,7 +261,7 @@ namespace CookieMonster.CookieMonster_Objects
             return currentTime.ToString() + " / " + totalTime.ToString() + " (" + ((type == eUnits.FPS) ? "fps)" : "msec)");
         } 
     }
-    class Timers_Manager
+    class Timers_Manager : engineReference
     {
         private System.Diagnostics.Stopwatch msecMeasure = new System.Diagnostics.Stopwatch();
         private List<Timer> fpsTimers = new List<Timer>();
@@ -297,12 +298,12 @@ namespace CookieMonster.CookieMonster_Objects
             // update lists:
             for (int i = 0; i < msecTimers.Count; i++)
             {
-                if (!msecTimers[i].isIngameTimer || (Game.self.gameManager!=null && !Game.self.gameManager.gamePaused))
+                if (!msecTimers[i].isIngameTimer || (engine.gameManager!=null && !engine.gameManager.gamePaused))
                     msecTimers[i].Update(msec_elapsed);
             }
             for (int i = 0; i < fpsTimers.Count; i++)
             {
-                if (!fpsTimers[i].isIngameTimer || (Game.self.gameManager != null && !Game.self.gameManager.gamePaused))
+                if (!fpsTimers[i].isIngameTimer || (engine.gameManager != null && !engine.gameManager.gamePaused))
                     fpsTimers[i].Update(1); // 1 fps passed
             }
 

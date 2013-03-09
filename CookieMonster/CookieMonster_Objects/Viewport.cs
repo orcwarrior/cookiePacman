@@ -7,7 +7,11 @@ using OpenTK.Graphics.OpenGL;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class Viewport
+    /// <summary>
+    /// Class Manages the whole render, Obj's are pushed to render queue on update
+    /// and then rendered from queue onRender event one by one starting from first to last (top layer) with highest number.
+    /// </summary>
+    class Viewport : engineReference
     {
         static public System.IO.StreamWriter scaleLog = new System.IO.StreamWriter("scaleLog.txt",false);
         // default window sizes:
@@ -18,6 +22,8 @@ namespace CookieMonster.CookieMonster_Objects
         static int render_height = 800;
         static int screen_width;
         static int screen_height;
+
+        public int currentAddingLayer { get; set; }
         bool fullscreen;
         /// <summary>
         /// This value is properly updated when resoulution is changed
@@ -38,7 +44,6 @@ namespace CookieMonster.CookieMonster_Objects
        
         List<List<Obj>> rendered_objects = new List<List<Obj>>();
         List<Obj> onceRendered_objects = new List<Obj>();
-        private Game _game;
         private TextManager txtMgr;
         private GameMap currentGameMap;
         public bool isFading { get { return isFadingOut | isFadingIn; } }//if viewport is fading still render it!
@@ -55,17 +60,17 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="f">fullscreen mode?</param>
         public Viewport(int w, int h,bool f)
         {
-            _game = Game.self;
-            render_height = _game.Height;
-            render_width = _game.Width;
+            currentAddingLayer = -1;//default don't override current set Obj layer
+            render_height = engine.Height;
+            render_width = engine.Width;
             fullscreen = f;
            // _game.setScreenMode(fullscreen);
             screen_width = DisplayDevice.Default.Width;
             screen_height = DisplayDevice.Default.Height;
             //DisplayDevice.Default.ChangeResolution(render_width, render_height, 32, 100);
-            _game.Height = render_height; _game.Width = render_width;
-            _game.X = 0; _game.Y = 0;
-            txtMgr = _game.textMenager;
+            engine.Height = render_height; engine.Width = render_width;
+            engine.X = 0; engine.Y = 0;
+            txtMgr = engine.textMenager;
             
         }
         /// <summary>
@@ -84,10 +89,13 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 int newAlpha = (int)(someObj.getCurrentTexAlpha() + fadingAlphaStep);
                 if (newAlpha < 255)
+                {
                     for (int i = 0; i < rendered_objects.Count; i++)
                         for (int j = 0; j < rendered_objects[i].Count; j++)
                             rendered_objects[i][j].setAllTexsAlpha((byte)newAlpha);
+                }
                 else
+                {
                     for (int i = 0; i < rendered_objects.Count; i++)
                     {
                         for (int j = 0; j < rendered_objects[i].Count; j++)
@@ -96,6 +104,7 @@ namespace CookieMonster.CookieMonster_Objects
                             isFadingIn = false;
                         }
                     }
+                }
             }
             else if ((isFadingOut) && (rendered_objects.Count > 0))
             {
@@ -129,13 +138,13 @@ namespace CookieMonster.CookieMonster_Objects
         /// </summary>
         public void Render()
         {
-            Camera activeCam = Game.self.gameCamera;
+            Camera activeCam = engine.gameCamera;
 
-            if ((partialViewport==false)&&(_game.gameManager != null) && this == Game.self.gameViewport)
+            if ((partialViewport==false)&&(engine.gameManager != null) && this == engine.gameViewport)
             {   //render game map if this is gameViewport
-                _game.gameManager.prepareRender();
-                _game.gameManager.Map.Render();
-                
+                engine.gameManager.prepareRender();
+                //engine.gameManager.Map.prepareRender(); //it's called by gameManager.prepareRender
+                engine.gameManager.Map.renderBackground();              
             }
 
             Obj cur;
@@ -153,11 +162,17 @@ namespace CookieMonster.CookieMonster_Objects
                         cur.preparedToRender = false; // set to false, cause if it's still false in next call of Render()
                                                      // it will means that object wasn't udpated, so it shouldn't be rendered anymore
                     }
+                    //debug stuff
+                    new Text(TextManager.font_default, 10, 10 + 25 * i, "Layer " + i).Render();
                 }
                 //render text's overlaying objects:(if current viewport is global, not partial
                 if (partialViewport == false)
                     txtMgr.Render(i);
             }
+            //[DEBUG] render map overlaying
+            //if(engine.gameManager != null && engine.gameManager.Map != null)
+            //engine.gameManager.Map.prepareStaticRender();  
+
 
             for (int i = 0; i < onceRendered_objects.Count; i++)
             {
@@ -188,7 +203,9 @@ namespace CookieMonster.CookieMonster_Objects
             {   //create layers if there's less than needed:
                 while (o.layer >= rendered_objects.Count)
                     rendered_objects.Add(new List<Obj>());
-                rendered_objects[o.layer].Add(o);
+                int layer = currentAddingLayer == -1 ? o.layer : currentAddingLayer;
+                while (layer >= rendered_objects.Count) rendered_objects.Add(new List<Obj>());
+                rendered_objects[layer].Add(o);
                 o.addedToViewport = true; // FIX: In menu Obj aren't prepared to render at first, they just being added by this method
             }
         }
@@ -251,9 +268,9 @@ namespace CookieMonster.CookieMonster_Objects
 
         public void prepareMenuViewportObjects()
         {
-            if (this != Game.self.menuViewport) return;
+            if (this != engine.menuViewport) return;
 
-            if (_game.gameState == Game.game_state.Menu)
+            if (engine.gameState == Game.game_state.Menu)
                 for (int i = 0; i < rendered_objects.Count; i++)
                     for (int j = 0; j < rendered_objects[i].Count; j++)
                         if (rendered_objects[i][j].addedToViewport == true)

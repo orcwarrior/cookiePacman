@@ -65,7 +65,7 @@ namespace CookieMonster.CookieMonster_Objects
     /// to do is call Render and Update methods (static) from
     /// gameManager
     /// </summary>
-    class tipWindow
+    class tipWindow : engineReference
     {
         private static Obj background = new Obj("../data/Textures/GAME/TIPS/tipScreen_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH);
         private static QFont titleFont = TextManager.newQFont("CheriPL.ttf", 31);
@@ -110,13 +110,13 @@ namespace CookieMonster.CookieMonster_Objects
             image.x -= 732/2 + 100;//732 - width of background
             image.isGUIObjectButUnscaled = true;
             // Title:
-            x = EngineApp.Game.self.Width / 2 + 130f - titleFont.Measure(title).Width / 2f;
-            y = EngineApp.Game.self.Height/2 - 130f;
+            x = engine.Width / 2 + 130f - titleFont.Measure(title).Width / 2f;
+            y = engine.Height/2 - 130f;
             titleText = new Text(titleFont, x, y, title);
             // Contents: 
             desc = TextManager.breakTextWithNewlines(desc, 38);
-            x = EngineApp.Game.self.Width / 2 + 125f - descFont.Measure(desc).Width / 2f;
-            y = EngineApp.Game.self.Height / 2 -descFont.Measure(desc).Height / 2f + 10;
+            x = engine.Width / 2 + 125f - descFont.Measure(desc).Width / 2f;
+            y = engine.Height / 2 -descFont.Measure(desc).Height / 2f + 10;
             descriptionText = new Text(descFont,  x, y, desc);
             // Timers:
             easeInTimer = new Timer(Timer.eUnits.MSEC, 400, 0, true, false);
@@ -128,7 +128,7 @@ namespace CookieMonster.CookieMonster_Objects
 
         public void Update()
         {
-            Game.self.gameState |= Game.game_state.Menu;
+            engine.gameState |= Game.game_state.Menu;
             if (!isInited)
             {
                 easeInTimer.start();
@@ -166,12 +166,12 @@ namespace CookieMonster.CookieMonster_Objects
             // Create menu, "OK" item, show fonts
             isOpened = true;
             pauseGame = true;
-            Game.self.gameState |= Game.game_state.Menu;
-            Menu_Manager mgr = Game.self.menuManager;
+            engine.gameState |= Game.game_state.Menu;
+            Menu_Manager mgr = engine.menuManager;
             mgr.current_menu = new Menu("MENU_TIP", null,Menu_Manager.cursor);
             float x, y;
-            x = EngineApp.Game.self.Width / 2 + 235f;
-            y = EngineApp.Game.self.Height / 2 + 95f;
+            x = engine.Width / 2 + 235f;
+            y = engine.Height / 2 + 95f;
             mgr.current_menu.addItem(new Menu_Item("OK",x,y,  Menu.font,
                                                                     Menu.font_Hover,
                                                                     Menu.font_Click,
@@ -190,7 +190,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void Close()
         {
-            Game.self.menuManager.current_menu = null;
+            engine.menuManager.current_menu = null;
             isOpened = false;
             isClosing = true;
             easeOutTimer.start();
@@ -199,7 +199,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             pauseGame = false;
             background.addedToViewport = image.addedToViewport = false;
-            Game.self.gameState &= ~Game.game_state.Menu;
+            engine.gameState &= ~Game.game_state.Menu;
         }
         public void MoveImage(int x, int y)
         {

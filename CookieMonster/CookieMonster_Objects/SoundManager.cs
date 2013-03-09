@@ -6,7 +6,7 @@ using CookieMonster.DLL;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class SoundManager
+    class SoundManager : engineReference
     {
         List<Sound> Music = new List<Sound>();
         List<Sound> loopingMusic = new List<Sound>();
@@ -21,7 +21,7 @@ namespace CookieMonster.CookieMonster_Objects
             }
             catch (Exception e)
             {
-                Game.self.menuManager.showAlert("Nieudana inicjalizacja Bass.dll:\n"+e.Message+"\n ...ponowna inicjalizacja");
+                engine.menuManager.showAlert("Nieudana inicjalizacja Bass.dll:\n"+e.Message+"\n ...ponowna inicjalizacja");
                 try
                 {
                     DLL.Bass.BASS_Free();
@@ -29,7 +29,7 @@ namespace CookieMonster.CookieMonster_Objects
                 }
                 catch (Exception dllExcptn)
                 {
-                    Game.self.menuManager.showAlert("Nieudana inicjalizacja Bass.dll:\n" + dllExcptn.Message + "\n ...ponowna inicjalizacja");
+                    engine.menuManager.showAlert("Nieudana inicjalizacja Bass.dll:\n" + dllExcptn.Message + "\n ...ponowna inicjalizacja");
                 }
             }
         }

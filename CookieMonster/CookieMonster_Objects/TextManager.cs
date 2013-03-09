@@ -8,7 +8,7 @@ using EngineApp;
 using System.Drawing;
 namespace CookieMonster.CookieMonster_Objects
 {
-    class Text
+    class Text : engineReference
     {
         /// <summary>
         /// If this value is >= 0 all created Text objects
@@ -47,7 +47,7 @@ namespace CookieMonster.CookieMonster_Objects
             txt = new ProcessedText();
             x  = orgX = _x; y = orgY = _y;
             _msg = m;
-            Game.self.textMenager.addText(this);
+            engine.textMenager.addText(this);
             _correctLayer();
         }
         public Text(QFont qf,float _x,float _y,string m, QFontAlignment align, int maxWidth)
@@ -73,7 +73,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             if (active)
             {
-                if (!addedToViewport) Game.self.textMenager.addText(this);
+                if (!addedToViewport) engine.textMenager.addText(this);
 
                 updatedThisFrame = true;
                 if (perPreRenderMove != null)
@@ -238,7 +238,7 @@ namespace CookieMonster.CookieMonster_Objects
         public void addText(QFont qf, string txt, float x, float y,QFontAlignment align)
         {
             float actWidth = qf.Measure(txt).Width;
-            float width = (float)Game.self.activeViewport.width;
+            float width = (float)engine.activeViewport.width;
 
             width -= screenMargin;
             ProcessedText pTxt;

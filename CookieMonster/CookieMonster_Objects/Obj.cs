@@ -8,11 +8,10 @@ namespace CookieMonster.CookieMonster_Objects
 {
 
 
-    class Obj
+    class Obj : engineReference
     {
         #region Obj_fields
         static Random variatonizer = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-        static Game parentGame;
         static private UInt32 id_ctr = 1;
 
         public UInt32 id { get; private set; }
@@ -65,22 +64,22 @@ namespace CookieMonster.CookieMonster_Objects
         public double vx
         {
             get {return vposx;}
-            set { vposx = value; posx = (int)((double)parentGame.activeViewportOrAny.width * value); }
+            set { vposx = value; posx = (int)((double)engine.activeViewportOrAny.width * value); }
         }
         public double vy
         {
             get { return vposy; }
-            set { vposy = value; posy = (int)((double)parentGame.activeViewportOrAny.height * value); }
+            set { vposy = value; posy = (int)((double)engine.activeViewportOrAny.height * value); }
         }
         public int x
         {
             get {return posx;}
-            set { posx = value; if (value == 0)vposx = 0.0; else vposx = (double)(parentGame.activeViewportOrAny.width / value); }
+            set { posx = value; if (value == 0)vposx = 0.0; else vposx = (double)(engine.activeViewportOrAny.width / value); }
         }
         public int y
         {
             get {return posy;}
-            set { posy = value; if (value == 0)vposy = 0.0; else vposy = (double)(parentGame.activeViewportOrAny.height / value); }
+            set { posy = value; if (value == 0)vposy = 0.0; else vposy = (double)(engine.activeViewportOrAny.height / value); }
         }
         //positions used when creating object:
         public int orgX { get; private set; }
@@ -214,6 +213,28 @@ namespace CookieMonster.CookieMonster_Objects
             texAni = new Obj_texAni(this, "");
         }
         /// <summary>
+        /// Create Obj base on existing openGL Texture.
+        /// </summary>
+        /// <param name="glTexID">openGL Texture ID</param>
+        /// <param name="_x">x position</param>
+        /// <param name="_y">y position</param>
+        /// <param name="algn">align of object</param>
+        public Obj(int glTexID,int _x,int _y,Obj.align algn)
+            : this()
+        {
+            tex = new Engine.Image(glTexID);
+            tex.SetBlending();
+
+            x = _x; y = _y;
+            orgX = x; orgY = y;
+            texAni = new Obj_texAni(this,"");
+
+            objAlign = algn;
+            applyAlignCorrection();
+            orginalWidth = width;
+            orginalHeight = height;
+        }
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="ipath">Path to image</param>
@@ -223,7 +244,6 @@ namespace CookieMonster.CookieMonster_Objects
         public Obj(string ipath, double _vx, double _vy,align algn)
             : this()
         {
-            parentGame = Game.self;
             tex = new Engine.Image();
             tex.Load(ipath);
             tex.SetBlending();
@@ -286,7 +306,7 @@ namespace CookieMonster.CookieMonster_Objects
             preparedToRender = true;
             if (!addedToViewport)
             {   //add object to viewport if it's not already in.
-                parentGame.activeViewport.addObject(this);
+                engine.activeViewport.addObject(this);
                 addedToViewport = true; 
             }
 
@@ -297,7 +317,7 @@ namespace CookieMonster.CookieMonster_Objects
             //}
             //if(!objInViewport(activeCam)) return;
             //compute animation frame:
-            if (ani != null && (Game.self.gameManager ==null || !Game.self.gameManager.gamePaused || !ani.isIngameAnimation))
+            if (ani != null && (engine.gameManager ==null || !engine.gameManager.gamePaused || !ani.isIngameAnimation))
                 ani.computeFrame();
 
             if (!texAni.prepareRender(x, y))
@@ -352,11 +372,11 @@ namespace CookieMonster.CookieMonster_Objects
 
         private bool objInViewport(Camera activeCam)
         {
-            if( (x + activeCam.camOffsetX > parentGame.activeViewport.width)
-            &&  (x+width  + activeCam.camOffsetX > parentGame.activeViewport.width))
+            if( (x + activeCam.camOffsetX > engine.activeViewport.width)
+            &&  (x+width  + activeCam.camOffsetX > engine.activeViewport.width))
                 return false;
-            if ((y + activeCam.camOffsetY > parentGame.activeViewport.height)
-            && (y + height + activeCam.camOffsetY > parentGame.activeViewport.height))
+            if ((y + activeCam.camOffsetY > engine.activeViewport.height)
+            && (y + height + activeCam.camOffsetY > engine.activeViewport.height))
                 return false;
             return true;
         }
@@ -489,7 +509,13 @@ namespace CookieMonster.CookieMonster_Objects
                 texAni[i].SetBlending(alpha);
             }
         }
+        public override string ToString()
+        {
+            if (tex.bitmapPath == null) return "GL Texture ID: " + tex.texture + "(" + x + "," + y + ")";
 
+            string filename = tex.bitmapPath.Substring(tex.bitmapPath.LastIndexOfAny(new char[] { '/', '\\' }));
+            return filename + "("+x+","+y+")";
+        }
         private string variableTexture(string path)
         {
             List<string> varNames = new List<string>();
@@ -526,7 +552,7 @@ namespace CookieMonster.CookieMonster_Objects
             public void setRenderOnce()
             {
                 _renderOnce = true;
-                Game.self.activeViewport.addObject(this);
+                engine.activeViewport.addObject(this);
             }
         /// <summary>
         /// Changes current frame of animation to some random number from ani range
@@ -556,7 +582,7 @@ namespace CookieMonster.CookieMonster_Objects
                 //set scale to resolution
                 int w = width, h = height;
                 width = (int)(width * ((double)nResX / Viewport.guiBase_width));
-                if (parentGame.activeViewport.GetHashCode() == parentGame.menuViewport.GetHashCode())
+                if (engine.activeViewport.GetHashCode() == engine.menuViewport.GetHashCode())
                     height = (int)(height * ((double)nResY / Viewport.guiBase_height_MENUOVERRIDE));
                 else
                     height = (int)(height * ((double)nResY / Viewport.guiBase_height));
@@ -662,7 +688,8 @@ namespace CookieMonster.CookieMonster_Objects
             }
     }
 
-    class Obj_texAni // this class is more like a struct by public fields
+    class Obj_texAni : engineReference
+                     // this class is more like a struct by public fields
     {                // but whateva' if texAni field in Obj class is private ;)
         private List<Engine.Image> textures;
         public enum eLoopType { NONE, DEFAULT, REWIND, DISPOSE };
@@ -682,6 +709,10 @@ namespace CookieMonster.CookieMonster_Objects
             get { if (textures == null)return 0; return textures.Count; }
         }
         private Obj owner = null;
+        public Obj_texAni(Obj o)
+        {
+            owner = o;
+        }
         public Obj_texAni(Obj o, string texPath)
         {
             owner = o;
@@ -705,7 +736,7 @@ namespace CookieMonster.CookieMonster_Objects
             if (enabled)
             {
                 int x, y;
-                Camera activeCam = Game.self.gameCamera;
+                Camera activeCam = engine.gameCamera;
                 if (owner.isGUIObject) activeCam = new Camera(Camera.eType.STATIC);
 
                     x = px + activeCam.camOffsetX;
@@ -728,8 +759,8 @@ namespace CookieMonster.CookieMonster_Objects
                 // Calculate next tex frame to render:
                 if (isControlledExternal == false)
                 {
-                    int curframe = Game.self.getFrame();
-                    int gameFPS = (int)Game.self.RenderFrequency;//TODO: PRECISE ..hmm.. (int)Game.self.RenderFrequency;
+                    int curframe = engine.getFrame();
+                    int gameFPS = (int)engine.RenderFrequency;//TODO: PRECISE ..hmm.. (int)engine.RenderFrequency;
                     this._fps = FPS;
                     int hlp = gameFPS / FPS; if (hlp <= 0) hlp = 1;
                     //todo: correct !!!

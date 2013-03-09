@@ -5,7 +5,7 @@ using EngineApp;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class Obj_Animation
+    class Obj_Animation : engineReference
     {
         #region fields
         private const double DEFAULT_SPEED = 1.0;
@@ -56,7 +56,7 @@ namespace CookieMonster.CookieMonster_Objects
             affectionFlags = eAffectionFlags.affectOpacity | eAffectionFlags.affectPos | eAffectionFlags.affectScale;
 
 
-            if (Game.self.gameManager==null || !((Game.self.gameState & Game.game_state.Game) == Game.game_state.Game) || Game.self.gameManager.gamePaused)
+            if (engine.gameManager==null || !((engine.gameState & Game.game_state.Game) == Game.game_state.Game) || engine.gameManager.gamePaused)
                 isIngameAnimation = false;
             else
                 isIngameAnimation = true;

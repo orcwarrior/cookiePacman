@@ -14,7 +14,7 @@
     <ManifestKeyFile>CookieMonster_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <TargetZone>LocalIntranet</TargetZone>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -127,6 +127,7 @@
     <Compile Include="CookieMonster_Objects\Configuration.cs" />
     <Compile Include="CookieMonster_Objects\databaseManager.cs" />
     <Compile Include="CookieMonster_Objects\Debug.cs" />
+    <Compile Include="CookieMonster_Objects\engineRef.cs" />
     <Compile Include="CookieMonster_Objects\Gameplay\Bomb.cs" />
     <Compile Include="CookieMonster_Objects\Gameplay\Cliffs.cs" />
     <Compile Include="CookieMonster_Objects\Gameplay\CollisionSystem.cs" />
@@ -205,6 +206,7 @@
     <Compile Include="TextureLoaders\LoaderStatics.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Archive\renderStaticPartOfMap.txt" />
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>

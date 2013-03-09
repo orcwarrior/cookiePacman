@@ -7,7 +7,7 @@ using EngineApp;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class lightingEngine
+    class lightingEngine : engineReference
     {
         List<Light> activeStaticLights = new List<Light>();
         List<Light> activeDynamicLights = new List<Light>();
@@ -60,7 +60,7 @@ namespace CookieMonster.CookieMonster_Objects
                 GL.GenTextures(1,out lightMapTexture);
             GL.BindTexture(TextureTarget.Texture2D, lightMapTexture);
             //GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, 0, 0, 1024, 1024,0);
-            GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 0, 0, Game.self.Width, Game.self.Height, 0);
+            GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 0, 0, engine.Width, engine.Height, 0);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
@@ -70,7 +70,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             // save buffer to texture:
             GL.BindTexture(TextureTarget.Texture2D, lightMapGrayTexture);
-            GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Luminance,0, 0, Game.self.Width, Game.self.Height, 0);
+            GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Luminance,0, 0, engine.Width, engine.Height, 0);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
             
@@ -181,7 +181,7 @@ namespace CookieMonster.CookieMonster_Objects
 
         private void renderLightMapsTexture(float opacity, BlendingFactorSrc src, BlendingFactorDest dst)
         {
-            int width = Game.self.Width, height = Game.self.Height;
+            int width = engine.Width, height = engine.Height;
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(src, dst);
             GL.Color4(opacity, opacity, opacity, opacity);
@@ -201,7 +201,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         private void renderLightMapsTextureMultiply(float opacity)
         {
-            int width = Game.self.Width, height = Game.self.Height;
+            int width = engine.Width, height = engine.Height;
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.DstColor, BlendingFactorDest.OneMinusSrcAlpha);
             GL.Color4(opacity, opacity, opacity, opacity);

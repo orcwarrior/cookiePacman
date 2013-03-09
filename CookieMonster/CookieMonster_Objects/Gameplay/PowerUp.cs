@@ -56,7 +56,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void Render()
         {
-            base.Render();
+            base.prepareRender();
         }
         public void Remove()
         {

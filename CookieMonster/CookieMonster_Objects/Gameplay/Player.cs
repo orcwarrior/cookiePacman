@@ -179,7 +179,7 @@ namespace CookieMonster.CookieMonster_Objects
                 boostFXCurrent = boostFXDown;
             }
         }
-        public void Render()
+        public void prepareRender()
         {
             if (GameMan.powerPillActive())
             {
@@ -188,7 +188,7 @@ namespace CookieMonster.CookieMonster_Objects
                 powerPillAura.applyAlignCorrection();
                 powerPillAura.prepareRender();
             }
-            base.Render();
+            base.prepareRender();
             RenderBoostFX();
         }
 

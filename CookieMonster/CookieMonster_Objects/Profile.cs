@@ -8,7 +8,7 @@ using OpenTK.Graphics;
 namespace CookieMonster.CookieMonster_Objects
 {
     [Serializable]
-    class Profile
+    class Profile : engineReference
     {
         static private string profileExt = ".CMprofile";
         static private Profile hlpProfile;
@@ -81,8 +81,8 @@ namespace CookieMonster.CookieMonster_Objects
         //TODO: apply resolution 
         public void applyCurrentProfile()
         {
-            Game.self.SoundMan.recalculateMusic();
-            Game.self.SoundMan.recalculateSFX();
+            engine.SoundMan.recalculateMusic();
+            engine.SoundMan.recalculateSFX();
 
             //if online profile wasn't created, try to create one:
             if (!onlineAccountAlreadyCreated)
@@ -91,7 +91,7 @@ namespace CookieMonster.CookieMonster_Objects
         public static void Menu_GenerateProfileMenu()
         {
             //remove items (those used for creating/selecting profile)
-            Menu profile = Game.self.menuManager.getMenuByName("MENU_PROFILE");
+            Menu profile = engine.menuManager.getMenuByName("MENU_PROFILE");
             //profile.removeMenuItem(profile.getItemByName("ArrL"));
             //profile.removeMenuItem(profile.getItemByName("ArrR"));
 
@@ -130,16 +130,16 @@ namespace CookieMonster.CookieMonster_Objects
             QFont heading1 = TextManager.newQFont("KOMIKAX.ttf", 22, true, new OpenTK.Graphics.Color4(0, 112, 186, 255));
             
 
-            float x = Game.self.activeViewport.width / 2 - heading1.Measure(Lang.cur.Wybierz_Profil).Width / 2;
-            float y = Game.self.activeViewport.height * 4 / 10 + 10f;
+            float x = engine.activeViewport.width / 2 - heading1.Measure(Lang.cur.Wybierz_Profil).Width / 2;
+            float y = engine.activeViewport.height * 4 / 10 + 10f;
             profile.addItem(new Menu_Item(Lang.cur.Wybierz_Profil, x, y, heading1));
         }
 
         private static void genereateDeleteButton(Menu profile)
         {
             QFont DeleteProf = TextManager.newQFont("Rumpelstiltskin.ttf", 32, false, new Color4(0, 112, 186, 255));              
-            float x = Game.self.activeViewport.width / 2 - DeleteProf.Measure(Lang.cur.Usun_Profil).Width / 2 - 120f;
-            float y = Game.self.activeViewport.height / 2 + 75f; 
+            float x = engine.activeViewport.width / 2 - DeleteProf.Measure(Lang.cur.Usun_Profil).Width / 2 - 120f;
+            float y = engine.activeViewport.height / 2 + 75f; 
                 if (menuSelectedProfile > 0)
                 {//some profile is selected, can delete it:
                     //DeleteProf = TextManager.newQFont("Rumpelstiltskin.ttf", 32, false, new Color4(0, 112, 186, 255));
@@ -158,8 +158,8 @@ namespace CookieMonster.CookieMonster_Objects
             
             string tmp = InputManager.getInputBuffer();
 
-            float x = Game.self.activeViewport.width / 2 - OK.Measure(Lang.cur.OK).Width / 2 + 200f;
-            float y = Game.self.activeViewport.height / 2 + 75f;
+            float x = engine.activeViewport.width / 2 - OK.Measure(Lang.cur.OK).Width / 2 + 200f;
+            float y = engine.activeViewport.height / 2 + 75f;
             if (menuSelectedProfile > 0 || (menuSelectedProfile == 0 && tmp.Length > 0 && profile.inputItem.value != profile.inputItem.defaultValue))
             {//OK Active:
                 QFont OKhover = TextManager.newQFont("Rumpelstiltskin.ttf", 32, true, new Color4(0, 112, 186, 255));
@@ -179,18 +179,18 @@ namespace CookieMonster.CookieMonster_Objects
             QFont profileName = TextManager.newQFont("Rumpelstiltskin.ttf", 24, false, new Color4(220, 220, 220, 255));
             QFont profileName_hover = TextManager.newQFont("Rumpelstiltskin.ttf", 24, false, new Color4(255, 255, 255, 255));
 
-            float y = Game.self.activeViewport.height / 2 - 18f;
+            float y = engine.activeViewport.height / 2 - 18f;
 
             float x;
             if (menuSelectedProfile == 0)//create profile:
             {
-                x = Game.self.activeViewport.width / 2 - profileName.Measure(Lang.cur.stworz_nowy).Width / 2;
+                x = engine.activeViewport.width / 2 - profileName.Measure(Lang.cur.stworz_nowy).Width / 2;
                 profile.addInputItem(new Menu_Input_Item(x, y, profileName, profileName_hover, null, Lang.cur.stworz_nowy, false));
             }
             else if (menuSelectedProfile > 0)
             {
                 string pName = profilesList[menuSelectedProfile - 1].name;
-                x = Game.self.activeViewport.width / 2 - profileName.Measure(pName).Width / 2;
+                x = engine.activeViewport.width / 2 - profileName.Measure(pName).Width / 2;
                 profile.addInputItem(new Menu_Input_Item(x, y,profileName,null,pName,true));
             }
         }
@@ -227,7 +227,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Menu_RightProfile()
         {
-            Menu profile = Game.self.menuManager.getMenuByName("MENU_PROFILE");
+            Menu profile = engine.menuManager.getMenuByName("MENU_PROFILE");
             profile.clearMenuItems();
             menuSelectedProfile++;
             Menu_GenerateProfileMenu();
@@ -252,16 +252,16 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Menu_LeftProfile()
         {
-            Menu profile = Game.self.menuManager.getMenuByName("MENU_PROFILE");
+            Menu profile = engine.menuManager.getMenuByName("MENU_PROFILE");
             profile.clearMenuItems();
             menuSelectedProfile--;
             Menu_GenerateProfileMenu();
         }
         public static void Profile_KeyStroke(object sender, OpenTK.Input.KeyboardKeyEventArgs p)
         {
-            if (Game.self.menuManager == null) return;
-            Menu profile = Game.self.menuManager.getMenuByName("MENU_PROFILE");
-            if (Game.self.menuManager.current_menu != profile) return; //current menu isnot profile, break func
+            if (engine.menuManager == null) return;
+            Menu profile = engine.menuManager.getMenuByName("MENU_PROFILE");
+            if (engine.menuManager.current_menu != profile) return; //current menu isnot profile, break func
             if (InputManager.inputLogging == false) return; //no input loging, break
 
             profile.removeMenuItem(profile.getItemByName("OK"));
@@ -280,7 +280,7 @@ namespace CookieMonster.CookieMonster_Objects
                 currentProfile = profilesList[menuSelectedProfile - 1];
             }
             //goto main menu:
-            Game.self.menuManager.current_menu = new Menu("MENU_MAIN", Menu_Instances.Main_OnLoad, Menu_Manager.cursor);
+            engine.menuManager.current_menu = new Menu("MENU_MAIN", Menu_Instances.Main_OnLoad, Menu_Manager.cursor);
 
             //try to create online account for profile:
             currentProfile.onlineAccountAlreadyCreated =  databaseManager.tryToCreateAccount();
@@ -290,7 +290,7 @@ namespace CookieMonster.CookieMonster_Objects
             string name = profilesList[menuSelectedProfile - 1].name;
             System.IO.File.Delete("../data/User Profiles/"+name+profileExt);
             profilesList.RemoveAt(menuSelectedProfile - 1);
-            Game.self.menuManager.showAlert(Lang.cur.Usunieto_Profil_n+name);
+            engine.menuManager.showAlert(Lang.cur.Usunieto_Profil_n+name);
             menuSelectedProfile--;
             //redraw choose profile menu:
             Menu_GenerateProfileMenu();
@@ -373,7 +373,7 @@ namespace CookieMonster.CookieMonster_Objects
             }
             catch (Exception e)
             {
-                Game.self.menuManager.showAlert(Lang.cur.Blad_Odczytu_profilu_o_nazwie + name + "\n"+Lang.cur.Komunikat_Bledu+"\n\""+e.Message+"\"\n"+Lang.cur.Usuwam_Powyzszy_Profil);
+                engine.menuManager.showAlert(Lang.cur.Blad_Odczytu_profilu_o_nazwie + name + "\n"+Lang.cur.Komunikat_Bledu+"\n\""+e.Message+"\"\n"+Lang.cur.Usuwam_Powyzszy_Profil);
                 System.IO.File.Delete(filepath);
                 //remove last created profile:
                 profilesList.RemoveAt(profilesList.Count - 1);

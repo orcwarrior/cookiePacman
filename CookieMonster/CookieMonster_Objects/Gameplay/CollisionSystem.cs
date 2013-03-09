@@ -81,7 +81,7 @@ namespace CookieMonster.CookieMonster_Objects
 
         public void Update()
         {
-            GameManager gm = Game.self.gameManager;
+            GameManager gm = engineReference.getEngine().gameManager;
             //Static collison:
             int xx = gridX;
             int yy = gridY;

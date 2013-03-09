@@ -10,7 +10,7 @@ namespace CookieMonster.CookieMonster_Objects
     /// <summary>
     /// Menu items aren't added to viewport, do sth with that!
     /// </summary>
-    class Menu_Item
+    class Menu_Item : engineReference
     {
         private Menu owner; //owner of this menu item
         public string name { get; private set; }
@@ -48,7 +48,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             _value = text;
             name = text;
-            TextManager txtMan = Game.self.textMenager;
+            TextManager txtMan = engine.textMenager;
             font = _font;
             itemText = new Text(font, x, y, text);
             //FIX: Font are rendered just at oppening of submenus for a frame, but they shouldn't
@@ -97,6 +97,8 @@ namespace CookieMonster.CookieMonster_Objects
                 renderedVisual = visualOnClick;
             if (fontOnClick != null && owner.submenuTimer.enabled == false)//BUGFIX: Don't change visuals during submenu ani!
                 itemText.changeFont(fontOnClick);
+            //sometimes actions like nulling item/whole object can happen onClick, so check for them
+            if (this == null || this.owner == null) return;
         }
         public void _onMouseIn()
         {
@@ -252,7 +254,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             double moveLenght = 450.0;
             double startAddLenght = 0.0;
-            Menu_Manager mgr = Game.self.menuManager;
+            Menu_Manager mgr = engine.menuManager;
             if (this.owner.Equals(mgr.current_menu) && mgr.subSubMenu != null)
             {
                 startAddLenght = moveLenght;
@@ -276,7 +278,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             double moveLenght = 450.0;
             double startAddLenght = 0.0;
-            Menu_Manager mgr = Game.self.menuManager;
+            Menu_Manager mgr = engine.menuManager;
             if (this.owner.Equals(mgr.current_menu) && mgr.closingSubmenusLevel == 2)
             {//this is moving current menu when closing subSubMenu
                 startAddLenght = moveLenght;

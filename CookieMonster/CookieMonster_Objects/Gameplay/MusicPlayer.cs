@@ -14,7 +14,7 @@ namespace CookieMonster.CookieMonster_Objects
     /// Class used for playing music, randoming next track, any slides, fades etc.
     /// it had to be inited only, rest will be handled by itself.
     /// </summary>
-    class MusicPlayer
+    class MusicPlayer : engineReference
     {
         // evry day imma shufflin' ;D
         static Random shuffler = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -30,7 +30,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             Color4 cc = new Color4(73, 160, 255, 255);
             trackTag_Font.Options.Colour = cc;
-            playerViewport = new Viewport(Game.self.activeViewport.width, Game.self.activeViewport.height,true);
+            playerViewport = new Viewport(engine.activeViewport.width, engine.activeViewport.height,true);
             playerViewport.partialViewport = true; // it will prevent viewport from rendering game map, texts etc.
             trackTagsDisplayDuration = new Timer(Timer.eUnits.MSEC, 7000, 0, true, false);
             curTrackPath = randomTrackName();
@@ -41,7 +41,7 @@ namespace CookieMonster.CookieMonster_Objects
             //remove displayed track infos:
             if (trackTagsDisplayDuration.enabled == false)
             {
-                TextManager txtMan = Game.self.textMenager;
+                TextManager txtMan = engine.textMenager;
                 txtMan.removeText(curTrackArtist);
                 txtMan.removeText(curTrackTitle);
             }
@@ -60,7 +60,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void Free()
         {
-            TextManager txtMan = Game.self.textMenager;
+            TextManager txtMan = engine.textMenager;
             txtMan.removeText(curTrackArtist);
             txtMan.removeText(curTrackTitle);
             trackTagsDisplayDuration.Dispose();
@@ -94,12 +94,12 @@ namespace CookieMonster.CookieMonster_Objects
         }
         private void putTrackInfosToViewport()
         {
-            int screenH = Game.self.activeViewport.height;
+            int screenH = engine.activeViewport.height;
             //Obj bg = new Obj(trackInfosBG, 5, screenH-120, Obj.align.LEFT);
             //bg.isGUIObject = true;
             //bg.setCurrentTexAlpha(155);
             //playerViewport.addObject(bg);
-            TextManager txtMan = Game.self.textMenager;
+            TextManager txtMan = engine.textMenager;
             //TODO: Uncoment this is temporary
             Text.currentWorkingLayer = Layer.textGUIFG;
             new Text(trackTag_Font, 50f, (float)screenH - 110, curTrackArtist);

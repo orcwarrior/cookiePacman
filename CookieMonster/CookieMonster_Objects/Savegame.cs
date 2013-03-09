@@ -161,7 +161,7 @@ namespace CookieMonster.CookieMonster_Objects
         
         
     }
-    class Savegame
+    class Savegame : engineReference
     {
         public List<mapSave> maps { get; private set; }
         public playerData player { get; private set; }
@@ -182,13 +182,13 @@ namespace CookieMonster.CookieMonster_Objects
         /// </summary>
         public void Load()
         {
-            EngineApp.Game.self.loadGame(this);
+            engine.loadGame(this);
         }
         private void addMapData()
         {
           
            mapSave map = new mapSave();
-           GameManager gm = EngineApp.Game.self.gameManager;
+           GameManager gm = engine.gameManager;
            map.level = (uint)gm.level;
            map.lives = (uint)gm.PC.lives;
            map.lvlScore = gm.statistics.lvlPoints;
@@ -206,7 +206,7 @@ namespace CookieMonster.CookieMonster_Objects
 
         private void updatePlayerData()
         {
-            Player pc = EngineApp.Game.self.gameManager.PC;
+            Player pc = engine.gameManager.PC;
             player.level = (uint)pc.level;
             player.exp = (uint)pc.exp;
             player.lives = (uint)pc.lives;
@@ -241,7 +241,7 @@ namespace CookieMonster.CookieMonster_Objects
             player.data123Checksum = player.exp % 37 + player.lives % 4 + player.movementSpeed % 12 + player.talentPts % 4 + player.speedBoostLVL % 3 + player.iceBoltLVL % 3 + player.invHasBomb;
 
             //data4:
-            player.gameDuration = (uint)EngineApp.Game.self.gameManager.gameDuration.currentTime;
+            player.gameDuration = (uint)engine.gameManager.gameDuration.currentTime;
             //checksum: remainder of gameDuration/59
             player.data4Checksum = player.gameDuration % 59;
 

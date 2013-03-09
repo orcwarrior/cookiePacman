@@ -8,7 +8,7 @@ using QuickFont;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class statusScreen
+    class statusScreen : engineReference
     {
         public bool active { get; private set; }
         private Obj background;
@@ -88,7 +88,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             easeInTimer.restart(); easeInTimer.stop();
             easeOutTimer.start();
-            Game.self.gameState &= ~Game.game_state.Menu;
+            engine.gameState &= ~Game.game_state.Menu;
         }
         public void Update()
         {
@@ -113,10 +113,10 @@ namespace CookieMonster.CookieMonster_Objects
             {// menu just eased in -> time to create menu
                 menuCreated = true;
                 menu_status = new Menu("MENU_STATUS", Menu_Instances.Status_OnLoad, null, Menu_Instances.Status_OnRender, Menu_Manager.cursor);
-                Game.self.menuManager.setCurrentMenu(menu_status);
-                Game.self.gameState |= Game.game_state.Menu;
+                engine.menuManager.setCurrentMenu(menu_status);
+                engine.gameState |= Game.game_state.Menu;
             }
-            else if (!easeOutTimer.enabled && active && !((Game.self.gameState & Game.game_state.Menu) == Game.game_state.Menu))
+            else if (!easeOutTimer.enabled && active && !((engine.gameState & Game.game_state.Menu) == Game.game_state.Menu))
             { // status menu just has easedout
                 active = false;
             }
@@ -132,8 +132,8 @@ namespace CookieMonster.CookieMonster_Objects
 
         public void generateContents()
         {
-            GameManager gm = Game.self.gameManager;
-            TextManager txtMan = Game.self.textMenager;
+            GameManager gm = engine.gameManager;
+            TextManager txtMan = engine.textMenager;
             int pX, pY;
             const int lMargin = 20;
 
@@ -160,7 +160,7 @@ namespace CookieMonster.CookieMonster_Objects
             TalentPtsStars.Clear();
             int starXStep = 40;
             pY += (int)(menuArea.Height * 0.12); pX += 20;
-            for (int i = 0; i < Game.self.gameManager.PC.talentPoints; i++)
+            for (int i = 0; i < engine.gameManager.PC.talentPoints; i++)
             {
                 Obj star = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX - starXStep * i, pY, Obj.align.RIGHT);
                 star.isGUIObjectButUnscaled = true;

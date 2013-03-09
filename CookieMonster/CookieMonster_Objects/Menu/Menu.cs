@@ -10,7 +10,7 @@ using OpenTK.Graphics;
 namespace CookieMonster.CookieMonster_Objects
 {
     
-    class Menu
+    class Menu : engineReference
     {
         public string name { get; private set; }
         private bool clearViewportOnOpen;
@@ -108,11 +108,11 @@ namespace CookieMonster.CookieMonster_Objects
                     bool somewhereCursorIn = false;
                     //Checks for mouse state:
                     bool triggerItemClick = false; //if flags is sat to true, it will trigger Click event on first item that mouse is in
-                    if (Game.self.menuManager.getButtonState(MouseButton.Left))
+                    if (engine.menuManager.getButtonState(MouseButton.Left))
                     {
                         mouseWasPresed = true;
                     }
-                    else if (mouseWasPresed && Game.self.menuManager.getButtonState(MouseButton.Left) == false)
+                    else if (mouseWasPresed && engine.menuManager.getButtonState(MouseButton.Left) == false)
                     { //mouse was pressed, and now released ->trigger onClick event
                         triggerItemClick = true;
                         mouseWasPresed = false;
@@ -139,7 +139,11 @@ namespace CookieMonster.CookieMonster_Objects
                         if ((!somewhereCursorIn)&&(items[i].CursorIn(cursor.x, cursor.y)))
                         {
                             if (triggerItemClick) items[i]._onMouseClick();
-                            items[i]._onMouseIn();
+                            if (this == null) return; // fix: sometimes click will trigger deleting of menu
+                            if (items.Count > i && items[i] != null)     // or item.
+                            {
+                                items[i]._onMouseIn();
+                            }
                             somewhereCursorIn = true;
                         }
                         else
@@ -228,7 +232,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             if(onRender!=null) onRender(); //if there is any onRender function, call it
             //render cursor overlaying all rest: (but render it only once!)
-            //if (cursor != null) { cursor.Render(); Game.self.menuManager.cursorRendered = true; }
+            //if (cursor != null) { cursor.Render(); engine.menuManager.cursorRendered = true; }
         }
         public void addItem(Menu_Item itm)
         {

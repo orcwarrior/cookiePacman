@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using EngineApp;
 using OpenTK;
-using OpenTK;
 using QuickFont;
 using System.Drawing;
 using OpenTK.Graphics;
@@ -12,6 +11,7 @@ namespace CookieMonster.CookieMonster_Objects
 {
     static public class Menu_Instances
     {
+        static Game engine { get {  return engineReference.getEngine(); } }
         public static void Menu_Nothing()
         {
             //YAAY!
@@ -22,7 +22,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         static public void Menu_InitializeBackground()
         {
-            Viewport mViewport = Game.self.menuViewport;
+            Viewport mViewport = engine.menuViewport;
 
             Obj Clouds = new Obj("../data/Textures/MENU/menu_clouds.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, true);
             Obj Clouds2 = new Obj("../data/Textures/MENU/menu_clouds.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, true);
@@ -74,7 +74,7 @@ namespace CookieMonster.CookieMonster_Objects
             mViewport.addObject(logo);
 
             //"Sun" light:
-            Game.self.lightEngine.clearAllLights();
+            engine.lightEngine.clearAllLights();
             Light sun = new Light(eLightType.DYNAMIC,new radialGradient(new Vector2(170f,230f),500f,
                                          new Vector4(1f,0.5f,0.0f,0.95f),
                                          new Vector4(1f,0f,0f,0f)));
@@ -101,7 +101,7 @@ namespace CookieMonster.CookieMonster_Objects
             Menu_InitializeBackground();
             Menu_StartBGMusic();
 
-            Menu profile = Game.self.menuManager.getMenuByName("MENU_PROFILE");
+            Menu profile = engine.menuManager.getMenuByName("MENU_PROFILE");
             profile.clearMenuItems();            
 
             Profile.Menu_GenerateProfileMenu();
@@ -111,7 +111,7 @@ namespace CookieMonster.CookieMonster_Objects
             //start bg music:
             Sound bg_music = new Sound(Sound.eSndType.MUSIC, "../data/Sounds/MENU_THEME.ogg", true, true);
             bg_music.volume = 0.87;
-            if (Game.self.SoundMan.getSoundByFilename("../data/Sounds/MENU_BIRDS_BG.ogg") == null)
+            if (engine.SoundMan.getSoundByFilename("../data/Sounds/MENU_BIRDS_BG.ogg") == null)
             {
                 Sound bg_birds = new Sound(Sound.eSndType.MUSIC, "../data/Sounds/MENU_BIRDS_BG.ogg", true, true);
                 bg_birds.volume = 0.15;
@@ -122,7 +122,7 @@ namespace CookieMonster.CookieMonster_Objects
             // IF MENU_STATUS is already created it means that
             // Game was already started, then player went to status screen and come back to main menu
             // to recreate it so we doing it:
-            Menu_Manager mgr = Game.self.menuManager;
+            Menu_Manager mgr = engine.menuManager;
             if (mgr.getMenuByName("MENU_STATUS") != null)
             {
                 Menu_InitializeBackground();
@@ -133,7 +133,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             // add menu items:
             // NOTE: Obj.align got to be LEFT!!! (Default)
-            Menu main = Game.self.menuManager.getMenuByName("MENU_MAIN");
+            Menu main = engine.menuManager.getMenuByName("MENU_MAIN");
             main.clearMenuItems();
             Obj item,itemH,itemC;
             double hoverscale = 1.2;
@@ -183,7 +183,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Menu_NewGame_Click()
         {
-            Menu selectLvl = Game.self.menuManager.getMenuByName("MENU_NEWGAME_1");
+            Menu selectLvl = engine.menuManager.getMenuByName("MENU_NEWGAME_1");
             if (selectLvl == null) selectLvl = new Menu("MENU_NEWGAME_1", null);
             selectLvl.clearMenuItems();
 
@@ -197,7 +197,7 @@ namespace CookieMonster.CookieMonster_Objects
             selectLvl.addItem(new Menu_Item(Lang.cur.Hardcore, pX, pY + 150f, Menu.font, Menu.font_Hover, Menu.font_Click, Menu_NewGame_Hardcore));
             selectLvl.addItem(new Menu_Item(Lang.cur.Wroc, pX, pY + 200f, Menu.font, Menu.font_Hover, Menu.font_Click, Menu_NewGame_Back));
 
-            Game.self.menuManager.openAsSubmenu(selectLvl);
+            engine.menuManager.openAsSubmenu(selectLvl);
         }
         public static void Menu_NewGame_Easy()
         {
@@ -221,13 +221,13 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Menu_NewGame2()
         {
-            Menu selectMapCount = Game.self.menuManager.getMenuByName("MENU_NEWGAME_2");
+            Menu selectMapCount = engine.menuManager.getMenuByName("MENU_NEWGAME_2");
             if (selectMapCount == null) selectMapCount = new Menu("MENU_NEWGAME_2", null);
             selectMapCount.clearMenuItems();
 
             float pX = 700f, pY = 180f;
             //CLose old shadow:
-            Menu selectLvl = Game.self.menuManager.getMenuByName("MENU_NEWGAME_1");
+            Menu selectLvl = engine.menuManager.getMenuByName("MENU_NEWGAME_1");
             Menu_Item oldBG = selectLvl.getItemByName("BG");
             if (oldBG != null) selectLvl.removeMenuItem(oldBG);
             //then create new one:
@@ -239,7 +239,7 @@ namespace CookieMonster.CookieMonster_Objects
             selectMapCount.addItem(new Menu_Item("30", pX, pY + 150f, Menu.font, Menu.font_Hover, Menu.font_Click, Menu_NewGame_Maps30));
             selectMapCount.addItem(new Menu_Item("40", pX, pY + 200f, Menu.font, Menu.font_Hover, Menu.font_Click, Menu_NewGame_Maps35));
 
-            Game.self.menuManager.openAsSubSubmenu(selectMapCount);
+            engine.menuManager.openAsSubSubmenu(selectMapCount);
         }
         public static void Menu_NewGame_Maps10()
         {
@@ -267,15 +267,15 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Menu_NewGame_Back()
         {
-            Game.self.menuViewport.removeObjectByFilePath("../data/Textures/MENU/MENU_SUBMENU_SHADOW.dds");
-            Game.self.menuManager.closeSubmenu(Game.self.menuManager.getMenuByName("MENU_NEWGAME_1"));
+            engine.menuViewport.removeObjectByFilePath("../data/Textures/MENU/MENU_SUBMENU_SHADOW.dds");
+            engine.menuManager.closeSubmenu(engine.menuManager.getMenuByName("MENU_NEWGAME_1"));
         }
 
         public static void Menu_NewGame_StartGame()
         {
-            if (!((Game.self.gameState & Game.game_state.Game) == Game.game_state.Game))
+            if (!((engine.gameState & Game.game_state.Game) == Game.game_state.Game))
             {
-                Game.self.startGame();
+                engine.startGame();
             }
 
         }
@@ -285,7 +285,7 @@ namespace CookieMonster.CookieMonster_Objects
         public static void Menu_LoadGame_Click()
         {
 
-            Menu loadGame = Game.self.menuManager.getMenuByName("MENU_LOADGAME");
+            Menu loadGame = engine.menuManager.getMenuByName("MENU_LOADGAME");
             if (loadGame == null) loadGame = new Menu("MENU_LOADGAME", null);
             loadGame.clearMenuItems();
 
@@ -331,19 +331,19 @@ namespace CookieMonster.CookieMonster_Objects
             loadGame.addItem(new Menu_Item(Lang.cur.WczytajEXCL, pX + 250f, pY + 250f, Menu.font, Menu.font_Hover, Menu.font_Click, Menu_LoadGame_Load));
             loadGame.addItem(new Menu_Item(Lang.cur.Wroc, pX, pY + 250f, Menu.font, Menu.font_Hover, Menu.font_Click, Menu_LoadGame_Close));
 
-            Game.self.menuManager.openAsSubmenu(loadGame);
+            engine.menuManager.openAsSubmenu(loadGame);
         }
         public static void Menu_LoadGame_Load()
         {
-            Game.self.menuViewport.removeObjectByFilePath("../data/Textures/MENU/MENU_SUBMENU_SHADOW.dds");
-            Menu_Manager mgr = Game.self.menuManager;
+            engine.menuViewport.removeObjectByFilePath("../data/Textures/MENU/MENU_SUBMENU_SHADOW.dds");
+            Menu_Manager mgr = engine.menuManager;
             mgr.closeSubmenu(mgr.getMenuByName("MENU_LOADGAME"));
-            Game.self.loadGame(Profile.currentProfile.save);
+            engine.loadGame(Profile.currentProfile.save);
         }
         public static void Menu_LoadGame_Close()
         {
-            Game.self.menuViewport.removeObjectByFilePath("../data/Textures/MENU/MENU_SUBMENU_SHADOW.dds");
-            Menu_Manager mgr = Game.self.menuManager;
+            engine.menuViewport.removeObjectByFilePath("../data/Textures/MENU/MENU_SUBMENU_SHADOW.dds");
+            Menu_Manager mgr = engine.menuManager;
             mgr.closeSubmenu(mgr.getMenuByName("MENU_LOADGAME"));
         }
         //------------------------------------
@@ -351,7 +351,7 @@ namespace CookieMonster.CookieMonster_Objects
         public static void Menu_Options_Click()
         {
             
-            Menu options = Game.self.menuManager.getMenuByName("MENU_OPTIONS");
+            Menu options = engine.menuManager.getMenuByName("MENU_OPTIONS");
             if (options == null) options = new Menu("MENU_OPTIONS", null);
             options.clearMenuItems();
 
@@ -362,20 +362,20 @@ namespace CookieMonster.CookieMonster_Objects
             options.addItem(new Menu_Item(Lang.cur.Dzwiek, pX, pY + 50f, Menu.font, Menu.font_Hover, Menu.font_Click, Menu_Options_Sound_Click));
             options.addItem(new Menu_Item(Lang.cur.Wroc, pX, pY + 100f, Menu.font, Menu.font_Hover, Menu.font_Click, Menu_Options_Close));
            
-            Game.self.menuManager.openAsSubmenu(options);
+            engine.menuManager.openAsSubmenu(options);
         }
         public static void Menu_Options_Sound_Click()
         {
-            Menu_Manager mgr = Game.self.menuManager;
+            Menu_Manager mgr = engine.menuManager;
             Menu options_snd = mgr.getMenuByName("MENU_OPTIONS_SOUND");
             if (options_snd == null) options_snd = new Menu("MENU_OPTIONS_SOUND", null);
             //if this is already submenu, skip this operation!
-            if (options_snd.Equals( Game.self.menuManager.subSubMenu)) return;
+            if (options_snd.Equals( engine.menuManager.subSubMenu)) return;
             options_snd.clearMenuItems();
 
             float pX = 700f, pY = 305f;
             //CLose old shadow:
-            Menu options = Game.self.menuManager.getMenuByName("MENU_OPTIONS");
+            Menu options = engine.menuManager.getMenuByName("MENU_OPTIONS");
             Menu_Item oldBG = options.getItemByName("BG");
             if (oldBG != null) options.removeMenuItem(oldBG);
             //then create new one:
@@ -400,43 +400,43 @@ namespace CookieMonster.CookieMonster_Objects
         public static void Menu_Options_Sound_SFX_Minus()
         {
             Configuration.prevDouble(ref Profile.currentProfile.config.options.sound.sfxVol);
-            Menu options_snd = Game.self.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
+            Menu options_snd = engine.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
             options_snd.getItem(4).value = Math.Round(Profile.currentProfile.config.options.sound.sfxVol, 2).ToString();
-            Game.self.SoundMan.recalculateSFX();
+            engine.SoundMan.recalculateSFX();
         }
         public static void Menu_Options_Sound_SFX_Add()
         {
             Configuration.nextDouble(ref Profile.currentProfile.config.options.sound.sfxVol);
-            Menu options_snd = Game.self.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
+            Menu options_snd = engine.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
             options_snd.getItem(4).value = Math.Round(Profile.currentProfile.config.options.sound.sfxVol, 2).ToString();
-            Game.self.SoundMan.recalculateSFX();
+            engine.SoundMan.recalculateSFX();
         }
         public static void Menu_Options_Sound_Music_Minus()
         {
             Configuration.prevDouble(ref Profile.currentProfile.config.options.sound.musicVol);
-            Menu options_snd = Game.self.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
+            Menu options_snd = engine.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
             options_snd.getItem(8).value = Math.Round(Profile.currentProfile.config.options.sound.musicVol, 2).ToString();
-            Game.self.SoundMan.recalculateMusic();
+            engine.SoundMan.recalculateMusic();
         }
         public static void Menu_Options_Sound_Music_Add()
         {
             Configuration.nextDouble(ref Profile.currentProfile.config.options.sound.musicVol);
-            Menu options_snd = Game.self.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
+            Menu options_snd = engine.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
             options_snd.getItem(8).value = Math.Round(Profile.currentProfile.config.options.sound.musicVol, 2).ToString();
-            Game.self.SoundMan.recalculateMusic();
+            engine.SoundMan.recalculateMusic();
         }
         public static void Menu_Options_GFX_Click()
         {
-            Menu options_gfx = Game.self.menuManager.getMenuByName("MENU_OPTIONS_GFX");
+            Menu options_gfx = engine.menuManager.getMenuByName("MENU_OPTIONS_GFX");
             if (options_gfx == null) options_gfx = new Menu("MENU_OPTIONS_GFX", null);
             //if this is already submenu, skip this operation!
-            //if (options_gfx.Equals(Game.self.menuManager.subSubMenu)) return;
+            //if (options_gfx.Equals(engine.menuManager.subSubMenu)) return;
             options_gfx.clearMenuItems(); 
 
             float pX = 700f, pY = 305f;
 
             //CLose old shadow:
-            Menu options = Game.self.menuManager.getMenuByName("MENU_OPTIONS");
+            Menu options = engine.menuManager.getMenuByName("MENU_OPTIONS");
             Menu_Item oldBG = options.getItemByName("BG");
             if (oldBG != null) options.removeMenuItem(oldBG);
             //then create new one:
@@ -455,7 +455,7 @@ namespace CookieMonster.CookieMonster_Objects
             }
             options_gfx.addItem(new Menu_Item(Lang.cur.Renderuj_Sciezki + ": " + Configuration.boolToString(Profile.currentProfile.config.options.graphics.renderPaths), pX, pY + 60f, Menu.fontSmall, Menu.fontSmall_Hover, Menu.fontSmall_Click, Menu_Options_GFX_RPaths_Click));
           
-            Game.self.menuManager.openAsSubSubmenu(options_gfx);
+            engine.menuManager.openAsSubSubmenu(options_gfx);
         }
         public static void Menu_Options_GFX_Resolution_Click()
         {
@@ -469,15 +469,15 @@ namespace CookieMonster.CookieMonster_Objects
         public static void Menu_Options_GFX_RPaths_Click()
         {
             Profile.currentProfile.config.options.graphics.renderPaths = !Profile.currentProfile.config.options.graphics.renderPaths;
-            Game.self.menuManager.getMenuByName("MENU_OPTIONS_GFX").getItem(2).value = Lang.cur.Renderuj_Sciezki+": " + Configuration.boolToString(Profile.currentProfile.config.options.graphics.renderPaths);
+            engine.menuManager.getMenuByName("MENU_OPTIONS_GFX").getItem(2).value = Lang.cur.Renderuj_Sciezki+": " + Configuration.boolToString(Profile.currentProfile.config.options.graphics.renderPaths);
         }
         
         public static void Menu_Options_Close()
         {
             Profile.currentProfile.config.restoreResolutionValue();
 
-            Game.self.menuViewport.removeObjectByFilePath("../data/Textures/MENU/MENU_SUBMENU_SHADOW.dds");
-            Menu_Manager mgr = Game.self.menuManager;
+            engine.menuViewport.removeObjectByFilePath("../data/Textures/MENU/MENU_SUBMENU_SHADOW.dds");
+            Menu_Manager mgr = engine.menuManager;
             mgr.closeSubmenu(mgr.getMenuByName("MENU_OPTIONS"));
         }
 
@@ -491,20 +491,20 @@ namespace CookieMonster.CookieMonster_Objects
         static float creditsXMargin = 800f;//90%
         public static void Menu_Credits_Click()
         {
-            Menu credits = Game.self.menuManager.getMenuByName("MENU_CREDITS");
+            Menu credits = engine.menuManager.getMenuByName("MENU_CREDITS");
             if (credits == null) credits = new Menu("MENU_CREDITS", null, Menu_Credits_Update, Menu_Credits_Render, Menu_Manager.cursor);
             credits.clearMenuItems();
 
-            float pX = 700f, pY = 280f;Game.self.menuManager.current_menu = credits;
-            Game.self.menuManager.canEnterIdleMode = false;
+            float pX = 700f, pY = 280f;engine.menuManager.current_menu = credits;
+            engine.menuManager.canEnterIdleMode = false;
             CreditsTimer = new Timer(Timer.eUnits.MSEC, 0);
             CreditsTimer.start();
-            creditsXMargin = 0.9f * Game.self.Width;
-            //Game.self.videoPlayer.playVideo("../data/videos/outro.bik");
+            creditsXMargin = 0.9f * engine.Width;
+            //engine.videoPlayer.playVideo("../data/videos/outro.bik");
 
             CreditsBG = new Obj("../data/Textures/HLP_BLACK.dds", 0, 0, Obj.align.LEFT, true);
-            CreditsBG.width = Game.self.Width * 3;
-            CreditsBG.height = Game.self.Height * 3;
+            CreditsBG.width = engine.Width * 3;
+            CreditsBG.height = engine.Height * 3;
             CreditsBG.x -= CreditsBG.width / 3;
             CreditsBG.y -= CreditsBG.height / 3;
             CreditsBG.setCurrentTexAlpha(0);
@@ -516,9 +516,9 @@ namespace CookieMonster.CookieMonster_Objects
         private static List<Menu_Item> creditsMenuItmsOnScreen = new List<Menu_Item>();
         public static void Menu_Credits_Update()
         {
-            float pX = 600f, pY = Game.self.Height/2;
+            float pX = 600f, pY = engine.Height/2;
             float ySpaces = 35;
-            Menu_Manager mgr = Game.self.menuManager;
+            Menu_Manager mgr = engine.menuManager;
             Menu credits = mgr.current_menu; 
             if (CreditsTimer.currentTime > 53000)//last+5000(2s)
             {
@@ -771,10 +771,10 @@ namespace CookieMonster.CookieMonster_Objects
                 {
                     creditsItemsAdded++;
                     pY -= 1 * ySpaces;
-                    Game.self.lightEngine.disabled = true;
+                    engine.lightEngine.disabled = true;
                     CreditsBG = new Obj("../data/Textures/HLP_BLACK.dds", 0, 0, Obj.align.LEFT, true);
-                    CreditsBG.width = Game.self.Width * 3;
-                    CreditsBG.height = Game.self.Height * 3;
+                    CreditsBG.width = engine.Width * 3;
+                    CreditsBG.height = engine.Height * 3;
                     CreditsBG.x -= CreditsBG.width / 3;
                     CreditsBG.y -= CreditsBG.height / 3;
                     CreditsBG.setCurrentTexAlpha(255);
@@ -800,7 +800,7 @@ namespace CookieMonster.CookieMonster_Objects
 
         private static void clearCreditsCaptions()
         {
-            Menu credits = Game.self.menuManager.current_menu;
+            Menu credits = engine.menuManager.current_menu;
             for (int i = 0; i < creditsMenuItmsOnScreen.Count; )
             {
                 credits.removeMenuItem(creditsMenuItmsOnScreen[i]);
@@ -809,7 +809,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         private static void addCreditsCaption(string text,float pY,QFont fnt)
         {
-          Menu credits = Game.self.menuManager.current_menu;
+          Menu credits = engine.menuManager.current_menu;
           float hlp = fnt.Measure(text).Width;
           //nasty bugfix(left align is wrong when last char is "i")
           if (text[text.Length - 1] == 'i')
@@ -825,19 +825,19 @@ namespace CookieMonster.CookieMonster_Objects
         {
             creditsItemsAdded = 0;
             CreditsTimer.stop();
-            Game.self.menuManager.canEnterIdleMode = true;
-            Game.self.menuManager.current_menu = Game.self.menuManager.getMenuByName("MENU_MAIN");
-            Game.self.lightEngine.disabled = false;
+            engine.menuManager.canEnterIdleMode = true;
+            engine.menuManager.current_menu = engine.menuManager.getMenuByName("MENU_MAIN");
+            engine.lightEngine.disabled = false;
         }
         #endregion
         public static void Menu_Exit_Click()
         {
-            Game.self.menuManager.showConfirm(Lang.cur.areUSure, Menu_Exit_Click_Confirmed, Game.self.menuManager.closeConfirm);
+            engine.menuManager.showConfirm(Lang.cur.areUSure, Menu_Exit_Click_Confirmed, engine.menuManager.closeConfirm);
         }
         public static void Menu_Exit_Click_Confirmed()
         {
             Profile.currentProfile.encryptToFile();
-            Game.self.Exit();
+            engine.Exit();
         }
 
         //---------------------------------
@@ -852,11 +852,11 @@ namespace CookieMonster.CookieMonster_Objects
             //generate all things there:
             //(render them at onRender func)
             //(store them in statusScreen class)
-            Game.self.gameManager.statusScr.generateContents();
+            engine.gameManager.statusScr.generateContents();
         }
         public static void Status_OnRender()
         {
-            Game.self.gameManager.statusScr.renderContents();
+            engine.gameManager.statusScr.renderContents();
         }
         public static void Status_ButtonOnHover()
         {
@@ -866,12 +866,12 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Status_AtrBoostClick()
         {
-            if (Game.self.gameManager.PC.riseSpeed())
+            if (engine.gameManager.PC.riseSpeed())
             {
                 Sound beep = new Sound(Sound.eSndType.SFX, "../data/Sounds/MENU_BEEP_LONG.ogg", false, false);
                 beep.volume = 0.82;
                 beep.Play();
-                Game.self.gameManager.statusScr.generateContents();//refresh contents
+                engine.gameManager.statusScr.generateContents();//refresh contents
             }
             else
             {
@@ -882,12 +882,12 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Status_AtrMaxLivesClick()
         {
-            if (Game.self.gameManager.PC.riseMaxLives())
+            if (engine.gameManager.PC.riseMaxLives())
             {
                 Sound beep = new Sound(Sound.eSndType.SFX, "../data/Sounds/MENU_BEEP_LONG.ogg", false, false);
                 beep.volume = 0.82;
                 beep.Play();
-                Game.self.gameManager.statusScr.generateContents();//refresh contents
+                engine.gameManager.statusScr.generateContents();//refresh contents
             }
             else
             {
@@ -898,12 +898,12 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Status_SkillBoost()
         {
-            if (Game.self.gameManager.PC.riseSkill(Skill.skillNames.Boost))
+            if (engine.gameManager.PC.riseSkill(Skill.skillNames.Boost))
             {
                 Sound beep = new Sound(Sound.eSndType.SFX, "../data/Sounds/MENU_BEEP_LONG.ogg", false, false);
                 beep.volume = 0.82;
                 beep.Play();
-                Game.self.gameManager.statusScr.generateContents();//refresh contents
+                engine.gameManager.statusScr.generateContents();//refresh contents
             }
             else
             {
@@ -914,12 +914,12 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Status_SkillIceBolt()
         {
-            if (Game.self.gameManager.PC.riseSkill(Skill.skillNames.IceBolt))
+            if (engine.gameManager.PC.riseSkill(Skill.skillNames.IceBolt))
             {
                 Sound beep = new Sound(Sound.eSndType.SFX, "../data/Sounds/MENU_BEEP_LONG.ogg", false, false);
                 beep.volume = 0.82;
                 beep.Play();
-                Game.self.gameManager.statusScr.generateContents();//refresh contents
+                engine.gameManager.statusScr.generateContents();//refresh contents
             }
             else
             {
@@ -931,19 +931,19 @@ namespace CookieMonster.CookieMonster_Objects
         
         public static void Status_exitToMenuClick()
         {
-            Menu_Manager mgr = Game.self.menuManager;
+            Menu_Manager mgr = engine.menuManager;
             mgr.showConfirm(Lang.cur.endGameSessionAllChangesWillBeLost, Status_exitToMenuClick_Yes, mgr.closeConfirm);
         }
 
         public static void Status_exitToMenuClick_Yes()
         {
-            Menu_Manager mgr = Game.self.menuManager;
+            Menu_Manager mgr = engine.menuManager;
             mgr.closeConfirm();
             Sound beep = new Sound(Sound.eSndType.SFX, "../data/Sounds/MENU_BEEP_LONG.ogg", false, false);
             beep.volume = 0.82;
             beep.Play();
             mgr.setCurrentMenu(mgr.getMenuByName("MENU_MAIN"));
-            Game.self.closeGameManagerSession();
+            engine.closeGameManagerSession();
         }
     }
 }

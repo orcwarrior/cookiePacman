@@ -320,7 +320,7 @@ namespace CookieMonster.CookieMonster_Objects
     }
 
     public enum eLightType { STATIC, DYNAMIC };
-    class Light
+    class Light : engineReference
     {
         /// <summary>
         /// List of gradients that make up this Light
@@ -380,7 +380,7 @@ namespace CookieMonster.CookieMonster_Objects
             gradsComposition.Add(grad);
 
             //correct position by current position of camera:
-            move(new Vector2(EngineApp.Game.self.gameCamera.camOffsetX, EngineApp.Game.self.gameCamera.camOffsetY));
+            move(new Vector2(engine.gameCamera.camOffsetX, engine.gameCamera.camOffsetY));
 
             // if light is dynamic, create lightAniData(s):
             if (type == eLightType.DYNAMIC)
@@ -421,7 +421,7 @@ namespace CookieMonster.CookieMonster_Objects
             absPos = gradList[0].centerPos;
 
             //correct position by current position of camera:
-            move(new Vector2(EngineApp.Game.self.gameCamera.camOffsetX, EngineApp.Game.self.gameCamera.camOffsetY));
+            move(new Vector2(engine.gameCamera.camOffsetX, engine.gameCamera.camOffsetY));
 
             // if light is dynamic, create lightAniData(s):
             if (type == eLightType.DYNAMIC)
@@ -476,7 +476,7 @@ namespace CookieMonster.CookieMonster_Objects
         /// </summary> 
         private void refreshPos()
         {
-            Vector2 camOff = new Vector2(EngineApp.Game.self.gameCamera.camOffsetX, EngineApp.Game.self.gameCamera.camOffsetY);
+            Vector2 camOff = new Vector2(engine.gameCamera.camOffsetX, engine.gameCamera.camOffsetY);
             for (int i = 0; i < gradsComposition.Count; i++)
             {
                 gradsComposition[i].Move(absPos + relPos);
@@ -508,9 +508,9 @@ namespace CookieMonster.CookieMonster_Objects
 
         private void addLightToLightingEngine()
         {
-            if (EngineApp.Game.self.lightEngine == null)
+            if (engine.lightEngine == null)
                 throw new Exception("Light Engine is null!");
-            EngineApp.Game.self.lightEngine.addLight(this);
+            engine.lightEngine.addLight(this);
         }
 
         /// <summary>
@@ -544,8 +544,8 @@ namespace CookieMonster.CookieMonster_Objects
         {
             if (parent!=null)
                 parent.RemoveLight(this);
-            if (EngineApp.Game.self.lightEngine == null) return;
-            EngineApp.Game.self.lightEngine.removeLight(this);
+            if (engine.lightEngine == null) return;
+            engine.lightEngine.removeLight(this);
         }
 
     }

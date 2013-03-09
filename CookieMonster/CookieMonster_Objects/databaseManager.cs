@@ -38,7 +38,7 @@ namespace CookieMonster.CookieMonster_Objects
             }
             catch (Exception e)
             {
-                EngineApp.Game.self.menuManager.showAlert(Lang.cur.Blad_tworzenia_konta_online_dla_profilu);
+                engineReference.getEngine().menuManager.showAlert(Lang.cur.Blad_tworzenia_konta_online_dla_profilu);
                 new DebugMsg("Account creation exception: " + e.ToString());
             }
             return false;//profile wasn't created,

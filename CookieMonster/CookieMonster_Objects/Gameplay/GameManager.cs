@@ -9,7 +9,7 @@ using OpenTK.Graphics;
 namespace CookieMonster.CookieMonster_Objects
 {
 
-    class GameManager
+    class GameManager : engineReference
     {
         static public Random variantizer = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
         static private int _gridSize;
@@ -23,7 +23,7 @@ namespace CookieMonster.CookieMonster_Objects
         public statusScreen statusScr { get; private set; } 
         public int level { get; private set; }
         public bool gamePaused { get; private set; }
-        public Viewport activeView { get { return EngineApp.Game.self.activeViewport; } }
+        public Viewport activeView { get { return engine.activeViewport; } }
         public GameMap Map { get { return _Map; } }
         public CollisionSystem collisionSystem { get { return collSys; } }
         public Timer gameDuration { get; private set; }
@@ -50,7 +50,7 @@ namespace CookieMonster.CookieMonster_Objects
         public bool canStartNextLevel { get { return statistics.lvlPoints >= Map.cookiesCount * Statistics.ptsPerCookie; } }
         public GameManager()
         {
-            Game.self.gameState = Game.game_state.Game;
+            engine.gameState = Game.game_state.Game;
 
             initLoadScreen();
             updateLoadingInfos("..."+Lang.cur.Inicjuje_Game_Menagera+"...");
@@ -172,19 +172,19 @@ namespace CookieMonster.CookieMonster_Objects
         private Obj loadScreenAni;
         private void updateLoadingInfos(string msg)
         {
-            float xCenter = (float)Game.self.activeViewport.width / 2f;
-            float yCenter = (float)Game.self.activeViewport.height / 2f;
+            float xCenter = (float)engine.activeViewport.width / 2f;
+            float yCenter = (float)engine.activeViewport.height / 2f;
             
             float xMinus = TextManager.font_default_20.Measure(msg).Width / 2;
             loadScreenTxtMsg = new Text(TextManager.font_default_20, xCenter - xMinus, yCenter, msg);
             __renderLoadScreen();
-            //Game.self.textMenager.onRender();         
+            //engine.textMenager.onRender();         
         }
 
         private void initLoadScreen()
         {
             //FIX: remove all previous texts
-            Game.self.textMenager.clearAll();
+            engine.textMenager.clearAll();
              loadScreenBG = new Obj("../data/Textures/MENU/LOADING_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
              loadScreenAni = new Obj("../data/Textures/MENU/LOADING_ANI_A0.dds", 0.5, 0.42, Obj.align.CENTER_BOTH, false);
              loadScreenBG.isGUIObjectButUnscaled = true;
@@ -200,7 +200,7 @@ namespace CookieMonster.CookieMonster_Objects
                 loadScreenTxtMsg.Update();
                 loadScreenTxtMsg.Render();
             }
-            Game.self.SwapBuffers();
+            engine.SwapBuffers();
         }
         #endregion
         private void initializeMOBs()
@@ -236,7 +236,7 @@ namespace CookieMonster.CookieMonster_Objects
             updateLoadingInfos("...inicjalizuje obiekty poziomu...");
             initializeMOBs();
             PC.renewSkills();
-            Game.self.gameCamera.correctForNewLevel();
+            engine.gameCamera.correctForNewLevel();
 
             //start/continue timers:
             continueGameDurationTimer();
@@ -245,11 +245,11 @@ namespace CookieMonster.CookieMonster_Objects
         }
         private void initGameMap()
         {
-            Game.self.gameCamera.resetPos();            
+            engine.gameCamera.resetPos();            
             String mapFile = "LEVEL_" + level.ToString() + ".pn"+"g";//workaround to force it always as dds
             mapFile = GameMap.MapsPath + mapFile;
             _Map = new GameMap(mapFile, this);
-            EngineApp.Game.self.gameViewport.setGameMap(_Map);//adding map to viewport rendering
+            engine.gameViewport.setGameMap(_Map);//adding map to viewport rendering
         }
 
         public void InitPC(int x, int y)
@@ -329,7 +329,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             //Chceck if there is new tip to show:
             tipsManager.newLevel(level);
-            Game.self.InitCamera();
+            engine.InitCamera();
         }
 
         private void slowDownUpdate()
@@ -338,7 +338,7 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 slowdownActive = false;
                 Profile.currentProfile.config.options.sound.musicVol *= 10.0;
-                Game.self.SoundMan.recalculateMusic();
+                engine.SoundMan.recalculateMusic();
                 for (int i = 0; i < enemiesList.Count; i++)
                 {
                     enemiesList[i].resetMovementSpeed();
@@ -367,8 +367,14 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void prepareRender()
         {//handles all object render during Game
+            // FIX: We will make sure we passing object 
+            // to game Viewport not menu! [BUGFIX]
+            Game.game_state oldState = engine.gameState;
+            engine.gameState = Game.game_state.Game;
+
             if (_Map != null)
             {
+                _Map.prepareStaticRender();
                 _Map.prepareRender();
             }
             //renders bomb(overlaying all other objects:)
@@ -380,7 +386,7 @@ namespace CookieMonster.CookieMonster_Objects
                 projectilesList[i].prepareRender();
 
             // Render lightmaps:
-            Game.self.lightEngine.prepareRender();
+            engine.lightEngine.prepareRender();
 
             //music player render:
             mPlayer.prepareRender();
@@ -389,6 +395,8 @@ namespace CookieMonster.CookieMonster_Objects
             gui.prepareRender();
             statusScr.prepareRender();
             tipsManager.prepareRender();
+
+            engine.gameState = oldState;
         }
 
         internal void KeyboardEvt(object sender, OpenTK.Input.KeyboardKeyEventArgs k)
@@ -506,7 +514,7 @@ namespace CookieMonster.CookieMonster_Objects
             slowdown.volume = 0.8;
             //Mute music when slowdown is active:
             Profile.currentProfile.config.options.sound.musicVol *= 0.1;
-            Game.self.SoundMan.recalculateMusic();
+            engine.SoundMan.recalculateMusic();
             slowdown.Play();
             slowdownTimer.start();
             slowdownActive = true;

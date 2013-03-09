@@ -9,10 +9,11 @@ using EngineApp;
 namespace CookieMonster.CookieMonster_Objects
 {
 
-    class GameMap
+    class GameMap : engineReference
     {
         private GameManager gameMgr;
         private Bitmap _interpretationMap; // generated automatically
+        private Obj[] staticMapParts;
         private Obj[,] mapRenderQueueFirst;//Darkness Objects
         private Obj[,] mapRenderQueue; //queue is sorted but need to put in movable/dynamic objects like player, enemies
         private Obj[,] torches; //Animated Torch
@@ -40,9 +41,9 @@ namespace CookieMonster.CookieMonster_Objects
         public GameMap(string bitPath,GameManager g)
         {
             //reset all Lights:
-            EngineApp.Game.self.lightEngine.clearAllLights();
-            EngineApp.Game.self.lightEngine.lightAddStrength = 0.6f;
-            EngineApp.Game.self.lightEngine.lightMulStrength = 0.2f;
+            engine.lightEngine.clearAllLights();
+            engine.lightEngine.lightAddStrength = 0.6f;
+            engine.lightEngine.lightMulStrength = 0.2f;
             level++;
             neighborReport.map = this;
             Portal.resetPortalsCount();
@@ -142,21 +143,20 @@ namespace CookieMonster.CookieMonster_Objects
         /// </summary>
         private void generateStaticMapToTexture()
         {
-            //Game.game_state oldState = Game.self.gameState;
-            Game.self.menuViewport.Clear();
-            // Clear current buffer:
-            Game.self.gameViewport.Clear(); // clear active viewport too...
+            // Clear both viewports:
+            engine.menuViewport.Clear();
+            engine.gameViewport.Clear();
             GL.ClearColor(0,0,0,0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            int w = Game.self.Width, h = Game.self.Height;
+            int w = engine.Width, h = engine.Height;
                         //Delete old textures:
             if (_staticBufferTextures != null)
                 GL.DeleteTextures(staticTexCntX * staticTexCntY, _staticBufferTextures);
 
             // Compute real startpoint X ("zero"):
-            realYstartPos = EngineApp.Game.self.Height;
+            realYstartPos = engine.Height;
             // openGL coords was making alot of troubles with (0,0) at
             // down left corner of current rendered viewport (not the whole scene!)
             // Finding upper left corner of viewport, which (just after rendering all static Obj's
@@ -174,6 +174,9 @@ namespace CookieMonster.CookieMonster_Objects
             // Generate image(s) for storing buffer after rendering objects:
             _staticBufferTextures = new int[staticTexCntX * staticTexCntY+1];
             GL.GenTextures(staticTexCntX * staticTexCntY, _staticBufferTextures);
+            // Create array of Obj files:
+            staticMapParts = new Obj[staticTexCntX * staticTexCntY + 1];
+
 
             // Creating textures from actual gameMap
             // ---
@@ -198,7 +201,7 @@ namespace CookieMonster.CookieMonster_Objects
                 {
                     texTillEnd -= 2; //decrease number of textures till end by two (they're be rendered in this loop)
 
-                    Camera cam = Game.self.gameCamera;
+                    Camera cam = engine.gameCamera;
                     Point arrayPointer = new Point(j * (objToRenderX - 1), i * (objToRenderY - 1));
                     Point camShift = new Point((j * (objToRenderX - 1)) * GameManager.gridSize + j * objShiftX,
                                                (i * (objToRenderY - 1)) * GameManager.gridSize + i * objShiftY);
@@ -206,7 +209,6 @@ namespace CookieMonster.CookieMonster_Objects
                     //new DebugMsg("Moved camera to: (" + camShift.X + "," + camShift.Y + ")");
                         
                     // render underlying objects:
-                    //renderBackground();
                     for (int x = arrayPointer.X; (x < arrayPointer.X + objToRenderX && x < mapWidth); x++)
                     {
                         for (int y = arrayPointer.Y; (y < objToRenderY + arrayPointer.Y && y < mapHeight); y++)
@@ -229,7 +231,7 @@ namespace CookieMonster.CookieMonster_Objects
                                 mapRenderQueue[x, y].prepareRender();
                         }
                     }
-                    Game.self.gameViewport.Render();
+                    engine.gameViewport.Render();
  
                     GL.ReadBuffer(ReadBufferMode.Back);
                     // Drawing textures in one main loop  
@@ -247,16 +249,34 @@ namespace CookieMonster.CookieMonster_Objects
                             GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, (_x * staticTexSize), realYstartPos - ((_y + 1) * staticTexSize), staticTexSize, staticTexSize, 0);
                             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
                             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+                            // Create Obj in array of staticMapParts
+                            staticMapParts[idx] = new Obj(_staticBufferTextures[idx], (_x * staticTexSize), realYstartPos - ((_y + 1) * staticTexSize), Obj.align.LEFT);
+                            
+                            // [DEBUG] Save image to file:
+                            // GL.PixelStore(PixelStoreParameter.PackAlignment, 1);
+                            // byte[] raw_img = new byte[staticTexSize * staticTexSize * 32];
+                            // unsafe
+                            // {
+                            //  fixed (byte* p = raw_img)
+                            //  {
+                            //      IntPtr ptr = (IntPtr)p;
+                            //      GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, raw_img);
+                            //      Bitmap tex = new Bitmap(staticTexSize, staticTexSize, staticTexSize * 32/8, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ptr);
+                            //      tex.Save("stat" + idx + ".png");
+                            //  }
+                            // }
+ 
                             //new DebugMsg("Created mapTEX[" + idx + "] - (" + (_x * staticTexSize) + "," + (realYstartPos - ((_y + 1) * staticTexSize)) + ")");
                         }
                     }
                     // For debuging propouses:
-                    Game.self.SwapBuffers();
+                    //engine.SwapBuffers();
                     //for (int z = 0; z < int.MaxValue / 8; z++) ;
-                    //Game.self.SwapBuffers();
-                    //Game.self.activeViewport.Render();
+                    //engine.SwapBuffers();
+                    //engine.activeViewport.Render();
                     GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-                    Game.self.gameViewport.Clear();
+                    engine.gameViewport.Clear();
                 }
             }
 
@@ -267,7 +287,7 @@ namespace CookieMonster.CookieMonster_Objects
             GL.Enable(EnableCap.ClipPlane0);
 
             // Reshape viewport to old shape
-            //Game.self.gameState = oldState;
+            //engine.gameState = oldState;
             
         }
         /// <summary>
@@ -275,7 +295,7 @@ namespace CookieMonster.CookieMonster_Objects
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        private void renderStaticPartOfMap(int _x,int _y)
+        private void _prepareRenderOfMapStaticPart(int _x,int _y)
         {
             int xoff = 0, yoff = realYstartPos - staticTexSize;
             int staticTexSizeY = staticTexSize - 20;
@@ -283,39 +303,24 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 for (int x = 0; x < staticTexCntX; x++)
                 { //'magic' happens here: 
-                    GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-                    GL.BindTexture(TextureTarget.Texture2D, _staticBufferTextures[y * staticTexCntX + x]);
+                    //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 xoff = (staticTexSize) * x;
                 yoff = realYstartPos - staticTexSizeY + (staticTexSizeY) * y;
-                GL.Begin(BeginMode.Quads);
-                /* 0---2 How
-                 * |  /| Quadz
-                 * | / | is
-                 * 1/--3 Made */
-                float zero = 1f/(float)staticTexSize;
-                float one = 1f - (1f / (float)staticTexSize);
-                GL.TexCoord2(zero, one);
-                    GL.Vertex2(_x + xoff, _y + yoff);
 
-                    GL.TexCoord2(zero, zero);
-                    GL.Vertex2(_x + xoff, _y + staticTexSizeY + yoff);
-
-                    GL.TexCoord2(one, zero);
-                    GL.Vertex2(_x + xoff + staticTexSize, _y + staticTexSizeY + yoff);
-
-                    GL.TexCoord2(one, one);
-                    GL.Vertex2(_x + xoff + staticTexSize, _y + yoff);
-                GL.End();  
+                staticMapParts[y * staticTexCntX + x].x = xoff;
+                staticMapParts[y * staticTexCntX + x].y = yoff;
+                staticMapParts[y * staticTexCntX + x].prepareRender();   
+                
                }
             }
             //Back to old blend function:
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
-        private void renderBackground()
+        public void renderBackground()
         {
-            int w = EngineApp.Game.self.Width;
-            int h = EngineApp.Game.self.Height;
-            Camera c = EngineApp.Game.self.gameCamera;
+            int w = engine.Width;
+            int h = engine.Height;
+            Camera c = engine.gameCamera;
             GL.BindTexture(TextureTarget.Texture2D, background.glTexID);
             GL.Begin(BeginMode.Quads);
             GL.Color4(255, 255, 255, 255);
@@ -338,11 +343,22 @@ namespace CookieMonster.CookieMonster_Objects
             GL.Vertex2(w, 0);
             GL.End(); 
         }
+        /// <summary>
+        /// Prepares Rendering of
+        /// *torches
+        /// *mobs
+        /// *power-ups
+        /// *player
+        /// </summary>
         public void prepareRender()
         {
+            // FIX: We will make sure we passing object 
+            // to game Viewport not menu! [BUGFIX]
+            Game.game_state oldState = engine.gameState;
+            engine.gameState = Game.game_state.Game;
             int i = 0;
             bool pcRendered = false;
-            Render();
+
             //Torches:
             for (int x = 0; x  < torches.GetUpperBound(0); x++)
             {
@@ -357,7 +373,7 @@ namespace CookieMonster.CookieMonster_Objects
             for (i = 0; i < gameMgr.sortedEnemiesList.Count;i++)
             {
                 if (gameMgr.sortedEnemiesList[i] != null)
-                    gameMgr.sortedEnemiesList[i].Render();
+                    gameMgr.sortedEnemiesList[i].prepareRender();
             }
             //POWER UPS:
             for (i = 0; i < gameMgr.sortedPowerUpList.Count;i++ )
@@ -366,22 +382,26 @@ namespace CookieMonster.CookieMonster_Objects
                         gameMgr.sortedPowerUpList[i].Render();
             }
             //PLAYER:
-            gameMgr.PC.Render();
+            gameMgr.PC.prepareRender();
 
             //portals: overlaping most of map objects:
             for (i = 0; i < _portals.Count; i++)
                 _portals[i].Render();
 
-           // for (i = 0; i < lensFlares.Count; i++)
-           //     lensFlares[i].Render();
+           // Back to old state:
+            engine.gameState = oldState;
         }
-        public void Render()
-        {
-            renderBackground();
+        /// <summary>
+        /// Method called by Game Viewport
+        /// renders static parts of game map (background, static objects)
+        /// </summary>
+        public void prepareStaticRender()
+        {            
+
             //Renders static parts of map:
-            Camera c = EngineApp.Game.self.gameCamera;
-            renderStaticPartOfMap(c.camOffsetX, c.camOffsetY + yStaticMapShift);//(c.camOffsetX, c.camOffsetY + );
-             
+            Camera c = engine.gameCamera;
+            _prepareRenderOfMapStaticPart(c.camOffsetX, c.camOffsetY + yStaticMapShift);//(c.camOffsetX, c.camOffsetY + );
+
         }
         #region Creating Map objects readed from interpretationMap pixel data
         private void AddObject(objType typ, int x, int y)

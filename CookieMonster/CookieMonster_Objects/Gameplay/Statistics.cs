@@ -8,7 +8,7 @@ using EngineApp;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class Statistics
+    class Statistics : engineReference
     {
         static public uint ptsPerCookie = 10;
         public uint points { get; private set; }
@@ -35,21 +35,21 @@ namespace CookieMonster.CookieMonster_Objects
         public void newLevel() { lvlPoints = 0; }
         public void addPoints(uint v)
         {
-            Camera curCam = Game.self.gameCamera;
+            Camera curCam = engine.gameCamera;
             points += v;
             lvlPoints += v;
             ptFont.Options.Colour = new OpenTK.Graphics.Color4(255, 255, 255, 200);
             //give exp pts to hero:
-            bool newLevel = Game.self.gameManager.PC.addExp((int)v);
+            bool newLevel = engine.gameManager.PC.addExp((int)v);
             string pipe = "+" + v.ToString() + "pts.";
             if (newLevel) pipe+= "\nNOWY POZIOM!";
 
-            //Text msg = Game.self.textMenager.produceText(ptFont, pipe , (float)(Game.self.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(Game.self.gameManager.PC.pY + curCam.camOffsetY + 10));
-            //Text msg = new Text(ptFont,  (float)(Game.self.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(Game.self.gameManager.PC.pY + curCam.camOffsetY + 10), "+" + v.ToString() + "pts.");
-            Text msg = new Text(ptFont, (float)(Game.self.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(Game.self.gameManager.PC.pY + curCam.camOffsetY + 10), pipe);
+            //Text msg = engine.textMenager.produceText(ptFont, pipe , (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10));
+            //Text msg = new Text(ptFont,  (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10), "+" + v.ToString() + "pts.");
+            Text msg = new Text(ptFont, (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10), pipe);
             msg.setLifeTime(600);
             msg.setAnimationMove(new Point(0, -3));
-            //Game.self.textMenager.addText(msg);
+            //engine.textMenager.addText(msg);
             
             
         }

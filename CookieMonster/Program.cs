@@ -39,7 +39,6 @@ namespace EngineApp
 {
     class Game : GameWindow
     {
-        static public Game self; // Game is singleton
         [Flags]
         public enum game_state { Undef = 0,Menu = 2, Game = 4 };//ingame menu = Menu|Game
         public game_state gameState = game_state.Undef;
@@ -96,7 +95,9 @@ namespace EngineApp
         public Game(int w, int h)
             : base(w, h)
         {
-            self = this;
+            // Set's current engine to currently created object
+            engineReference.setEngine(this);
+
             menuViewport = new Viewport(w, h, true);
             gameViewport = new Viewport(w, h, true);
             Mouse.ButtonDown += new EventHandler<MouseButtonEventArgs>(Mouse_ButtonDown);
@@ -115,7 +116,9 @@ namespace EngineApp
         public void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
         {
             if(menuManager!=null)
-            menuManager.setButtonState(e.Button, true);
+                menuManager.setButtonState(e.Button, true);
+            if (videoPlayer != null)    // skip video on mouse down evt.
+                videoPlayer.keyDown(sender, new KeyboardKeyEventArgs());
         }
         public void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -129,7 +132,7 @@ namespace EngineApp
             InputManager.KeyDown(sender, k);
 
             //skip playing videos:
-            if(videoPlayer!=null)
+            if (videoPlayer != null)   // skip video on keystroke
             videoPlayer.keyDown(sender, k);
 
             if (k.Key == Key.S)
@@ -157,7 +160,7 @@ namespace EngineApp
             setScreenMode(true);
             //check is current runing system is winXP:
            //if(Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5)
-           //     EngineApp.Game.self.WindowState = OpenTK.WindowState.Fullscreen; //BUGFIX: Set now to fullscreen only on winXP
+           //     EngineApp.engine.WindowState = OpenTK.WindowState.Fullscreen; //BUGFIX: Set now to fullscreen only on winXP
             
             core.Init();
             //openGL disable unecessary stuff:
@@ -412,7 +415,7 @@ namespace EngineApp
 
             //check is current runing system is >winXP:
             //if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major > 5)
-            //    EngineApp.Game.self.WindowState = OpenTK.WindowState.Fullscreen; //BUGFIX: Set now to fullscreen only on winXP
+            //    EngineApp.engine.WindowState = OpenTK.WindowState.Fullscreen; //BUGFIX: Set now to fullscreen only on winXP
 
         }
 
@@ -421,13 +424,13 @@ namespace EngineApp
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);//Clear buffer
 
             String msg = "Loading...";
-            float xCenter = (float)Game.self.activeViewportOrAny.width/ 2f;
+            float xCenter = (float)engineReference.getEngine().activeViewportOrAny.width/ 2f;
             float yCenter = (float)Profile.currentProfile.config.options.graphics.resolution.Height/ 2f;
             float xMinus = TextManager.font_default_20.Measure(msg).Width / 2;
-            //Text loading = Game.self.textMenager.produceText(TextManager.font_default_20, msg, xCenter - xMinus, yCenter, QuickFont.QFontAlignment.Left);
+            //Text loading = engine.textMenager.produceText(TextManager.font_default_20, msg, xCenter - xMinus, yCenter, QuickFont.QFontAlignment.Left);
             Text loading = new Text(TextManager.font_default_20, xCenter - xMinus, yCenter, msg);
             loading.Render();
-            Game.self.SwapBuffers(); //Render buffer
+            engineReference.getEngine().SwapBuffers(); //Render buffer
         }
     }
 }

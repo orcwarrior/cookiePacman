@@ -9,7 +9,7 @@ namespace CookieMonster.CookieMonster_Objects
     /// <summary>
     /// MOB... Moveable OBject
     /// </summary>
-    class MOB
+    class MOB : engineReference
     {
         //Enumerators
         public enum eMOBType { MOB, POWERUP, ENEMY, PLAYER, PROJECTILE }
@@ -317,7 +317,7 @@ namespace CookieMonster.CookieMonster_Objects
             }
         }
 
-        internal void Render()
+        internal void prepareRender()
         {
            currentVisual.x = posX; currentVisual.y = posY;
            currentVisual.prepareRender();
@@ -720,17 +720,17 @@ namespace CookieMonster.CookieMonster_Objects
         internal void RemoveLight(Light light)
         {
             if (attachedLights == null) return;
-            if (EngineApp.Game.self.lightEngine == null) return;
+            if (engine.lightEngine == null) return;
             attachedLights.Remove(light);
         }
 
         internal void RemoveLights()
         {
             if (attachedLights == null) return;
-            if (EngineApp.Game.self.lightEngine == null) return;
+            if (engine.lightEngine == null) return;
             for (int i = 0; i < attachedLights.Count; i++)
             {
-                EngineApp.Game.self.lightEngine.removeLight(attachedLights[i]);
+                engine.lightEngine.removeLight(attachedLights[i]);
                 attachedLights[i] = null;
             }
         }

@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class Menu_Manager
+    class Menu_Manager : engineReference
     {
         public static Obj cursor{get; set;}
         private List<Menu> Menus_List = new List<Menu>();
@@ -76,22 +76,23 @@ namespace CookieMonster.CookieMonster_Objects
         public void onUpdate()
         {
             if (current_menu == null) return;
-            if ((Game.self.gameState & Game.game_state.Menu) == Game.game_state.Menu)
+            if ((engine.gameState & Game.game_state.Menu) == Game.game_state.Menu)
             {
 
-                Menu_Manager.cursor.x = Game.self.Mouse.X - 0;//12
-                Menu_Manager.cursor.y = Game.self.Mouse.Y - 12;
+                Menu_Manager.cursor.x = engine.Mouse.X - 0;//12
+                Menu_Manager.cursor.y = engine.Mouse.Y - 12;
                 //handle alert window:
                 if (confirm != null)
                 {//if there is alert wnd, update alert window only
                     confirm.Update();
-                    return;
+                    //return;
                 }
 
                 if (subMenu != null)
                     subMenu.Update();
                 //Now it's handled by menuDisabled
                 //if(subMenu == null || current_menu.submenuTimer.enabled || current_menu.submenuCloseTimer.enabled)
+                if (confirm == null && alert == null)
                     current_menu.Update();//update main only if there is no sub's (or there is sub-ani todo)
                 if (subSubMenu != null)
                     subSubMenu.Update();
@@ -120,7 +121,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             checkInputIdle();
             // prepare all objects in Menu Viewport to render:
-            Game.self.menuViewport.prepareMenuViewportObjects();
+            engine.menuViewport.prepareMenuViewportObjects();
         }
         // NOTE: 19.09 - added keyboard idle checking
         // keypressing will disturb going into theather mode simply by handling event of keystroke
@@ -135,7 +136,7 @@ namespace CookieMonster.CookieMonster_Objects
             if (!inputIdleCheck.enabled)
             {
                 inputIdleCheck.start();
-                Point curCursor = new Point(Game.self.Mouse.X, Game.self.Mouse.Y);
+                Point curCursor = new Point(engine.Mouse.X, engine.Mouse.Y);
                 if ((Math.Abs(mouseIdleLastPos.X - curCursor.X) < mouseIdleRange)
                 && (Math.Abs(mouseIdleLastPos.Y - curCursor.Y) < mouseIdleRange))
                 {
@@ -158,8 +159,8 @@ namespace CookieMonster.CookieMonster_Objects
             // Don't enter theather mode if flag is not set
             if((canEnterIdleMode==false)&&(state==1)) return;
 
-            if ((Game.self.gameState & Game.game_state.Game) == Game.game_state.Game
-            ||  (Game.self.gameState & Game.game_state.Menu) != Game.game_state.Menu)
+            if ((engine.gameState & Game.game_state.Game) == Game.game_state.Game
+            ||  (engine.gameState & Game.game_state.Menu) != Game.game_state.Menu)
                 return; //INGAME MENU or not even in menu? well fuck it then.
             if (state == theatherModeState) return; //this state is already on
             if (state == 0 && theatherModeState == 2) return; //toggle off couldn't occur when theather was in just inited state;
@@ -183,7 +184,7 @@ namespace CookieMonster.CookieMonster_Objects
         public void onRender()
         {
             if (current_menu == null) return;
-            if ((Game.self.gameState & Game.game_state.Menu) == Game.game_state.Menu)
+            if ((engine.gameState & Game.game_state.Menu) == Game.game_state.Menu)
             {
                 current_menu.Render();
                 if (subMenu != null && (current_menu.submenuTimer.enabled == false || subMenu.submenuTimer.enabled == true))
@@ -308,8 +309,8 @@ namespace CookieMonster.CookieMonster_Objects
                 Obj BG = new Obj("../data/Textures/MENU/MENU_ALERT_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
                 BG.isGUIObjectButUnscaled = true;
 
-                float x = Game.self.activeViewportOrAny.width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
-                float y = Game.self.activeViewportOrAny.height * 3 / 10;
+                float x = engine.activeViewportOrAny.width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
+                float y = engine.activeViewportOrAny.height * 3 / 10;
                 alert = new Menu("ALERT", null);
                 alert.addItem(new Menu_Item("BG", BG, null, null, null, null, null));
                 alert.addItem(new Menu_Item(msg, x, y, Menu.fontSmallAlt, Menu.fontSmallAlt, Menu.fontSmallAlt, Menu_Instances.Menu_Nothing, null, null));
@@ -340,20 +341,22 @@ namespace CookieMonster.CookieMonster_Objects
                 Obj BG = new Obj("../data/Textures/MENU/MENU_CONFIRM_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
                 BG.isGUIObjectButUnscaled = true;
 
-                float x = Game.self.activeViewportOrAny.width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
-                float y = Game.self.activeViewportOrAny.height * 3 / 10;
+                float x = engine.activeViewportOrAny.width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
+                float y = engine.activeViewportOrAny.height * 3 / 10;
                 confirm = new Menu("CONFIRM", null);
                 confirm.addItem(new Menu_Item("BG", BG, null, null, null, null, null));
                 confirm.addItem(new Menu_Item(msg, x, y, Menu.fontSmallAlt, Menu.fontSmallAlt, Menu.fontSmallAlt, Menu_Instances.Menu_Nothing, null, null));
 
-                x = Game.self.activeViewportOrAny.width / 2;
+                x = engine.activeViewportOrAny.width / 2;
                 confirm.addItem(new Menu_Item(Lang.cur.Yes, x + 70, y + 300f, confirmYES, confirmYESHover, Menu.font_Click, yesClick));
                 confirm.addItem(new Menu_Item(Lang.cur.No, x - 140, y + 300f, confirmNO, confirmNOHover, Menu.font_Click, noClick));
             }
         }
         public void closeConfirm()
         {
-            confirm = null;
+            confirm.removeMenuItem(confirm.getItemByName("BG"));
+            confirm = null; 
+               
         }
     }
 }

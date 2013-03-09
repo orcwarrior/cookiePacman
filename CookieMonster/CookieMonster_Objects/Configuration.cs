@@ -48,7 +48,7 @@ namespace CookieMonster.CookieMonster_Objects
         public double musicVol = 1.0;
     }
 
-    class Configuration
+    class Configuration : engineReference
     {
         public static string boolToString(bool b)
         {
@@ -72,7 +72,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             //commandline stuff:
             commandline = new CookieMonster_Objects.commandline();
-            foreach (string arg in EngineApp.Game.self.cmdArguments)
+            foreach (string arg in engine.cmdArguments)
                 switch (arg)
                 {
                     case "-windowed": commandline.windowed = true; break;
@@ -97,7 +97,7 @@ namespace CookieMonster.CookieMonster_Objects
             options.graphics.resIdx = options.graphics.newResolutionIdx;
             Viewport.scaleLog.WriteLine("");
             Viewport.scaleLog.WriteLine("New resolution: " + options.graphics.resolution.Width.ToString() + "x" + options.graphics.resolution.Height.ToString());
-            EngineApp.Game.self.activeViewport.adaptToNewResolution();
+            engine.activeViewport.adaptToNewResolution();
 
         }
         public void restoreResolutionValue()

@@ -6,7 +6,7 @@ using EngineApp;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-    class Camera
+    class Camera : engineReference
     {
         public enum eType { STATIC, FOLLOWS_PLAYER }
         public eType type = eType.FOLLOWS_PLAYER;
@@ -33,8 +33,8 @@ namespace CookieMonster.CookieMonster_Objects
                 //return;
                 int UnChanged = 0;
                 const int MOVE_STEP = 2;
-                GameManager GM = Game.self.gameManager;
-                Viewport VP = Game.self.activeViewport;
+                GameManager GM = engine.gameManager;
+                Viewport VP = engine.activeViewport;
                 int oldX = _camOffsetX, oldY = _camOffsetY;
                 if (GM == null) return; //no game - no camera centering
                 if (GM.PC == null) return; //no hero - no camera centering
@@ -47,7 +47,7 @@ namespace CookieMonster.CookieMonster_Objects
                         _camOffsetX += MOVE_STEP + heroLocationBooster * 10;
                     else UnChanged += 1;
                 }
-                else if (_camOffsetX - toleranceField > (VP.width / 2 - Game.self.gameManager.PC.pX - GameManager.gridSize))
+                else if (_camOffsetX - toleranceField > (VP.width / 2 - engine.gameManager.PC.pX - GameManager.gridSize))
                 {
                     int rMapEdge = _camOffsetX + (GM.Map.mapWidth + 1) * GameManager.gridSize;
                     if (rMapEdge >= VP.width)
@@ -56,7 +56,7 @@ namespace CookieMonster.CookieMonster_Objects
                 }
                 else UnChanged += 1;
 
-                if (_camOffsetY + toleranceField + Game.self.gameManager.PC.pY < VP.height / 2)
+                if (_camOffsetY + toleranceField + engine.gameManager.PC.pY < VP.height / 2)
                 {
                     if (_camOffsetY < -GameManager.gridSize)
                     {
@@ -64,7 +64,7 @@ namespace CookieMonster.CookieMonster_Objects
                     }
                     else UnChanged += 1;
                 }
-                else if (_camOffsetY - toleranceField + Game.self.gameManager.PC.pY > VP.height / 2)
+                else if (_camOffsetY - toleranceField + engine.gameManager.PC.pY > VP.height / 2)
                 {
                     int rMapEdge = _camOffsetY + (GM.Map.mapHeight + 1) * GameManager.gridSize;
                     if (rMapEdge >= VP.height)
@@ -76,19 +76,19 @@ namespace CookieMonster.CookieMonster_Objects
                 if (UnChanged == 2) heroLocationBooster = 0;
 
                 //move Lights:
-                EngineApp.Game.self.lightEngine.moveLights(new OpenTK.Vector2(_camOffsetX-oldX,_camOffsetY-oldY));
+                engine.lightEngine.moveLights(new OpenTK.Vector2(_camOffsetX-oldX,_camOffsetY-oldY));
             }
         }
         private void centrize()
         {
-            Viewport v = Game.self.activeViewport;
-            GameMap m = Game.self.gameManager.Map;
+            Viewport v = engine.activeViewport;
+            GameMap m = engine.gameManager.Map;
             int oldX = _camOffsetX, oldY = _camOffsetY;
             _camOffsetX = (v.width - m.mapWidth * GameManager.gridSize) / 2;
             _camOffsetY = (v.height - m.mapHeight * GameManager.gridSize) / 2;
             heroLocationBooster = 1;
             //move Lights:
-            EngineApp.Game.self.lightEngine.moveLights(new OpenTK.Vector2(_camOffsetX-oldX,_camOffsetY-oldY));
+            engine.lightEngine.moveLights(new OpenTK.Vector2(_camOffsetX-oldX,_camOffsetY-oldY));
         }
         public void correctForNewLevel()
         {

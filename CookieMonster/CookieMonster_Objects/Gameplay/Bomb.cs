@@ -47,7 +47,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void prepareRender()
         {
-            base.Render();
+            base.prepareRender();
         }
         public void Explode()
         { //TODO: Implement rest (destructing near objects)

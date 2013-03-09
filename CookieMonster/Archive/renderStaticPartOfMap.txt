@@ -1,0 +1,45 @@
+﻿/// <summary>
+        /// Render static part of Map buffer
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        private void renderStaticPartOfMap(int _x,int _y)
+        {
+            int xoff = 0, yoff = realYstartPos - staticTexSize;
+            int staticTexSizeY = staticTexSize - 20;
+            for (int y = 0; y < staticTexCntY; y++)
+            {
+                for (int x = 0; x < staticTexCntX; x++)
+                { //'magic' happens here: 
+                    //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                    GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+                    GL.BindTexture(TextureTarget.Texture2D, _staticBufferTextures[y * staticTexCntX + x]);
+                xoff = (staticTexSize) * x;
+                yoff = realYstartPos - staticTexSizeY + (staticTexSizeY) * y;
+                GL.Begin(BeginMode.Quads);
+                GL.Color4(255, 255, 255, 128);
+                /* 0---2 How
+                 * |  /| Quadz
+                 * | / | is
+                 * 1/--3 Made */
+                float zero = 1f/(float)staticTexSize;
+                float one = 1f - (1f / (float)staticTexSize);
+                GL.TexCoord2(zero, one);
+                    GL.Vertex2(_x + xoff, _y + yoff);
+
+                    GL.TexCoord2(zero, zero);
+                    GL.Vertex2(_x + xoff, _y + staticTexSizeY + yoff);
+
+                    GL.TexCoord2(one, zero);
+                    GL.Vertex2(_x + xoff + staticTexSize, _y + staticTexSizeY + yoff);
+
+                    GL.TexCoord2(one, one);
+                    GL.Vertex2(_x + xoff + staticTexSize, _y + yoff);
+                    GL.End();
+
+                   
+               }
+            }
+            //Back to old blend function:
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+        }

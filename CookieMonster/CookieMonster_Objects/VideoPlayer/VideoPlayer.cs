@@ -8,10 +8,11 @@ using OpenTK.Graphics;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-	class VideoPlayer
+	class VideoPlayer : engineReference
 	{
 		public unsafe Bink.BINK*  binkRef{get; private set;}
         public unsafe Bink.BINKBUFFER* binkBufRef{get; private set;}
+        private bool binkBufferReCreationAttempted; //if TRUE method recreateBinkBuffer will take no effect
         private Sound videoSoundtrack;
         private string videoBikPath;
 		public BinkGL.RAD3D rad3d { get; private set;}
@@ -25,21 +26,22 @@ namespace CookieMonster.CookieMonster_Objects
             //set OpenTK rendering to black fill:
             videoBikPath = path;
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            EngineApp.Game.self.SwapBuffers();
+            engine.SwapBuffers();
 
             someVideoIsPlaying = true;
+            binkBufferReCreationAttempted = false;
             binkRef = DLL.Bink.BinkOpen(path, Bink.openFlags.BINKNOSKIP|Bink.openFlags.BINKCOPYNOSCALING);
                 /*all scallings+different bliting*/
             //1-works on xp x86 and win7 windowed
             
             try
             {
-                binkBufRef = DLL.Bink.BinkBufferOpen(EngineApp.Game.self.windowHandle, binkRef->Width, binkRef->Height, 0);
+                binkBufRef = DLL.Bink.BinkBufferOpen(engine.windowHandle, binkRef->Width, binkRef->Height, 0);
             }
             catch (Exception e)
             {
                 new CookieMonster.CookieMonster_Objects.DebugMsg("EXCEPTION[Bink.BinkBufferOpen]: " + e.Message);
-                EngineApp.Game.self.setScreenMode(false);
+                engine.setScreenMode(false);
                 exceptionOnOpeningBuffer = true;
             }
             finally
@@ -47,15 +49,15 @@ namespace CookieMonster.CookieMonster_Objects
                 if(binkBufRef==null)
                     try
                     {
-                        binkBufRef = DLL.Bink.BinkBufferOpen(EngineApp.Game.self.windowHandle, binkRef->Width, binkRef->Height, 1);
+                        binkBufRef = DLL.Bink.BinkBufferOpen(engine.windowHandle, binkRef->Width, binkRef->Height, 1);
                     }
                     catch { }
             }
             //if (Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major > 5)
             //{
-            //    EngineApp.Game.self.WindowState = OpenTK.WindowState.Fullscreen; //BUGFIX: Set now to fullscreen only on winXP
+            //    engine.WindowState = OpenTK.WindowState.Fullscreen; //BUGFIX: Set now to fullscreen only on winXP
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-                EngineApp.Game.self.SwapBuffers();
+                engine.SwapBuffers();
             //}
             BinkGL.Start_RAD_3D_frame(rad3d);
            
@@ -84,18 +86,31 @@ namespace CookieMonster.CookieMonster_Objects
             someVideoIsPlaying = false;
             DLL.Bink.BinkBufferClose(binkBufRef);
             DLL.Bink.BinkClose(binkRef);
-            if (exceptionOnOpeningBuffer) EngineApp.Game.self.setScreenMode(true);
+            if (exceptionOnOpeningBuffer) engine.setScreenMode(true);
 
             if (videoBikPath == "../data/Videos/logo.bik")
-                EngineApp.Game.self.afterLogoVideo();
+                engine.afterLogoVideo();
             else if (videoBikPath == "../data/Videos/intro.bik")
             {
-                EngineApp.Game.self.afterIntroVideo();                
+                engine.afterIntroVideo();                
             }
         }
         public void setNewRADIMAGE3D(BinkGL.RAD3DIMAGE new_)
         {
             radImage = new_;
+        }
+        unsafe public void recreateBinkBuffer()
+        {
+            if (binkBufferReCreationAttempted) return;
+
+            binkBufferReCreationAttempted = true;
+            try
+            {
+                binkBufRef = DLL.Bink.BinkBufferOpen(engine.windowHandle, binkRef->Width, binkRef->Height, 1);
+                BinkGL.Start_RAD_3D_frame(rad3d);
+            }
+            catch { }
+               
         }
         private void tryToPlaySoundTrack(string path)
         {
@@ -109,7 +124,7 @@ namespace CookieMonster.CookieMonster_Objects
         private void setBestResolution()
         {            
             return;
-            EngineApp.Game g = EngineApp.Game.self;
+            EngineApp.Game g = engine;
             storedResolution = OpenTK.DisplayDevice.Default.SelectResolution(g.Width, g.Height, OpenTK.DisplayDevice.Default.BitsPerPixel, OpenTK.DisplayDevice.Default.RefreshRate);
             double screenProportions = (double)storedResolution.Height / storedResolution.Width;
             unsafe
