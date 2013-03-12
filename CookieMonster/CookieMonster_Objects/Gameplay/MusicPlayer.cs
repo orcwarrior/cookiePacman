@@ -41,7 +41,7 @@ namespace CookieMonster.CookieMonster_Objects
             //remove displayed track infos:
             if (trackTagsDisplayDuration.enabled == false)
             {
-                TextManager txtMan = engine.textMenager;
+                TextManager txtMan = engine.textManager;
                 txtMan.removeText(curTrackArtist);
                 txtMan.removeText(curTrackTitle);
             }
@@ -56,11 +56,12 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void prepareRender()
         {
-          playerViewport.Render();
+           
+          //playerViewport.Render();
         }
         public void Free()
         {
-            TextManager txtMan = engine.textMenager;
+            TextManager txtMan = engine.textManager;
             txtMan.removeText(curTrackArtist);
             txtMan.removeText(curTrackTitle);
             trackTagsDisplayDuration.Dispose();
@@ -99,12 +100,12 @@ namespace CookieMonster.CookieMonster_Objects
             //bg.isGUIObject = true;
             //bg.setCurrentTexAlpha(155);
             //playerViewport.addObject(bg);
-            TextManager txtMan = engine.textMenager;
+            TextManager txtMan = engine.textManager;
             //TODO: Uncoment this is temporary
-            Text.currentWorkingLayer = Layer.textGUIFG;
+            Layer.currentlyWorkingLayer = Layer.textGUIFG;
             new Text(trackTag_Font, 50f, (float)screenH - 110, curTrackArtist);
             new Text(trackTag_Font, 50f, (float)screenH - 80, curTrackTitle);
-            Text.currentWorkingLayer = -1;
+            Layer.currentlyWorkingLayer = -1;
         }
         #endregion
     }

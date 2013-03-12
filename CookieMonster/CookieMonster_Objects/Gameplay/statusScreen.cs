@@ -133,12 +133,12 @@ namespace CookieMonster.CookieMonster_Objects
         public void generateContents()
         {
             GameManager gm = engine.gameManager;
-            TextManager txtMan = engine.textMenager;
+            TextManager txtMan = engine.textManager;
             int pX, pY;
             const int lMargin = 20;
 
 
-            Text.currentWorkingLayer = Layer.textGUIBG;
+            Layer.currentlyWorkingLayer = Layer.textGUIBG;
             menu_status.clearMenuItems();
             //Level X:
             pX = menuArea.Left + lMargin;
@@ -291,7 +291,7 @@ namespace CookieMonster.CookieMonster_Objects
             menu_status.addItem(new Menu_Item("toMenu", toMenu, toMenuHover, toMenuHover, Menu_Instances.Status_ButtonOnHover, null, Menu_Instances.Status_exitToMenuClick));
 
             // Set Text working layer back to default:
-            Text.currentWorkingLayer = -1;
+            Layer.currentlyWorkingLayer = -1;
         }
         public void renderContents()
         {

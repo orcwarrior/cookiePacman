@@ -35,7 +35,6 @@ namespace CookieMonster.CookieMonster_Objects
         public bool lightsRendered { get; private set; }
         public void renderStaticLightmaps()
         {
-            lightsRendered = false;
             // No changes in static lightning - no re-rendering
             if (!staticLightsChanged) return;
 
@@ -137,11 +136,12 @@ namespace CookieMonster.CookieMonster_Objects
         {
             for (int i = 0; i < activeDynamicLights.Count; i++)
                 activeDynamicLights[i].Update();
+            lightsRendered = false;
         }
-        internal void prepareRender()
+        internal void Render()
         {
             // Light are render once per frame
-            if (lightsRendered==true) return;
+            //if (lightsRendered==true) return;
             lightsRendered = true;
 
             if (disabled) return;
@@ -150,7 +150,7 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 //BLENDING "ADD" Lightmaps rendering:
                 if (lightAddStrength > 0f)
-                    renderLightMapsTexture(lightAddStrength, BlendingFactorSrc.One, BlendingFactorDest.One);
+                    renderLightMapsTexture(lightColorStrength, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
 
                 //BLENDING "MULTIPLY" Lightmaps rendering:
                 if (lightMulStrength > 0f)

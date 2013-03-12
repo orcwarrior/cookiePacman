@@ -17,22 +17,22 @@ namespace CookieMonster.CookieMonster_Objects
         public UInt32 id { get; private set; }
         public int layer { get; set; }//layer (in Viewport) of texture first 0 layer is drawn, then 1, then..
         public bool addedToViewport { get; set; }
-        public bool preparedToRender{ get; set; }
+        public bool preparedToRender { get; set; }
         public bool hasAnimatedTexture { get { return texAni.Count != 0; } }
         private Engine.Image tex;// Engine.Image of this object (it's texture)
 
         private double vposx, vposy;//0-0px 1.0-x/y size of screen
         private int posx, posy; //actual position on screen
-        
+
         public double orginalWidth { get; private set; }
         public double orginalHeight { get; private set; }
 
         public enum align { LEFT, CENTER_X, CENTER_Y, CENTER_BOTH, RIGHT };
         public align objAlign { get; private set; }
-        
+
         public Obj parentObj { get; private set; } //parent obj that this obj will be relatively positioned to
         public List<Obj> childObj { get; private set; } //u can add child objects there that will be rendered next to this main
-                                                        //object, note that they pos will be threaten relatively, not absolute
+        //object, note that they pos will be threaten relatively, not absolute
         public Obj_Animation objAnimation { get { return ani; } }
 
         public string texturePath { get { return tex.bitmapPath; } }
@@ -55,7 +55,7 @@ namespace CookieMonster.CookieMonster_Objects
             public Obj idleObj;
             public Timer delayTimer;   // time that will need to be passed before idle obj will be rendered
             public Timer idleAniTimer; // duration of idleAni
-            public funcOnIdle  runOnIdle;
+            public funcOnIdle runOnIdle;
         }
         #endregion
         #endregion
@@ -63,7 +63,7 @@ namespace CookieMonster.CookieMonster_Objects
         #region Obj_Get/Set
         public double vx
         {
-            get {return vposx;}
+            get { return vposx; }
             set { vposx = value; posx = (int)((double)engine.activeViewportOrAny.width * value); }
         }
         public double vy
@@ -73,12 +73,12 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public int x
         {
-            get {return posx;}
+            get { return posx; }
             set { posx = value; if (value == 0)vposx = 0.0; else vposx = (double)(engine.activeViewportOrAny.width / value); }
         }
         public int y
         {
-            get {return posy;}
+            get { return posy; }
             set { posy = value; if (value == 0)vposy = 0.0; else vposy = (double)(engine.activeViewportOrAny.height / value); }
         }
         //positions used when creating object:
@@ -111,7 +111,7 @@ namespace CookieMonster.CookieMonster_Objects
                 else
                 {
                     for (int i = 0; i < texAni.Count; i++)
-                    {                        
+                    {
                         texAni[i].SetSize(value, texAni[i].h);
                     }
                 }
@@ -123,7 +123,7 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 if (!texAni.enabled) return tex.h;
                 else return texAni[texAni.currentFrame].h;
-            } 
+            }
             set
             {
                 int oldH = height;
@@ -146,10 +146,10 @@ namespace CookieMonster.CookieMonster_Objects
                 }
             }
         }
-        private double[] _scale; 
+        private double[] _scale;
         public double[] scale
-        {   
-            get 
+        {
+            get
             {
                 if (_scale == null)
                 {
@@ -163,8 +163,8 @@ namespace CookieMonster.CookieMonster_Objects
                 if (_scale == null) _scale = new double[2];
                 _scale = value;
                 width = (int)(orginalWidth * value[0]);
-                height = (int)(orginalHeight*value[1]);
-                scaleX = value[0]; scaleY = value[1];     
+                height = (int)(orginalHeight * value[1]);
+                scaleX = value[0]; scaleY = value[1];
             }
         }
         /// <summary>
@@ -219,7 +219,7 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="_x">x position</param>
         /// <param name="_y">y position</param>
         /// <param name="algn">align of object</param>
-        public Obj(int glTexID,int _x,int _y,Obj.align algn)
+        public Obj(int glTexID, int _x, int _y, Obj.align algn)
             : this()
         {
             tex = new Engine.Image(glTexID);
@@ -227,7 +227,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             x = _x; y = _y;
             orgX = x; orgY = y;
-            texAni = new Obj_texAni(this,"");
+            texAni = new Obj_texAni(this, "");
 
             objAlign = algn;
             applyAlignCorrection();
@@ -241,13 +241,13 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="vx">virtual x (0.0-1.0) of screen</param>
         /// <param name="vy">virtual y</param>
         /// <param name="algn">align of object</param>
-        public Obj(string ipath, double _vx, double _vy,align algn)
+        public Obj(string ipath, double _vx, double _vy, align algn)
             : this()
         {
             tex = new Engine.Image();
             tex.Load(ipath);
             tex.SetBlending();
-            
+
             vx = _vx; vy = _vy;
             orgX = x; orgY = y;
             texAni = new Obj_texAni(this, ipath);
@@ -257,13 +257,14 @@ namespace CookieMonster.CookieMonster_Objects
             orginalWidth = width;
             orginalHeight = height;
         }
-        public Obj(string ipath, double _vx, double _vy, align algn, bool isGUIObj) : this(ipath,_vx,_vy,algn)
+        public Obj(string ipath, double _vx, double _vy, align algn, bool isGUIObj)
+            : this(ipath, _vx, _vy, algn)
         {
             _isGUIObject = isGUIObj;
             guiObjRescale();
         }
         public Obj(string ipath, int _x, int _y, align algn)
-            :this()
+            : this()
         {
             ipath = variableTexture(ipath);//if texture has "V0" in name it will random name from V0-Vn
             tex = new Engine.Image();
@@ -279,12 +280,15 @@ namespace CookieMonster.CookieMonster_Objects
             orginalWidth = tex.w;
             orginalHeight = tex.h;
         }
-        public Obj(string ipath, int _x, int _y, align algn, bool isGUIObj) : this(ipath,_x,_y,algn)
+        public Obj(string ipath, int _x, int _y, align algn, bool isGUIObj)
+            : this(ipath, _x, _y, algn)
         {
             _isGUIObject = isGUIObj;
             guiObjRescale();
         }
         #endregion
+
+
         public void addChildObj(Obj child)
         {
             if (childObj == null)
@@ -307,7 +311,7 @@ namespace CookieMonster.CookieMonster_Objects
             if (!addedToViewport)
             {   //add object to viewport if it's not already in.
                 engine.activeViewport.addObject(this);
-                addedToViewport = true; 
+                addedToViewport = true;
             }
 
             int oldX = x, oldY = y;
@@ -317,25 +321,25 @@ namespace CookieMonster.CookieMonster_Objects
             //}
             //if(!objInViewport(activeCam)) return;
             //compute animation frame:
-            if (ani != null && (engine.gameManager ==null || !engine.gameManager.gamePaused || !ani.isIngameAnimation))
+            if (ani != null && (engine.gameManager == null || !engine.gameManager.gamePaused || !ani.isIngameAnimation))
                 ani.computeFrame();
 
             if (!texAni.prepareRender(x, y))
             {
                 if (idleAnimation != null)
                 {
-                    if (((idleAnimation.delayTimer <= 0)||(!idleAnimation.delayTimer.enabled)) && (!idleAnimation.objInIdleAni))
+                    if (((idleAnimation.delayTimer <= 0) || (!idleAnimation.delayTimer.enabled)) && (!idleAnimation.objInIdleAni))
                     {// object has to be turned into idle ani:
                         idleAnimation.idleAniTimer.start();
                         idleAnimation.objInIdleAni = true;
                         idleAnimation.idleObj.prepareRender();
 
-                        if(idleAnimation.runOnIdle!=null)
-                        idleAnimation.runOnIdle();
+                        if (idleAnimation.runOnIdle != null)
+                            idleAnimation.runOnIdle();
                     }
                     else if (idleAnimation.objInIdleAni)
                     {
-                        if ((idleAnimation.idleAniTimer > 0)&&(idleAnimation.idleAniTimer.enabled))
+                        if ((idleAnimation.idleAniTimer > 0) && (idleAnimation.idleAniTimer.enabled))
                         {
                             idleAnimation.idleObj.prepareRender();
                         }
@@ -347,10 +351,10 @@ namespace CookieMonster.CookieMonster_Objects
                             idleAnimation.idleObj.addedToViewport = false;
                         }
                     }
-                }   
+                }
             }
             //renders childs if there is some of them
-            if(childObj!=null)
+            if (childObj != null)
                 for (int i = 0; i < childObj.Count; i++)
                     childObj[i].prepareRender();
             x = oldX; y = oldY;
@@ -358,12 +362,11 @@ namespace CookieMonster.CookieMonster_Objects
         /// <summary>
         /// Draws object, CALL ONLY BY VIEWPORT CLASS!!!
         /// </summary>
-        public void Render(int offX,int offY)
+        public void Render(int offX, int offY)
         {
-            
             if (hasAnimatedTexture)
                 tex = texAni[texAni.currentFrame];
-            
+
             if (parentObj != null)
                 tex.Draw(x + offX + parentObj.x, y + offY + parentObj.y);
             else
@@ -372,8 +375,8 @@ namespace CookieMonster.CookieMonster_Objects
 
         private bool objInViewport(Camera activeCam)
         {
-            if( (x + activeCam.camOffsetX > engine.activeViewport.width)
-            &&  (x+width  + activeCam.camOffsetX > engine.activeViewport.width))
+            if ((x + activeCam.camOffsetX > engine.activeViewport.width)
+            && (x + width + activeCam.camOffsetX > engine.activeViewport.width))
                 return false;
             if ((y + activeCam.camOffsetY > engine.activeViewport.height)
             && (y + height + activeCam.camOffsetY > engine.activeViewport.height))
@@ -407,8 +410,8 @@ namespace CookieMonster.CookieMonster_Objects
         #region texAni methods
         public void setTexAniLoopType(Obj_texAni.eLoopType typ)
         {
-        if(texAni!=null)
-            texAni.loopType = typ;
+            if (texAni != null)
+                texAni.loopType = typ;
         }
         public void setTexAniFPS(int fps)
         {
@@ -416,12 +419,12 @@ namespace CookieMonster.CookieMonster_Objects
                 texAni.FPS = fps;
         }
 
-        public bool texAniFinished() 
-        { 
-            if ((texAni.loopType == Obj_texAni.eLoopType.NONE) && (texAni.currentFrame == texAni.Count-1))
-                return true; 
+        public bool texAniFinished()
+        {
+            if ((texAni.loopType == Obj_texAni.eLoopType.NONE) && (texAni.currentFrame == texAni.Count - 1))
+                return true;
             else
-                return false; 
+                return false;
         }
         /// <summary>
         /// setting current frame of animation to first(0)
@@ -432,8 +435,8 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void setTexAniFrame(int frame)
         {
-            if(frame<texAni.Count)
-            texAni.currentFrame = frame;
+            if (frame < texAni.Count)
+                texAni.currentFrame = frame;
         }
         public int getTexAniFrame()
         {
@@ -442,10 +445,10 @@ namespace CookieMonster.CookieMonster_Objects
         public void setTexAniControlledExternal()
         {
             texAni.isControlledExternal = true; // so it willn't calculate frames by self, but render current frame
-                                                // till it's value will change externally.
+            // till it's value will change externally.
         }
         #endregion
-        public void setIdleAni(Obj iObj, Timer idleAniAfter, Timer idleAniTime,funcOnIdle runOnIdle)
+        public void setIdleAni(Obj iObj, Timer idleAniAfter, Timer idleAniTime, funcOnIdle runOnIdle)
         {
             idleAnimation = new idleAni();
             idleAnimation.objInIdleAni = false;
@@ -505,8 +508,8 @@ namespace CookieMonster.CookieMonster_Objects
             }
             else
             {
-                for(int i =0;i<texAni.Count;i++)
-                texAni[i].SetBlending(alpha);
+                for (int i = 0; i < texAni.Count; i++)
+                    texAni[i].SetBlending(alpha);
             }
         }
         public override string ToString()
@@ -514,7 +517,7 @@ namespace CookieMonster.CookieMonster_Objects
             if (tex.bitmapPath == null) return "GL Texture ID: " + tex.texture + "(" + x + "," + y + ")";
 
             string filename = tex.bitmapPath.Substring(tex.bitmapPath.LastIndexOfAny(new char[] { '/', '\\' }));
-            return filename + "("+x+","+y+")";
+            return filename + "(" + x + "," + y + ")";
         }
         private string variableTexture(string path)
         {
@@ -536,158 +539,173 @@ namespace CookieMonster.CookieMonster_Objects
                     i++;
                     varNames.Add(hlp2);
                     hlp2 = hlp.Remove(idx + 1, 1); hlp2 = hlp2.Insert(idx + 1, i.ToString());
-                    
+
                 };
                 //get random name from list:
                 return varNames[variatonizer.Next(i)];
             }
         }
 
-            // if flag is true, after rendering it will be removed from viewport
-            // + it will be renderedFrom separate onceRenderedObj List (to clear after each render
-            private bool _renderOnce; public bool renderOnce{get{return _renderOnce;}}
-            /// <summary>
-            /// It's automatically add's Obj to viewport render queue
-            /// </summary>
-            public void setRenderOnce()
-            {
-                _renderOnce = true;
-                engine.activeViewport.addObject(this);
-            }
+        // if flag is true, after rendering it will be removed from viewport
+        // + it will be renderedFrom separate onceRenderedObj List (to clear after each render
+        private bool _renderOnce; public bool renderOnce { get { return _renderOnce; } }
+        /// <summary>
+        /// It's automatically add's Obj to viewport render queue
+        /// </summary>
+        public void setRenderOnce()
+        {
+            _renderOnce = true;
+            engine.activeViewport.addObject(this);
+        }
         /// <summary>
         /// Changes current frame of animation to some random number from ani range
         /// </summary>
-            public void Desynchronize()
-            {
-                if (texAni != null)
-                    texAni.currentFrame = variatonizer.Next(texAni.Count);
-            }
+        public void Desynchronize()
+        {
+            if (texAni != null)
+                texAni.currentFrame = variatonizer.Next(texAni.Count);
+        }
 
         //GUI Objects: Dont give a fuck of camera position caues it's always on screen at exact position
 
-            private bool _isGUIObject;
-            public void guiObjRescale()
-            {
-                if (!_isGUIObject) return;
-                //store old resolution
-                int oResX=Profile.currentProfile.config.options.graphics.oldResolution.Width;
-                int oResY=Profile.currentProfile.config.options.graphics.oldResolution.Height;
-                //get new resolution
-                int nResX=Profile.currentProfile.config.options.graphics.resolution.Width;
-                int nResY=Profile.currentProfile.config.options.graphics.resolution.Height;
+        private bool _isGUIObject;
+        public void guiObjRescale()
+        {
+            if (!_isGUIObject) return;
+            //store old resolution
+            int oResX = Profile.currentProfile.config.options.graphics.oldResolution.Width;
+            int oResY = Profile.currentProfile.config.options.graphics.oldResolution.Height;
+            //get new resolution
+            int nResX = Profile.currentProfile.config.options.graphics.resolution.Width;
+            int nResY = Profile.currentProfile.config.options.graphics.resolution.Height;
 
-                // Scaling:
-                //first, scale to multipiler
-                ScaleAbs = ScaleAbs; //it's based on orginalHeight/Width and' yep this should do the job ;) trust me!
-                //set scale to resolution
-                int w = width, h = height;
-                width = (int)(width * ((double)nResX / Viewport.guiBase_width));
-                if (engine.activeViewport.GetHashCode() == engine.menuViewport.GetHashCode())
-                    height = (int)(height * ((double)nResY / Viewport.guiBase_height_MENUOVERRIDE));
-                else
-                    height = (int)(height * ((double)nResY / Viewport.guiBase_height));
-                //repositioning:
-                posx = (int)((float)orgX / Viewport.guiBase_width * nResX);
-                posy = (int)((float)orgY / Viewport.guiBase_width * nResX);                
-                applyAlignCorrection();
-                
-                string line = "Obj:" + tex.bitmapPath.Substring(17) + ":: Scale(" + w.ToString() + "x" + h.ToString() + ")>>(" + width.ToString() + "," + height.ToString() + ")";
-                line += " || Pos(" + orgX + "," + orgY + ")>>(" + posx + "," + posy + ")";
-                Viewport.scaleLog.WriteLine(line);
-            }
-            public bool isGUIObject
+            // Scaling:
+            //first, scale to multipiler
+            ScaleAbs = ScaleAbs; //it's based on orginalHeight/Width and' yep this should do the job ;) trust me!
+            //set scale to resolution
+            int w = width, h = height;
+            width = (int)(width * ((double)nResX / Viewport.guiBase_width));
+            if (engine.activeViewport.GetHashCode() == engine.menuViewport.GetHashCode())
+                height = (int)(height * ((double)nResY / Viewport.guiBase_height_MENUOVERRIDE));
+            else
+                height = (int)(height * ((double)nResY / Viewport.guiBase_height));
+            //repositioning:
+            posx = (int)((float)orgX / Viewport.guiBase_width * nResX);
+            posy = (int)((float)orgY / Viewport.guiBase_width * nResX);
+            applyAlignCorrection();
+
+            string line = "Obj:" + tex.bitmapPath.Substring(17) + ":: Scale(" + w.ToString() + "x" + h.ToString() + ")>>(" + width.ToString() + "," + height.ToString() + ")";
+            line += " || Pos(" + orgX + "," + orgY + ")>>(" + posx + "," + posy + ")";
+            Viewport.scaleLog.WriteLine(line);
+        }
+        public bool isGUIObject
+        {
+            get { return _isGUIObject; }
+            set
             {
-                get { return _isGUIObject; }
-                set
+                if ((_isGUIObject == false) && (value == true))
                 {
-                    if ((_isGUIObject == false) && (value == true))
-                    {
-                        guiObjRescale();
-                    }
-                    _isGUIObject = value;
+                    guiObjRescale();
                 }
+                _isGUIObject = value;
             }
-            public bool isGUIObjectButUnscaled
+        }
+        public bool isGUIObjectButUnscaled
+        {
+            set { _isGUIObject = value; }
+        }
+
+        public void Rotate(float deg)
+        {
+            //tex.setRotationOrgin(width / 2, height / 2);
+            tex.rotation = deg;
+
+            for (int i = 0; i < texAni.Count; i++)
+                texAni[i].rotation = deg;
+        }
+        public void Rotate(float deg, Point orgin)
+        {
+            tex.setRotationOrgin(orgin.X, orgin.Y);
+            tex.rotation = deg;
+            for (int i = 0; i < texAni.Count; i++)
             {
-                set { _isGUIObject = value; }
+                texAni[i].setRotationOrgin(orgin.X, orgin.Y);
+                texAni[i].rotation = deg;
             }
 
-            public void Rotate(float deg)
+        }
+        public Obj shallowCopy()
+        {
+            return (Obj)this.MemberwiseClone();
+        }
+        public void changeVisual(string newPath)
+        {
+            Engine.Image img = new Engine.Image();
+            img.Load(newPath);
+            if (img != null)
             {
-                //tex.setRotationOrgin(width / 2, height / 2);
-                tex.rotation = deg;
-
-                for (int i = 0; i < texAni.Count; i++)
-                    texAni[i].rotation = deg;
+                img.SetBlending(255);
+                tex.Free();
+                tex = img;
             }
-            public void Rotate(float deg, Point orgin)
-            {
-                tex.setRotationOrgin(orgin.X, orgin.Y);
-                tex.rotation = deg;
-                for (int i = 0; i < texAni.Count; i++)
-                {
-                    texAni[i].setRotationOrgin(orgin.X, orgin.Y);
-                    texAni[i].rotation = deg;
-                }
-
-            }
-            public Obj shallowCopy()
-            {
-                return (Obj)this.MemberwiseClone();
-            }
-            public void changeVisual(string newPath)
-            {
-                Engine.Image img = new Engine.Image();
-                img.Load(newPath);
-                if (img != null)
-                {
-                    img.SetBlending(255);
-                    tex.Free();
-                    tex = img;
-                }
-            }
+        }
         /// <summary>
         /// Used when creating object, when need to move object depend of position
         /// *RIGHT: (the "first" pixel will be the last so move whole object by (-width,-height)
         /// *CENTER(X/Y) (the "first" pixel will be in the middle, so move whole object by (-width/2,-height/2)
         /// </summary>
-            public void applyAlignCorrection()
+        public void applyAlignCorrection()
+        {
+
+            //correct position from align:
+            if ((objAlign == align.CENTER_BOTH) || (objAlign == align.CENTER_X))
+                x -= (width / 2);
+            else if (objAlign == align.RIGHT)
+                x -= width;
+
+            if ((objAlign == align.CENTER_BOTH) || (objAlign == align.CENTER_Y))
+                y -= (height / 2);
+            else if (objAlign == align.RIGHT)
+                y -= height;
+        }
+        /// <summary>
+        /// try to sets destroyed visual(for object like bridges, etc
+        /// </summary>
+        /// <returns>return true if destroyed visual was found and set</returns>
+        public bool setDestroyed()
+        {
+            String destPath = new String(tex.bitmapPath.ToCharArray());
+            int insert = destPath.LastIndexOf(".");
+            destPath = destPath.Insert(insert, "_DESTROYED");
+            if (System.IO.File.Exists(destPath) == true)
             {
-
-                //correct position from align:
-                if ((objAlign == align.CENTER_BOTH) || (objAlign == align.CENTER_X))
-                    x -= (width / 2);
-                else if (objAlign == align.RIGHT)
-                    x -= width;
-
-                if ((objAlign == align.CENTER_BOTH) || (objAlign == align.CENTER_Y))
-                    y -= (height / 2);
-                else if (objAlign == align.RIGHT)
-                    y -= height;
+                changeVisual(destPath);
+                return true;
             }
-            /// <summary>
-            /// try to sets destroyed visual(for object like bridges, etc
-            /// </summary>
-            /// <returns>return true if destroyed visual was found and set</returns>
-            public bool setDestroyed()
+            return false;
+        }
+
+        internal void Render()
+        {
+            Render(0, 0);
+        }
+
+        internal void BuildTexcoords(float u1, float u2, float v1, float v2)
+        {
+            tex.BuildTexcoords(u1, u2, v1, v2);
+            // Build texcoordinates of all animation
+            // textures too:
+            if (hasAnimatedTexture)
             {
-                String destPath = new String(tex.bitmapPath.ToCharArray());
-                int insert = destPath.LastIndexOf(".");
-                destPath = destPath.Insert(insert,"_DESTROYED");
-                if (System.IO.File.Exists(destPath) == true)
+                for (int i = 0; i < texAni.Count; i++)
                 {
-                    changeVisual(destPath);
-                    return true;
+                    texAni[i].BuildTexcoords(u1, u2, v1, v2);
+                    //texAni[i].rebuild = false;
                 }
-                return false;
             }
-
-            internal void Render()
-            {
-                Render(0, 0);
-            }
+            //tex.rebuild = false; // prevent VBO from rebuilding see docu. on rebuild
+        }
     }
-
     class Obj_texAni : engineReference
                      // this class is more like a struct by public fields
     {                // but whateva' if texAni field in Obj class is private ;)
@@ -759,7 +777,7 @@ namespace CookieMonster.CookieMonster_Objects
                 // Calculate next tex frame to render:
                 if (isControlledExternal == false)
                 {
-                    int curframe = engine.getFrame();
+                    int curframe = engine.frames;
                     int gameFPS = (int)engine.RenderFrequency;//TODO: PRECISE ..hmm.. (int)engine.RenderFrequency;
                     this._fps = FPS;
                     int hlp = gameFPS / FPS; if (hlp <= 0) hlp = 1;

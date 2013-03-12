@@ -53,7 +53,7 @@ namespace CookieMonster.CookieMonster_Objects
             engine.gameState = Game.game_state.Game;
 
             initLoadScreen();
-            updateLoadingInfos("..."+Lang.cur.Inicjuje_Game_Menagera+"...");
+            updateLoadingInfos("..."+Lang.cur.Inicjuje_Game_Managera+"...");
             //init other clases static fields:
             PowerUp.GameMan = this;
             MOB.GameMan = this;
@@ -121,7 +121,7 @@ namespace CookieMonster.CookieMonster_Objects
         public GameManager(Savegame sav)
         {
             initLoadScreen();
-            updateLoadingInfos("..." + Lang.cur.Inicjuje_Game_Menagera + "...");
+            updateLoadingInfos("..." + Lang.cur.Inicjuje_Game_Managera + "...");
             //init other clases static fields:
             PowerUp.GameMan = this;
             MOB.GameMan = this;
@@ -178,13 +178,13 @@ namespace CookieMonster.CookieMonster_Objects
             float xMinus = TextManager.font_default_20.Measure(msg).Width / 2;
             loadScreenTxtMsg = new Text(TextManager.font_default_20, xCenter - xMinus, yCenter, msg);
             __renderLoadScreen();
-            //engine.textMenager.onRender();         
+            //engine.textManager.onRender();         
         }
 
         private void initLoadScreen()
         {
             //FIX: remove all previous texts
-            engine.textMenager.clearAll();
+            engine.textManager.clearAll();
              loadScreenBG = new Obj("../data/Textures/MENU/LOADING_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
              loadScreenAni = new Obj("../data/Textures/MENU/LOADING_ANI_A0.dds", 0.5, 0.42, Obj.align.CENTER_BOTH, false);
              loadScreenBG.isGUIObjectButUnscaled = true;
@@ -386,7 +386,7 @@ namespace CookieMonster.CookieMonster_Objects
                 projectilesList[i].prepareRender();
 
             // Render lightmaps:
-            engine.lightEngine.prepareRender();
+            engine.lightEngine.Render();
 
             //music player render:
             mPlayer.prepareRender();

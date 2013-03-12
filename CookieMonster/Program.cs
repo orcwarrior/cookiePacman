@@ -41,6 +41,7 @@ namespace EngineApp
     {
         [Flags]
         public enum game_state { Undef = 0,Menu = 2, Game = 4 };//ingame menu = Menu|Game
+
         public game_state gameState = game_state.Undef;
         public Viewport gameViewport{get; private set;}
         public Viewport menuViewport { get; private set; }
@@ -69,26 +70,25 @@ namespace EngineApp
             }
         }
         public string[] cmdArguments { get; private set; }
-        private IntPtr _winhdl;
-        public IntPtr windowHandle { get { return _winhdl; } }
+        public IntPtr windowHandle { get; private set; }
         Timers_Manager timeMgr = new Timers_Manager();
         public Menu_Manager menuManager { get; private set; }
-        SoundManager sndMgr; public SoundManager SoundMan { get { return sndMgr; } }
-        public TextManager textMenager { get; private set; }
-        GameManager gameMgr; public GameManager gameManager{ get{return gameMgr;}}
-        Camera gameCam; public Camera gameCamera{get{return gameCam;}}
-        Debug debugger;
+        public SoundManager SoundMan { get; private set; }
+        public TextManager textManager { get; private set; }
+        public GameManager gameManager { get; private set; }
+        public Camera gameCamera { get; private set; }
+        private Debug debugger;
         public VideoPlayer videoPlayer { get; private set; }
         public lightingEngine lightEngine { get; private set; }
-
+        public int frames { get; private set; }
+        private double time { get; set; }
         // Those values need to be stored at the begining
         // Used for proper rescale of menu items etc. "GUI" type Obj's
         // Now theese values are straight from configuration class
         
         //SimpleEngine stuff:
         Engine.Core core  = new Engine.Core();
-        double time;
-        int frames;
+        
 
 
 
@@ -127,8 +127,8 @@ namespace EngineApp
         }
         public void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs k)
         {
-            if(gameMgr!=null)
-               gameMgr.KeyboardEvt(sender,k);
+            if(gameManager!=null)
+                gameManager.KeyboardEvt(sender, k);
             InputManager.KeyDown(sender, k);
 
             //skip playing videos:
@@ -181,7 +181,7 @@ namespace EngineApp
             GL.Hint(HintTarget.FragmentShaderDerivativeHint, HintMode.Fastest);
 
 
-            textMenager = new TextManager();
+            textManager = new TextManager();
             debugger = new Debug();//debug system uses text manager
             menuViewport = new Viewport(1280, 800, true);
 			gameViewport = new Viewport(1280, 800, true);
@@ -199,23 +199,22 @@ namespace EngineApp
             GL.Disable(EnableCap.DepthTest);
 
             KeyPress += new EventHandler<KeyPressEventArgs>(menuManager.KeyPress);
-            sndMgr = new SoundManager();
+            SoundMan = new SoundManager();
             new DebugMsg(this, "fps", DebugLVL.info);
-            new DebugMsg(textMenager, "textsCount");
+            new DebugMsg(textManager, "textsCount");
             new DebugMsg(this, "gameState");
             new DebugMsg(this, "activeViewportIsGame");
-            
-            gameCam = new Camera(Camera.eType.STATIC);
 
+            gameCamera = new Camera(Camera.eType.STATIC);
 
             //get window handle:
             IWindowInfo ii = ((OpenTK.NativeWindow)this).WindowInfo;
             object inf = ((OpenTK.NativeWindow)this).WindowInfo;
             PropertyInfo pi = (inf.GetType()).GetProperty("WindowHandle");
-            _winhdl = ((IntPtr)pi.GetValue(ii, null));
-            
+            windowHandle = ((IntPtr)pi.GetValue(ii, null));
 
-            Sound.setSndMgr(sndMgr);
+
+            Sound.setSndMgr(SoundMan);
 
             // Play birds sound:
             Sound bg_birds = new Sound(Sound.eSndType.MUSIC, "../data/Sounds/MENU_BIRDS_BG.ogg", true, false);
@@ -262,15 +261,15 @@ namespace EngineApp
 
             SoundMan.Update();
             timeMgr.Update();
-            if (gameCam != null)//before viewports 'n stuff
-                gameCam.Update();
+            if (gameCamera != null)//before viewports 'n stuff
+                gameCamera.Update();
             menuManager.onUpdate();
             if (((gameState & game_state.Menu) == game_state.Menu) || (menuViewport.isFading))
                 menuViewport.Update();
             if (((gameState & game_state.Game) == game_state.Game) || (gameViewport.isFading))
                 gameViewport.Update();
-            if (gameMgr != null)
-                gameMgr.Update();
+            if (gameManager != null)
+                gameManager.Update();
 
             if (Keyboard[Key.Escape] && Keyboard[Key.ShiftLeft]) Exit();
              
@@ -285,6 +284,11 @@ namespace EngineApp
 
 
         }
+        /// <summary>
+        /// *Lightning engine renders light now by Viewport on proper layer
+        /// (layer.lightningengine)
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             frames++;
@@ -297,22 +301,19 @@ namespace EngineApp
             GL.DepthMask(false);
             
             //render viewports:
-
-            if (((gameState & game_state.Game) == game_state.Game)||(gameViewport.isFading))
-                gameViewport.Render();
-
-            //MENU Always overlay GAME layer!
-            if (((gameState & game_state.Menu) == game_state.Menu) || (menuViewport.isFading))
-                menuViewport.Render();
+            Viewport.Render();
+            //if (((gameState & game_state.Game) == game_state.Game)||(gameViewport.isFading))
+            //    gameViewport.Render();
+            //
+            ////MENU Always overlay GAME layer!
+            //if (((gameState & game_state.Menu) == game_state.Menu) || (menuViewport.isFading))
+            //    menuViewport.Render();
             menuManager.onRender();//render menu stuff overlaying viewport(bg, etc.)
+
+            //lightEngine.Render();
 
             if (debugger != null) debugger.Render();
             
-            // Lightning Engine will now render light overlaying everything else:
-            // NOTE: If lights was rendered during GameManager.Render() method
-            // this call will do nothing.
-                lightEngine.prepareRender();
-
             SwapBuffers();
         }
 
@@ -328,18 +329,14 @@ namespace EngineApp
          else
             base.WindowState = WindowState.Normal;
         }
-        public int getFrame()
-        {
-            return frames;
-        }
         public void InitGameManager()
         {
             gameState = game_state.Game;
-            gameMgr = new GameManager();            
+            gameManager = new GameManager();            
         }
         public void InitCamera()
         {
-            gameCam = new Camera();
+            gameCamera = new Camera();
         }
         /// <summary>
         /// Occurs when closing gameMgr session fe:
@@ -348,8 +345,8 @@ namespace EngineApp
         public void closeGameManagerSession()
         {
             //TODO: remove all ingame ObjAni, Timers (Obj)[TODO]
-            gameMgr.Free();
-            gameMgr = null;
+            gameManager.Free();
+            gameManager = null;
             gameState = gameState & ~game_state.Game;
         }
         [STAThread]
@@ -369,8 +366,11 @@ namespace EngineApp
         /// </summary>
         private void initGamePreGameManager()
         {
-            SoundMan.getSoundByFilename("../data/Sounds/MENU_THEME.ogg").Free();
-            SoundMan.getSoundByFilename("../data/Sounds/MENU_BIRDS_BG.ogg").Free();
+            if(SoundMan.sndMgr_Initialized)
+            {
+                SoundMan.getSoundByFilename("../data/Sounds/MENU_THEME.ogg").Free();
+                SoundMan.getSoundByFilename("../data/Sounds/MENU_BIRDS_BG.ogg").Free();
+            }
             lightEngine.clearAllLights();
         }
         /// <summary>
@@ -388,7 +388,7 @@ namespace EngineApp
         internal void loadGame(Savegame savegame)
         {
             initGamePreGameManager();
-            gameMgr = new GameManager(savegame);
+            gameManager = new GameManager(savegame);
             initGamePostGameManager();
         }
         /// <summary>
@@ -402,7 +402,7 @@ namespace EngineApp
         }
         public void afterIntroVideo()
         {
-            gameMgr = new GameManager();
+            gameManager = new GameManager();
             initGamePostGameManager();
         }
         internal void afterLogoVideo()
@@ -427,7 +427,7 @@ namespace EngineApp
             float xCenter = (float)engineReference.getEngine().activeViewportOrAny.width/ 2f;
             float yCenter = (float)Profile.currentProfile.config.options.graphics.resolution.Height/ 2f;
             float xMinus = TextManager.font_default_20.Measure(msg).Width / 2;
-            //Text loading = engine.textMenager.produceText(TextManager.font_default_20, msg, xCenter - xMinus, yCenter, QuickFont.QFontAlignment.Left);
+            //Text loading = engine.textManager.produceText(TextManager.font_default_20, msg, xCenter - xMinus, yCenter, QuickFont.QFontAlignment.Left);
             Text loading = new Text(TextManager.font_default_20, xCenter - xMinus, yCenter, msg);
             loading.Render();
             engineReference.getEngine().SwapBuffers(); //Render buffer

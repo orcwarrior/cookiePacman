@@ -31,7 +31,7 @@ namespace CookieMonster.CookieMonster_Objects
             const int textFromDownLine = 70;
             const int textKeyHints = 85;
             Viewport act = engine.activeViewport;
-            TextManager txtMan = engine.textMenager;
+            TextManager txtMan = engine.textManager;
             double y_bg = 0.8575;
             double y_obj = 0.90;
             background = new Obj("../data/Textures/GAME/GUI/BG.dds", 0.5, y_bg, Obj.align.CENTER_X);
@@ -95,7 +95,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void prepareRender()
         {
-            engine.activeViewport.currentAddingLayer = Layer.imgFG;
+            Layer.currentlyWorkingLayer = Layer.imgFG;
             GameManager gm = engine.gameManager;
             double y_obj = 0.90;
             background.prepareRender();
@@ -176,7 +176,7 @@ namespace CookieMonster.CookieMonster_Objects
             }
             if (gm.PC.lives - l - 1 > 1)
             {
-                TextManager txtMan = engine.textMenager;
+                TextManager txtMan = engine.textManager;
                 Viewport act = engine.activeViewport;
                 if (restLives == null)
                     restLives = new Text(livesFont, (float)(startX + 10 + l * stepX), (float)(act.height - 70), "+" + (gm.PC.lives - maxLives - 2).ToString());
@@ -192,7 +192,8 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 enterButtonToNextLevel.prepareRender();
             }
-            engine.activeViewport.currentAddingLayer = -1;
+
+            Layer.currentlyWorkingLayer = -1;
         }
     }
 }

@@ -44,12 +44,12 @@ namespace CookieMonster.CookieMonster_Objects
             string pipe = "+" + v.ToString() + "pts.";
             if (newLevel) pipe+= "\nNOWY POZIOM!";
 
-            //Text msg = engine.textMenager.produceText(ptFont, pipe , (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10));
+            //Text msg = engine.textManager.produceText(ptFont, pipe , (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10));
             //Text msg = new Text(ptFont,  (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10), "+" + v.ToString() + "pts.");
             Text msg = new Text(ptFont, (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10), pipe);
             msg.setLifeTime(600);
             msg.setAnimationMove(new Point(0, -3));
-            //engine.textMenager.addText(msg);
+            //engine.textManager.addText(msg);
             
             
         }

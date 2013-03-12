@@ -10,11 +10,6 @@ namespace CookieMonster.CookieMonster_Objects
 {
     class Text : engineReference
     {
-        /// <summary>
-        /// If this value is >= 0 all created Text objects
-        /// will be added to this layer automatically.
-        /// </summary>
-        static public int currentWorkingLayer = -1;
         public QFont fontFace { get; private set; }
         ProcessedText txt;
         public int layer { get; set; } // which layer it will be rendered at
@@ -37,18 +32,18 @@ namespace CookieMonster.CookieMonster_Objects
         }
         private void _correctLayer()
         {
-            if(currentWorkingLayer>=0) layer = currentWorkingLayer;
+            if (Layer.currentlyWorkingLayer >= 0) layer = Layer.currentlyWorkingLayer;
         }
         public Text(QFont qf,float _x,float _y,string m)
         {
-            updatedThisFrame = addedToViewport = true;
             layer = Layer.textFG;
+            _correctLayer();
+            updatedThisFrame = addedToViewport = true;
             fontFace = qf; 
             txt = new ProcessedText();
             x  = orgX = _x; y = orgY = _y;
             _msg = m;
-            engine.textMenager.addText(this);
-            _correctLayer();
+            engine.textManager.addText(this);
         }
         public Text(QFont qf,float _x,float _y,string m, QFontAlignment align, int maxWidth)
             :this(qf,_x,_y,m)
@@ -73,7 +68,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             if (active)
             {
-                if (!addedToViewport) engine.textMenager.addText(this);
+                if (!addedToViewport) engine.textManager.addText(this);
 
                 updatedThisFrame = true;
                 if (perPreRenderMove != null)

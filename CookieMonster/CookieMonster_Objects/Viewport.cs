@@ -10,9 +10,11 @@ namespace CookieMonster.CookieMonster_Objects
     /// <summary>
     /// Class Manages the whole render, Obj's are pushed to render queue on update
     /// and then rendered from queue onRender event one by one starting from first to last (top layer) with highest number.
+    /// 
     /// </summary>
     class Viewport : engineReference
     {
+        static private List<Viewport> viewportsList = new List<Viewport>();
         static public System.IO.StreamWriter scaleLog = new System.IO.StreamWriter("scaleLog.txt",false);
         // default window sizes:
         public const int guiBase_width = 1280;
@@ -23,7 +25,6 @@ namespace CookieMonster.CookieMonster_Objects
         static int screen_width;
         static int screen_height;
 
-        public int currentAddingLayer { get; set; }
         bool fullscreen;
         /// <summary>
         /// This value is properly updated when resoulution is changed
@@ -60,7 +61,6 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="f">fullscreen mode?</param>
         public Viewport(int w, int h,bool f)
         {
-            currentAddingLayer = -1;//default don't override current set Obj layer
             render_height = engine.Height;
             render_width = engine.Width;
             fullscreen = f;
@@ -70,8 +70,8 @@ namespace CookieMonster.CookieMonster_Objects
             //DisplayDevice.Default.ChangeResolution(render_width, render_height, 32, 100);
             engine.Height = render_height; engine.Width = render_width;
             engine.X = 0; engine.Y = 0;
-            txtMgr = engine.textMenager;
-            
+            txtMgr = engine.textManager;
+            viewportsList.Add(this);            
         }
         /// <summary>
         /// takes care of Fading-IN/OUT
@@ -129,58 +129,73 @@ namespace CookieMonster.CookieMonster_Objects
             }
         }
         /// <summary>
-        /// Renders all objects added to viewport
+        /// Renders all objects added to viewport(s)
         /// NEW CONCEPT:
         /// Now viewport is divided into layers, so object in layers are rendered at the end of frame in order
         /// from 0 to last one definied.
         /// after rendering, Obj property addedToViewport is changed to false, if next time it will still be false
         /// Obj will be removed from renderQueue cause it means that it wasn't prepared to render(updated) in last frame.
         /// </summary>
-        public void Render()
+        static public void Render()
         {
             Camera activeCam = engine.gameCamera;
 
-            if ((partialViewport==false)&&(engine.gameManager != null) && this == engine.gameViewport)
-            {   //render game map if this is gameViewport
-                engine.gameManager.prepareRender();
-                //engine.gameManager.Map.prepareRender(); //it's called by gameManager.prepareRender
-                engine.gameManager.Map.renderBackground();              
-            }
 
             Obj cur;
-            for (int i = 0; i < rendered_objects.Count; i++)
+            // Rendering objects in viewports loop:
+            // i - current rendering layer
+            // j - current viewport from viewportsList
+            // k - current Obj rendered from actual Viewport layer
+            for (int i = 0; i < Layer.MAX; i++)
             {
-                for (int j = 0; j < rendered_objects[i].Count; j++)
-                {
-                    cur = rendered_objects[i][j];
-                    if (cur == null || cur.addedToViewport == false || cur.preparedToRender == false)
-                    { cur.addedToViewport = false; rendered_objects[i].RemoveAt(j); j--; }
-                    if (cur.isGUIObject) cur.Render(0, 0);
-                    else
-                    {
-                        cur.Render(activeCam.camOffsetX, activeCam.camOffsetY);
-                        cur.preparedToRender = false; // set to false, cause if it's still false in next call of Render()
-                                                     // it will means that object wasn't udpated, so it shouldn't be rendered anymore
+                for (int j = 0; j < viewportsList.Count;j++ )
+                {   // Some special threatment for game viewport:
+                    if ((i == 0) && (viewportsList[j].partialViewport == false) && (engine.gameManager != null) && viewportsList[j] == engine.gameViewport)
+                    {   
+                        engine.gameManager.prepareRender();
+                        engine.gameManager.Map.renderBackground();
                     }
-                    //debug stuff
-                    new Text(TextManager.font_default, 10, 10 + 25 * i, "Layer " + i).Render();
+                    
+                    // check if this layer don't exceed count of layers in current viewport
+                    if (viewportsList[j].rendered_objects.Count > i)
+                    {   
+                        for (int k = 0; k < viewportsList[j].rendered_objects[i].Count; k++)
+                        {
+                            cur = viewportsList[j].rendered_objects[i][k];
+                            if (cur == null || cur.addedToViewport == false || cur.preparedToRender == false)
+                            {  // Remove object from viewport
+                                cur.addedToViewport = false; 
+                                viewportsList[j].rendered_objects[i].RemoveAt(k); 
+                                k--; 
+                            }
+                            if (cur.isGUIObject) cur.Render(0, 0);
+                            else
+                            {
+                                cur.Render(activeCam.camOffsetX, activeCam.camOffsetY);
+                                cur.preparedToRender = false; // set to false, cause if it's still false in next call of Render()
+                                                              // it will means that object wasn't udpated, so it shouldn't be rendered anymore
+                            }
+                        }
+                    }
                 }
                 //render text's overlaying objects:(if current viewport is global, not partial
-                if (partialViewport == false)
-                    txtMgr.Render(i);
+                engine.textManager.Render(i);
+                // render lights from light engine if this is lightning engine layer:
+                if (i == Layer.lightningEngine)
+                    engine.lightEngine.Render();
             }
-            //[DEBUG] render map overlaying
-            //if(engine.gameManager != null && engine.gameManager.Map != null)
-            //engine.gameManager.Map.prepareStaticRender();  
 
-
-            for (int i = 0; i < onceRendered_objects.Count; i++)
+            // Render once rendered objects (overlaying)
+            for (int j = 0; j < viewportsList.Count; j++)
             {
-                onceRendered_objects[i].Render();
-                onceRendered_objects[i].Free();
-                onceRendered_objects.RemoveAt(i); i--;
+                for (int i = 0; i < viewportsList[j].onceRendered_objects.Count; i++)
+                {
+                    viewportsList[j].onceRendered_objects[i].Render();
+                    viewportsList[j].onceRendered_objects[i].Free();
+                    viewportsList[j].onceRendered_objects.RemoveAt(i); i--;
+                }
+                viewportsList[j].onceRendered_objects.Clear();
             }
-            onceRendered_objects.Clear();
 
         }
         /// <summary>
@@ -192,6 +207,7 @@ namespace CookieMonster.CookieMonster_Objects
             for (int i = 0; i < rendered_objects.Count; i++)
                 for (int j = 0; j < rendered_objects[i].Count; j++)
                 rendered_objects[i][j].Free();
+            
             rendered_objects.Clear();
 
         }
@@ -203,7 +219,9 @@ namespace CookieMonster.CookieMonster_Objects
             {   //create layers if there's less than needed:
                 while (o.layer >= rendered_objects.Count)
                     rendered_objects.Add(new List<Obj>());
-                int layer = currentAddingLayer == -1 ? o.layer : currentAddingLayer;
+                // if Layer.currentlyWorkingLayer is >= 0 then override passed object layer by value stored in this global.
+                int layer = Layer.currentlyWorkingLayer >= 0 ? Layer.currentlyWorkingLayer : o.layer;
+                o.layer = layer;
                 while (layer >= rendered_objects.Count) rendered_objects.Add(new List<Obj>());
                 rendered_objects[layer].Add(o);
                 o.addedToViewport = true; // FIX: In menu Obj aren't prepared to render at first, they just being added by this method

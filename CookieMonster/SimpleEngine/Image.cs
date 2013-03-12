@@ -18,6 +18,9 @@ namespace Engine
             return path.Substring(path.LastIndexOf("/")+1);
         }
     }
+    /// <summary>
+    /// OBSOLETE / UNUSED
+    /// </summary>
     static class TexturesPool
     {
         const int texArrSize = 4999;
@@ -82,6 +85,10 @@ namespace Engine
         public uint texture;            // Holds image data
         public VBO vbo = new VBO();
 
+        /// <summary>
+        /// If flag is set to TRUE VBO (Vertex positions/UV Mapping)
+        /// will be rebuilded (by BuildTexchord).
+        /// </summary>
         public bool rebuild = true;
         private string _bitmapPath; public string bitmapPath { get { return _bitmapPath; } }
 
@@ -110,15 +117,12 @@ namespace Engine
         {
             vbo.vertices = new Vertex[4];    // Create 4 vertices for quad
             vbo.texcoords = new TexCoord[4]; // Texture coordinates for quad
-            //Hook texture with passed ID:
+            // Hook texture with passed ID:
+            // get needed texture parameters:
             texture = (uint)texID;
-            float hlp;
             GL.BindTexture(TextureTarget.Texture2D, texID);
-            GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureWidth,out hlp);
-            w = (int)hlp;
-            GL.GetTexParameter(TextureTarget.Texture2D, GetTextureParameter.TextureHeight, out hlp);
-            h = (int)hlp;
-            if (w == 0) { w = 512; h = -512; }
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out w);
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out h);
         }
 
         /// <summary>
@@ -224,15 +228,16 @@ namespace Engine
         /// <param name="imgW">Width of image part to be drawn.</param>
         /// <param name="imgH">Height of image part to be drawn.</param>
         public void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
-        {
+        {//fix: small offset from the edge helps with "white edges" issue. [DK]
+            float off = 0.005f;
             // Texture coordinates
             float u1 = 0.0f, u2 = 0.0f, v1 = 0.0f, v2 = 0.0f;
 
             // Calculate coordinates, prevent dividing by zero
-            if (imgX != 0) u1 = 1.0f / ((float)this.w / (float)imgX);
-            if (imgW != 0) u2 = 1.0f / ((float)this.w / (float)imgW);
-            if (imgY != 0) v1 = 1.0f / ((float)this.h / (float)imgY);
-            if (imgH != 0) v2 = 1.0f / ((float)this.h / (float)imgH);
+            if (imgX != 0) u1 = 1.0f / ((float)this.w / (float)imgX) + off;
+            if (imgW != 0) u2 = 1.0f / ((float)this.w / (float)imgW) - off;
+            if (imgY != 0) v1 = 1.0f / ((float)this.h / (float)imgY) + off;
+            if (imgH != 0) v2 = 1.0f / ((float)this.h / (float)imgH) - off;
 
             
            if (rebuild)
@@ -268,7 +273,7 @@ namespace Engine
         /// Builds texcoords for quad.
         /// </summary>
         public void BuildTexcoords()
-        {   //fix: small offset from the edge helps with "white edges" issue.
+        {   //fix: small offset from the edge helps with "white edges" issue. [DK]
             float off = 0.001f;
             BuildTexcoords(0.0f + off, 1.0f - off, 0.0f + off, 1.0f - off);
         }

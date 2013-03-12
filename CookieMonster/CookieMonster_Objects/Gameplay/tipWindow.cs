@@ -104,11 +104,15 @@ namespace CookieMonster.CookieMonster_Objects
         {
             float x, y;
 
-            Text.currentWorkingLayer = Layer.textGUIBG;
+            Layer.currentlyWorkingLayer = Layer.textGUIFG;
             // Image:
             image = new Obj(imgPath,0.5,0.5,Obj.align.CENTER_Y);
             image.x -= 732/2 + 100;//732 - width of background
             image.isGUIObjectButUnscaled = true;
+            // Setup proper layers for tipWindow Obj's:
+            background.layer = Layer.imgGUI;
+            image.layer = Layer.imgGUI;
+
             // Title:
             x = engine.Width / 2 + 130f - titleFont.Measure(title).Width / 2f;
             y = engine.Height/2 - 130f;
@@ -123,7 +127,7 @@ namespace CookieMonster.CookieMonster_Objects
             easeOutTimer = new Timer(Timer.eUnits.MSEC, 200, 0, true, false);
             // Add to Tips Manager:
             tipsManager.Add(this);
-            Text.currentWorkingLayer = -1;
+            Layer.currentlyWorkingLayer = -1;
         }
 
         public void Update()
@@ -172,10 +176,15 @@ namespace CookieMonster.CookieMonster_Objects
             float x, y;
             x = engine.Width / 2 + 235f;
             y = engine.Height / 2 + 95f;
-            mgr.current_menu.addItem(new Menu_Item("OK",x,y,  Menu.font,
-                                                                    Menu.font_Hover,
-                                                                    Menu.font_Click,
-                                                                    this.Close));
+
+            Layer.currentlyWorkingLayer = Layer.textGUIFG;
+            Menu_Item OK = new Menu_Item("OK", x, y, Menu.font,
+                                                    Menu.font_Hover,
+                                                    Menu.font_Click,
+                                                    this.Close);
+            mgr.current_menu.addItem(OK);
+
+            Layer.currentlyWorkingLayer = -1;
         }
 
         public void Render()

@@ -30,12 +30,20 @@ namespace CookieMonster.CookieMonster_Objects
         public QFont font;
         QFont fontOnHover;
         QFont fontOnClick; 
-        private bool _inHover;
-        public bool inHover { get { return _inHover; } }
-        private Rectangle _bbox;
-        public Rectangle bbox
+        public bool inHover { get; private set; }
+        public Rectangle bbox { get; private set; }
+        /// <summary>
+        /// Get/Set's layer of used visual (Text or Obj(all states))
+        /// </summary>
+        public int layer
         {
-            get { return _bbox; }
+            get { if (itemText != null) return itemText.layer; if (visual != null)return visual.layer; return -1; }
+            set { 
+            if (itemText != null) itemText.layer = value;
+            if (visual != null) visual.layer = value;
+            if (visualOnClick != null) visualOnClick.layer = value;
+            if (visualOnHover != null) visualOnHover.layer = value;
+            }
         }
         public delegate void mouseEvt();
         private mouseEvt onMouseIn;
@@ -48,7 +56,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             _value = text;
             name = text;
-            TextManager txtMan = engine.textMenager;
+            TextManager txtMan = engine.textManager;
             font = _font;
             itemText = new Text(font, x, y, text);
             //FIX: Font are rendered just at oppening of submenus for a frame, but they shouldn't
@@ -86,13 +94,13 @@ namespace CookieMonster.CookieMonster_Objects
             onMouseIn = _in;
             onMouseOut = _out;
             onClick = c;
-            _bbox = new Rectangle(v.x, v.y, v.width, v.height);
+            bbox = new Rectangle(v.x, v.y, v.width, v.height);
         }
         public void _onMouseClick()
         {
             if (onClick != null)
                 onClick();
-            _inHover = false;//not true, it's onClick rite now!
+            inHover = false;//not true, it's onClick rite now!
             if (visualOnClick != null)
                 renderedVisual = visualOnClick;
             if (fontOnClick != null && owner.submenuTimer.enabled == false)//BUGFIX: Don't change visuals during submenu ani!
@@ -107,7 +115,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             if (!inHover)
             {
-                _inHover = true;
+                inHover = true;
                 if (visualOnHover != null)
                 {
                     renderedVisual = visualOnHover;
@@ -140,7 +148,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             if (inHover)
             {
-                _inHover = false;
+                inHover = false;
                 if (visualOnHover != null && visualOnHover.objAnimation != null)
                 {
                     visualOnHover.objAnimation.gotoKeyframe(0);

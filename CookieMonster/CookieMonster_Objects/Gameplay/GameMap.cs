@@ -146,6 +146,7 @@ namespace CookieMonster.CookieMonster_Objects
             // Clear both viewports:
             engine.menuViewport.Clear();
             engine.gameViewport.Clear();
+            engine.textManager.clearAll();
             GL.ClearColor(0,0,0,0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
@@ -175,8 +176,7 @@ namespace CookieMonster.CookieMonster_Objects
             _staticBufferTextures = new int[staticTexCntX * staticTexCntY+1];
             GL.GenTextures(staticTexCntX * staticTexCntY, _staticBufferTextures);
             // Create array of Obj files:
-            staticMapParts = new Obj[staticTexCntX * staticTexCntY + 1];
-
+            staticMapParts = new Obj[staticTexCntX * staticTexCntY ];
 
             // Creating textures from actual gameMap
             // ---
@@ -231,7 +231,8 @@ namespace CookieMonster.CookieMonster_Objects
                                 mapRenderQueue[x, y].prepareRender();
                         }
                     }
-                    engine.gameViewport.Render();
+                    Viewport.Render();
+                    //engine.gameViewport.Render();
  
                     GL.ReadBuffer(ReadBufferMode.Back);
                     // Drawing textures in one main loop  
@@ -251,8 +252,10 @@ namespace CookieMonster.CookieMonster_Objects
                             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
                             // Create Obj in array of staticMapParts
+                            // and change layer of this visuals:
                             staticMapParts[idx] = new Obj(_staticBufferTextures[idx], (_x * staticTexSize), realYstartPos - ((_y + 1) * staticTexSize), Obj.align.LEFT);
-                            
+                            staticMapParts[idx].layer = Layer.imgBG;
+
                             // [DEBUG] Save image to file:
                             // GL.PixelStore(PixelStoreParameter.PackAlignment, 1);
                             // byte[] raw_img = new byte[staticTexSize * staticTexSize * 32];
@@ -265,16 +268,10 @@ namespace CookieMonster.CookieMonster_Objects
                             //      Bitmap tex = new Bitmap(staticTexSize, staticTexSize, staticTexSize * 32/8, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ptr);
                             //      tex.Save("stat" + idx + ".png");
                             //  }
-                            // }
- 
+                            // } 
                             //new DebugMsg("Created mapTEX[" + idx + "] - (" + (_x * staticTexSize) + "," + (realYstartPos - ((_y + 1) * staticTexSize)) + ")");
                         }
                     }
-                    // For debuging propouses:
-                    //engine.SwapBuffers();
-                    //for (int z = 0; z < int.MaxValue / 8; z++) ;
-                    //engine.SwapBuffers();
-                    //engine.activeViewport.Render();
                     GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                     engine.gameViewport.Clear();
                 }
@@ -297,20 +294,22 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="y"></param>
         private void _prepareRenderOfMapStaticPart(int _x,int _y)
         {
-            int xoff = 0, yoff = realYstartPos - staticTexSize;
+            const int xCorrection = +282;
+            const int yCorrection = +78;
+            int xoff,yoff;
             int staticTexSizeY = staticTexSize - 20;
             for (int y = 0; y < staticTexCntY; y++)
             {
                 for (int x = 0; x < staticTexCntX; x++)
                 { //'magic' happens here: 
                     //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-                xoff = (staticTexSize) * x;
-                yoff = realYstartPos - staticTexSizeY + (staticTexSizeY) * y;
+                    xoff = (staticTexSize) * x - _x + xCorrection -x;
+                    yoff = realYstartPos - staticTexSizeY + (staticTexSizeY) * y - _y + yCorrection;
 
                 staticMapParts[y * staticTexCntX + x].x = xoff;
                 staticMapParts[y * staticTexCntX + x].y = yoff;
-                staticMapParts[y * staticTexCntX + x].prepareRender();   
-                
+                staticMapParts[y * staticTexCntX + x].height = -1 * (int)staticMapParts[y * staticTexCntX + x].orginalHeight;
+                staticMapParts[y * staticTexCntX + x].prepareRender();                   
                }
             }
             //Back to old blend function:

@@ -59,7 +59,7 @@ namespace CookieMonster.CookieMonster_Objects
         public string MIEJETNOSCI;
         public string TRAMPY_MOCY;
         public string LODOWY_POCISK;
-        public string Inicjuje_Game_Menagera;
+        public string Inicjuje_Game_Managera;
         public string Inicjuje_system_kolizji;
         public string wczytuje_poziom;
         public string tworze_GUI;
@@ -156,7 +156,7 @@ namespace CookieMonster.CookieMonster_Objects
                 TRAMPY_MOCY     = "TRAMPY MOCY";
                 LODOWY_POCISK   = "LODOWY POCISK";
                 //Loading screen:
-                Inicjuje_Game_Menagera       = "inicjuje Game Managera";
+                Inicjuje_Game_Managera       = "inicjuje Game Managera";
                 Inicjuje_system_kolizji      = "inicjuje System Kolizji";
                 wczytuje_poziom              = "wczytuje poziom";
                 tworze_GUI                   = "tworze GUI";
@@ -254,7 +254,7 @@ namespace CookieMonster.CookieMonster_Objects
                 TRAMPY_MOCY = "CHUCKS OF POWER";
                 LODOWY_POCISK = "ICE BOLT";
                 //Loading screen:
-                Inicjuje_Game_Menagera = "initializing Game Managera";
+                Inicjuje_Game_Managera = "initializing Game Managera";
                 Inicjuje_system_kolizji = "initializing Collide System";
                 wczytuje_poziom = "loading level";
                 tworze_GUI = "creating GUI";
