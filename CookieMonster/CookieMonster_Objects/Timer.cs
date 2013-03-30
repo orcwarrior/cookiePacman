@@ -261,6 +261,10 @@ namespace CookieMonster.CookieMonster_Objects
             return currentTime.ToString() + " / " + totalTime.ToString() + " (" + ((type == eUnits.FPS) ? "fps)" : "msec)");
         } 
     }
+
+    /// <summary>
+    /// Timers_Manager is a class handling all Timer(s) added to game
+    /// </summary>
     class Timers_Manager : engineReference
     {
         private System.Diagnostics.Stopwatch msecMeasure = new System.Diagnostics.Stopwatch();

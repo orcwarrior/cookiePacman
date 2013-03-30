@@ -5,6 +5,12 @@ using EngineApp;
 
 namespace CookieMonster.CookieMonster_Objects
 {
+    /// <summary>
+    /// Class is responsible for animation of Obj based on
+    /// movement, scale and opacity.
+    /// Frames of animation are creating by interpolation between last KeyFrame and next Keyframe
+    /// data.
+    /// </summary>
     class Obj_Animation : engineReference
     {
         #region fields

@@ -67,6 +67,10 @@ namespace CookieMonster.CookieMonster_Objects
             return null;
         }
     }
+    /// <summary>
+    /// Class is used to hold directions (eDir) on crossroads (waynet nodes)
+    /// to be followed to reach target waypoint.
+    /// </summary>
     class wayDirectionStack
     {
         public List<MOB.eDir> dirList{get; private set;}

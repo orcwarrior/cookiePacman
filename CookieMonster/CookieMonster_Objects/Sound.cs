@@ -6,6 +6,11 @@ using EngineApp;
 
 namespace CookieMonster.CookieMonster_Objects
 {
+    /// <summary>
+    /// Class responsible for each sound created in game
+    /// For proper handling of sounds they all will be automatically
+    /// added to SoundManager.
+    /// </summary>
     class Sound
     {
         public enum eSndType { UNKNOWN, SFX, MUSIC }

@@ -231,15 +231,19 @@ namespace EngineApp
             //Open menu
             menuManager.initCursor();
             menuManager.current_menu = new Menu("MENU_PROFILE", Menu_Instances.Menu_Profile_Open, Menu_Manager.cursor);
+            new DebugMsg(this,"gameState");
             
          }
 
         private static void initTextureLoaderParameters()
         {
+            GL.Enable(EnableCap.Texture2D);
+            GL.TexParameter(TextureTarget.Texture2D,TextureParameterName.TextureWrapS,(int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D,TextureParameterName.TextureWrapT,(int)TextureWrapMode.ClampToEdge);
             TextureLoaderParameters.MagnificationFilter = TextureMagFilter.Linear;
             TextureLoaderParameters.MinificationFilter = TextureMinFilter.LinearMipmapLinear;
-            TextureLoaderParameters.WrapModeS = TextureWrapMode.ClampToBorder;
-            TextureLoaderParameters.WrapModeT = TextureWrapMode.ClampToBorder;
+            TextureLoaderParameters.WrapModeS = TextureWrapMode.ClampToEdge;
+            TextureLoaderParameters.WrapModeT = TextureWrapMode.ClampToEdge;
             TextureLoaderParameters.EnvMode = TextureEnvMode.Modulate;
             
         }
@@ -252,7 +256,7 @@ namespace EngineApp
 
         protected override void OnResize(EventArgs e)
         {
-            core.Resize(Width, Height);
+            GL.Viewport(0, 0, Width, Height);
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -368,8 +372,12 @@ namespace EngineApp
         {
             if(SoundMan.sndMgr_Initialized)
             {
-                SoundMan.getSoundByFilename("../data/Sounds/MENU_THEME.ogg").Free();
-                SoundMan.getSoundByFilename("../data/Sounds/MENU_BIRDS_BG.ogg").Free();
+                try
+                {
+                    SoundMan.getSoundByFilename("../data/Sounds/MENU_THEME.ogg").Free();
+                    SoundMan.getSoundByFilename("../data/Sounds/MENU_BIRDS_BG.ogg").Free();
+                }
+                catch (Exception e) { new DebugMsg("Menu Music/Birds BG wasn't properly unitialized!", DebugLVL.warn); }
             }
             lightEngine.clearAllLights();
         }
@@ -424,7 +432,7 @@ namespace EngineApp
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);//Clear buffer
 
             String msg = "Loading...";
-            float xCenter = (float)engineReference.getEngine().activeViewportOrAny.width/ 2f;
+            float xCenter = (float)engineReference.getEngine().Width/ 2f;
             float yCenter = (float)Profile.currentProfile.config.options.graphics.resolution.Height/ 2f;
             float xMinus = TextManager.font_default_20.Measure(msg).Width / 2;
             //Text loading = engine.textManager.produceText(TextManager.font_default_20, msg, xCenter - xMinus, yCenter, QuickFont.QFontAlignment.Left);

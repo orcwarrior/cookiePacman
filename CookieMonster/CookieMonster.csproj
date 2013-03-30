@@ -193,12 +193,10 @@
     <Compile Include="Settings.cs" />
     <Compile Include="SimpleEngine\Core.cs" />
     <Compile Include="SimpleEngine\Effect.cs" />
-    <Compile Include="SimpleEngine\Group.cs" />
     <Compile Include="TextureLoaders\Helper.cs" />
     <Compile Include="SimpleEngine\Image.cs" />
     <Compile Include="SimpleEngine\IParticleSystem.cs" />
     <Compile Include="SimpleEngine\IProperties.cs" />
-    <Compile Include="SimpleEngine\IWidget.cs" />
     <Compile Include="SimpleEngine\Sprite.cs" />
     <Compile Include="SimpleEngine\Types.cs" />
     <Compile Include="SimpleEngine\VBO.cs" />
@@ -212,6 +210,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <BaseApplicationManifest Include="Properties\app.manifest" />
+    <None Include="ClassesDiagram.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

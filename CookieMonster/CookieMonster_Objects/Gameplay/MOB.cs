@@ -7,12 +7,15 @@ using System.Drawing;
 namespace CookieMonster.CookieMonster_Objects
 {
     /// <summary>
-    /// MOB... Moveable OBject
+    /// MOB stands for "Map Object" in particular
     /// </summary>
     class MOB : engineReference
     {
         //Enumerators
         public enum eMOBType { MOB, POWERUP, ENEMY, PLAYER, PROJECTILE }
+        /// <summary>
+        /// State of MOB:
+        /// </summary>
         public enum eState   { DEFAULT, // Default MOB state
                                   IDLE, // MOB is idle, ex. Player hit wall, waiting for new direction
                                 ATTACK, // MOB is an enemy and collided with player, started ATTACK ani

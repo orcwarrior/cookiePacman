@@ -7,7 +7,13 @@ using EngineApp;
 namespace CookieMonster.CookieMonster_Objects
 {
 
-
+    /// <summary>
+    /// Each object of this class is responsible for the object displayed 
+    /// on the screen, it is quite a complicated structure as the object can 
+    /// be extended to be able to do idle animations (idleAni), animation texture 
+    /// which is another complex class (Obj_texAni) and animations of 
+    /// position, scale, and transparency (Obj_Animation).
+    /// </summary>
     class Obj : engineReference
     {
         #region Obj_fields
@@ -64,22 +70,22 @@ namespace CookieMonster.CookieMonster_Objects
         public double vx
         {
             get { return vposx; }
-            set { vposx = value; posx = (int)((double)engine.activeViewportOrAny.width * value); }
+            set { vposx = value; posx = (int)((double)engine.Width * value); }
         }
         public double vy
         {
             get { return vposy; }
-            set { vposy = value; posy = (int)((double)engine.activeViewportOrAny.height * value); }
+            set { vposy = value; posy = (int)((double)engine.Height * value); }
         }
         public int x
         {
             get { return posx; }
-            set { posx = value; if (value == 0)vposx = 0.0; else vposx = (double)(engine.activeViewportOrAny.width / value); }
+            set { posx = value; if (value == 0)vposx = 0.0; else vposx = (double)(engine.Width / value); }
         }
         public int y
         {
             get { return posy; }
-            set { posy = value; if (value == 0)vposy = 0.0; else vposy = (double)(engine.activeViewportOrAny.height / value); }
+            set { posy = value; if (value == 0)vposy = 0.0; else vposy = (double)(engine.Height / value); }
         }
         //positions used when creating object:
         public int orgX { get; private set; }
@@ -375,11 +381,11 @@ namespace CookieMonster.CookieMonster_Objects
 
         private bool objInViewport(Camera activeCam)
         {
-            if ((x + activeCam.camOffsetX > engine.activeViewport.width)
-            && (x + width + activeCam.camOffsetX > engine.activeViewport.width))
+            if ((x + activeCam.camOffsetX > engine.Width)
+            && (x + width + activeCam.camOffsetX > engine.Width))
                 return false;
-            if ((y + activeCam.camOffsetY > engine.activeViewport.height)
-            && (y + height + activeCam.camOffsetY > engine.activeViewport.height))
+            if ((y + activeCam.camOffsetY > engine.Height)
+            && (y + height + activeCam.camOffsetY > engine.Height))
                 return false;
             return true;
         }
@@ -706,6 +712,12 @@ namespace CookieMonster.CookieMonster_Objects
             //tex.rebuild = false; // prevent VBO from rebuilding see docu. on rebuild
         }
     }
+
+
+    /// <summary>
+    /// Class object is created when there is found texture ani at creation of Obj
+    /// (texture has *_A0* in name, plus there was found next animation frames (A1,A2...))
+    /// </summary>
     class Obj_texAni : engineReference
                      // this class is more like a struct by public fields
     {                // but whateva' if texAni field in Obj class is private ;)

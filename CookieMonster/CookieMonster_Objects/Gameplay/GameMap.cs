@@ -8,9 +8,21 @@ using EngineApp;
 
 namespace CookieMonster.CookieMonster_Objects
 {
-
+    /// <summary>
+    /// Object is created every time new map start to load,
+    /// It's compleatly creates map, creates static map and render it to openGL textures,
+    /// properly creates background, all from "interpretation maps" stored in data/Maps folder.
+    /// </summary>
     class GameMap : engineReference
     {
+        public Waynet wayNetwork { get; private set; }
+        public int mapWidth { get { return _interpretationMap.Width; } }
+        public int mapHeight { get { return _interpretationMap.Height; } }
+        public int cookiesCount { get; private set; }
+        public bool waynetActive { get; private set; }
+        /// <summary> is TRUE when we generating static map textures currently</summary>
+        public bool generatingStaticMap { get; private set; }
+        public Obj background { get; private set; }
         private GameManager gameMgr;
         private Bitmap _interpretationMap; // generated automatically
         private Obj[] staticMapParts;
@@ -19,13 +31,7 @@ namespace CookieMonster.CookieMonster_Objects
         private Obj[,] torches; //Animated Torch
         private Obj[,] paths; //paths on map [and bridges too] (rendered firstly after background)
         private List<Portal> _portals = new List<Portal>(); //portale przenosza z pewnego pkt. mapy na inny;
-        private Obj _bg; public Obj background { get { return _bg; } }
-        public Waynet wayNetwork{get; private set;}
-        static public String MapsPath = "../data/Maps/";
-        public int mapWidth { get { return _interpretationMap.Width; } }
-        public int mapHeight { get { return _interpretationMap.Height; } }
-        public int cookiesCount { get; private set; }
-        public bool waynetActive { get; private set; }
+       static public String MapsPath = "../data/Maps/";
         static int level = 10;
 
         //internal OpenGL stuff:
@@ -48,7 +54,7 @@ namespace CookieMonster.CookieMonster_Objects
             neighborReport.map = this;
             Portal.resetPortalsCount();
 
-            _bg = new Obj(PATH_BACKGROUND_TILE, 0.5, 0.5, Obj.align.CENTER_BOTH);
+            background = new Obj(PATH_BACKGROUND_TILE, 0.5, 0.5, Obj.align.CENTER_BOTH);
             gameMgr = g;
             _interpretationMap = (Bitmap)Bitmap.FromFile(bitPath);
             cookiesCount = 0;
@@ -143,10 +149,11 @@ namespace CookieMonster.CookieMonster_Objects
         /// </summary>
         private void generateStaticMapToTexture()
         {
-            // Clear both viewports:
-            engine.menuViewport.Clear();
-            engine.gameViewport.Clear();
+            generatingStaticMap = true;
+            // Clear viewports:
             engine.textManager.clearAll();
+            engine.lightEngine.disabled = true;
+
             GL.ClearColor(0,0,0,0);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
@@ -174,6 +181,7 @@ namespace CookieMonster.CookieMonster_Objects
             
             // Generate image(s) for storing buffer after rendering objects:
             _staticBufferTextures = new int[staticTexCntX * staticTexCntY+1];
+            staticMapParts = new Obj[staticTexCntX * staticTexCntY + 1];
             GL.GenTextures(staticTexCntX * staticTexCntY, _staticBufferTextures);
             // Create array of Obj files:
             staticMapParts = new Obj[staticTexCntX * staticTexCntY ];
@@ -199,6 +207,7 @@ namespace CookieMonster.CookieMonster_Objects
                 // "Width" loop:
                 for (int j = 0; j < Math.Ceiling(staticTexCntX/2.0); j++)
                 {
+                    Viewport.ClearAll();
                     texTillEnd -= 2; //decrease number of textures till end by two (they're be rendered in this loop)
 
                     Camera cam = engine.gameCamera;
@@ -231,6 +240,9 @@ namespace CookieMonster.CookieMonster_Objects
                                 mapRenderQueue[x, y].prepareRender();
                         }
                     }
+                    GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+                    engine.SwapBuffers();
+                    GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                     Viewport.Render();
                     //engine.gameViewport.Render();
  
@@ -245,17 +257,14 @@ namespace CookieMonster.CookieMonster_Objects
                             int x_start = j*2;
                             int y_start = i;
                             /*        *  column  *    *           row           */
-                            int idx = (j * 2 + _x) + (i + _y) * staticTexCntX;
-                            GL.BindTexture(TextureTarget.Texture2D, _staticBufferTextures[idx]);
-                            GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, (_x * staticTexSize), realYstartPos - ((_y + 1) * staticTexSize), staticTexSize, staticTexSize, 0);
-                            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-                            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-
-                            // Create Obj in array of staticMapParts
-                            // and change layer of this visuals:
-                            staticMapParts[idx] = new Obj(_staticBufferTextures[idx], (_x * staticTexSize), realYstartPos - ((_y + 1) * staticTexSize), Obj.align.LEFT);
-                            staticMapParts[idx].layer = Layer.imgBG;
-
+                          int idx = (j * 2 + _x) + (i + _y) * staticTexCntX;
+                          GL.BindTexture(TextureTarget.Texture2D, _staticBufferTextures[idx]);
+                          GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, (_x * staticTexSize), realYstartPos - ((_y + 1) * staticTexSize), staticTexSize, staticTexSize, 0);
+                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+                            
                             // [DEBUG] Save image to file:
                             // GL.PixelStore(PixelStoreParameter.PackAlignment, 1);
                             // byte[] raw_img = new byte[staticTexSize * staticTexSize * 32];
@@ -272,20 +281,33 @@ namespace CookieMonster.CookieMonster_Objects
                             //new DebugMsg("Created mapTEX[" + idx + "] - (" + (_x * staticTexSize) + "," + (realYstartPos - ((_y + 1) * staticTexSize)) + ")");
                         }
                     }
+                    engine.SwapBuffers();
+                    //for (int z = 0; z < int.MaxValue / 8; z++) ;
+                    //engine.SwapBuffers();
+                    System.Threading.Thread.Sleep(1000);
+                    GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
                     GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                     engine.gameViewport.Clear();
                 }
             }
 
-            
+            //Entire viewport was rendered, now add static Obj to viewport (fixing bug)
+            for (int i = 0; i < staticMapParts.Length; i++)
+            {
+                // Create Obj in array of staticMapParts
+                // and change layer of this visuals:
+                staticMapParts[i] = new Obj(_staticBufferTextures[i], ((i % staticTexCntX) * staticTexSize), realYstartPos - ((i/staticTexCntX + 1) * staticTexSize), Obj.align.LEFT);
+                staticMapParts[i].layer = Layer.imgBG;
+            }
+
             //clear back to black:
             GL.ClearColor(0, 0, 0, 0);
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Enable(EnableCap.ClipPlane0);
 
-            // Reshape viewport to old shape
-            //engine.gameState = oldState;
-            
+            generatingStaticMap = false;
+            engine.lightEngine.disabled = false;
         }
         /// <summary>
         /// Render static part of Map buffer
@@ -294,8 +316,8 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="y"></param>
         private void _prepareRenderOfMapStaticPart(int _x,int _y)
         {
-            const int xCorrection = +282;
-            const int yCorrection = +78;
+            const int xCorrection = 348;// +282;
+            const int yCorrection = 126;// +78;
             int xoff,yoff;
             int staticTexSizeY = staticTexSize - 20;
             for (int y = 0; y < staticTexCntY; y++)
@@ -304,8 +326,9 @@ namespace CookieMonster.CookieMonster_Objects
                 { //'magic' happens here: 
                     //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                     xoff = (staticTexSize) * x - _x + xCorrection -x;
-                    yoff = realYstartPos - staticTexSizeY + (staticTexSizeY) * y - _y + yCorrection;
 
+                    yoff = (realYstartPos - staticTexSizeY) + ((staticTexSizeY) * y) - _y + yCorrection;
+                
                 staticMapParts[y * staticTexCntX + x].x = xoff;
                 staticMapParts[y * staticTexCntX + x].y = yoff;
                 staticMapParts[y * staticTexCntX + x].height = -1 * (int)staticMapParts[y * staticTexCntX + x].orginalHeight;
@@ -780,7 +803,6 @@ namespace CookieMonster.CookieMonster_Objects
         static private UInt32 COLOR_POWERUP_MIN = 1;
         static private UInt32 COLOR_POWERUP_MAX = 126;
 
-        static private Color Krzak = Color.FromArgb(255, 0, 255, 0);
 
         // Enemies: R0 G0 B(1-126) A255
         static private UInt32 COLOR_ENEMY_BASE = 0xFF000001;//,255=a,0,0,1

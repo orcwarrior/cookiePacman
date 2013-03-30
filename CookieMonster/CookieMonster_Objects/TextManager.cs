@@ -107,6 +107,12 @@ namespace CookieMonster.CookieMonster_Objects
             perPreRenderMove = p;
         }
     }
+    /// <summary>
+    /// When TextManager creates new QFont it will be stored in object of this class
+    /// with all important construction values. It improves perfomance because we don't
+    /// creating same Fonts all the time, but we use reference to old ones, already created in memory.
+    /// Problem causes lags especially when, fonts was created frame-by-frame.
+    /// </summary>
     class QFontConstructorData
     {
         public float size { get; private set; }

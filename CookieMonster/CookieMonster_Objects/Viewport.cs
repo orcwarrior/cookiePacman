@@ -20,39 +20,20 @@ namespace CookieMonster.CookieMonster_Objects
         public const int guiBase_width = 1280;
         public const int guiBase_height = 800;
         public const int guiBase_height_MENUOVERRIDE = 800;
-        static int render_width = 1280;
-        static int render_height = 800;
-        static int screen_width;
-        static int screen_height;
 
         bool fullscreen;
-        /// <summary>
-        /// This value is properly updated when resoulution is changed
-        /// </summary>
-        public int width 
-        {
-            get { return render_width;}
-            set { render_width = value;}
-        }
-        /// <summary>
-        /// This value is properly updated when resoulution is changed
-        /// </summary>
-        public int height
-        {
-            get { return render_height; }
-            set { render_height = value; }
-        }
        
         List<List<Obj>> rendered_objects = new List<List<Obj>>();
         List<Obj> onceRendered_objects = new List<Obj>();
         private TextManager txtMgr;
-        private GameMap currentGameMap;
+
+        public bool partialViewport; // if it's true it will render his object don't matter what
+        // usable fe. with rendering new music track title, some gui on game screen
+
         public bool isFading { get { return isFadingOut | isFadingIn; } }//if viewport is fading still render it!
         private bool isFadingOut;//
         private bool isFadingIn;//
         private double fadingAlphaStep; // value that will be added/removed every frame
-        public bool partialViewport; // if it's true it will render his object don't matter what
-                                     // usable fe. with rendering new music track title, some gui on game screen
         /// <summary>
         /// Constructor of class
         /// </summary>
@@ -61,14 +42,10 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="f">fullscreen mode?</param>
         public Viewport(int w, int h,bool f)
         {
-            render_height = engine.Height;
-            render_width = engine.Width;
             fullscreen = f;
-           // _game.setScreenMode(fullscreen);
-            screen_width = DisplayDevice.Default.Width;
-            screen_height = DisplayDevice.Default.Height;
+           //screen_width = DisplayDevice.Default.Width;
+           //screen_height = DisplayDevice.Default.Height;
             //DisplayDevice.Default.ChangeResolution(render_width, render_height, 32, 100);
-            engine.Height = render_height; engine.Width = render_width;
             engine.X = 0; engine.Y = 0;
             txtMgr = engine.textManager;
             viewportsList.Add(this);            
@@ -128,6 +105,15 @@ namespace CookieMonster.CookieMonster_Objects
                 isFadingIn = isFadingOut = false; //no objects, turn it off!
             }
         }
+
+        /// <summary>
+        /// Methods clear's all viewports contentents.
+        /// </summary>
+        static public void ClearAll()
+        {
+            foreach (Viewport v in viewportsList)
+                v.Clear();
+        }
         /// <summary>
         /// Renders all objects added to viewport(s)
         /// NEW CONCEPT:
@@ -151,9 +137,12 @@ namespace CookieMonster.CookieMonster_Objects
                 for (int j = 0; j < viewportsList.Count;j++ )
                 {   // Some special threatment for game viewport:
                     if ((i == 0) && (viewportsList[j].partialViewport == false) && (engine.gameManager != null) && viewportsList[j] == engine.gameViewport)
-                    {   
-                        engine.gameManager.prepareRender();
-                        engine.gameManager.Map.renderBackground();
+                    {
+                        if (engine.gameManager.Map.generatingStaticMap == false)
+                        {
+                            engine.gameManager.prepareRender();
+                            engine.gameManager.Map.renderBackground();
+                        }
                     }
                     
                     // check if this layer don't exceed count of layers in current viewport
@@ -263,22 +252,13 @@ namespace CookieMonster.CookieMonster_Objects
         }
 
         /// <summary>
-        /// sets current game map so it will be included in rendering process
-        /// </summary>
-        /// <param name="map"></param>
-        public void setGameMap(GameMap map)
-        {
-            currentGameMap = map;
-        }
-
-        /// <summary>
         /// Rescaling & repositioning of all objects in this viewport
         /// </summary>
         /// <param name="res"></param>
         public void adaptToNewResolution()
         {
-            render_width = Profile.currentProfile.config.options.graphics.resolution.Width;
-            render_height = Profile.currentProfile.config.options.graphics.resolution.Height;
+            //render_width = Profile.currentProfile.config.options.graphics.resolution.Width;
+            //render_height = Profile.currentProfile.config.options.graphics.resolution.Height;
             for (int i = 0; i < rendered_objects.Count; i++)
                 for (int j = 0; i < rendered_objects[i].Count; j++)
                 rendered_objects[i][j].guiObjRescale();
@@ -306,6 +286,15 @@ namespace CookieMonster.CookieMonster_Objects
                 someObj = rendered_objects[k][l];
             }
             return someObj;
+        }
+
+        public override string ToString()
+        {
+            int idx = Viewport.viewportsList.IndexOf(this);
+            string ObjInLayers = "";
+            for(int i=0;i<this.rendered_objects.Count;i++)
+                ObjInLayers += rendered_objects[i].Count+",";
+            return "Viewport #" + idx + ", obj's: [" + ObjInLayers + "]";
         }
     }
 }

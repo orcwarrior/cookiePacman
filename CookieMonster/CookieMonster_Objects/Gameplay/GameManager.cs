@@ -9,6 +9,11 @@ using OpenTK.Graphics;
 namespace CookieMonster.CookieMonster_Objects
 {
 
+    /// <summary>
+    /// Game Manager is the main class that is responsible for game session
+    /// It Manges root parts of game logic, and have control over other isolated parts of game
+    /// logic (gameMap,musicPlayer, etc.).
+    /// </summary>
     class GameManager : engineReference
     {
         static public Random variantizer = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -47,7 +52,9 @@ namespace CookieMonster.CookieMonster_Objects
             get { return _gridSize; }
         }
         //returns true when player can proceed to next level;
-        public bool canStartNextLevel { get { return statistics.lvlPoints >= Map.cookiesCount * Statistics.ptsPerCookie; } }
+        //TODO: Back to normal (commented)
+        //public bool canStartNextLevel { get { return statistics.lvlPoints >= Map.cookiesCount * Statistics.ptsPerCookie; } }
+        public bool canStartNextLevel { get { return true; } }
         public GameManager()
         {
             engine.gameState = Game.game_state.Game;
@@ -94,25 +101,6 @@ namespace CookieMonster.CookieMonster_Objects
             startNewLevelTimer();
         }
 
-        private void startGameDurationTimer()
-        {
-            gameDuration = new Timer(Timer.eUnits.MSEC, -1);
-            gameDuration.start();
-        }
-        private void pauseGameDurationTimer()
-        {
-            gameDuration.stop();
-        }
-        private void continueGameDurationTimer()
-        {
-            gameDuration.start();
-        }
-        private void startNewLevelTimer()
-        {
-            //Start new level timer:
-            levelDuration = new Timer(Timer.eUnits.MSEC, -1);
-            levelDuration.start();
-        }
         /// <summary>
         /// create game manager based on passed savegame
         /// </summary>
@@ -166,49 +154,7 @@ namespace CookieMonster.CookieMonster_Objects
             gameDuration.currentTime = sav.player.gameDuration;
             startNewLevelTimer();
         }
-        #region loading_screen
-        private Text loadScreenTxtMsg;
-        private Obj loadScreenBG;
-        private Obj loadScreenAni;
-        private void updateLoadingInfos(string msg)
-        {
-            float xCenter = (float)engine.activeViewport.width / 2f;
-            float yCenter = (float)engine.activeViewport.height / 2f;
-            
-            float xMinus = TextManager.font_default_20.Measure(msg).Width / 2;
-            loadScreenTxtMsg = new Text(TextManager.font_default_20, xCenter - xMinus, yCenter, msg);
-            __renderLoadScreen();
-            //engine.textManager.onRender();         
-        }
 
-        private void initLoadScreen()
-        {
-            //FIX: remove all previous texts
-            engine.textManager.clearAll();
-             loadScreenBG = new Obj("../data/Textures/MENU/LOADING_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
-             loadScreenAni = new Obj("../data/Textures/MENU/LOADING_ANI_A0.dds", 0.5, 0.42, Obj.align.CENTER_BOTH, false);
-             loadScreenBG.isGUIObjectButUnscaled = true;
-             loadScreenAni.isGUIObjectButUnscaled = true;
-        }
-        private void __renderLoadScreen()
-        {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            loadScreenBG.Render();  // Using render there is required because there is
-            loadScreenAni.Render(); // no active viewport and it's not rendered right now!!!
-            if (loadScreenTxtMsg != null)
-            {
-                loadScreenTxtMsg.Update();
-                loadScreenTxtMsg.Render();
-            }
-            engine.SwapBuffers();
-        }
-        #endregion
-        private void initializeMOBs()
-        {
-            PC.Initialize();
-            for (int i = 0; i < enemiesList.Count; i++)
-                enemiesList[i].Initialize();
-        }
         public void nextLevel()
         {
             // bugfix: reinit of projectile visuals is needed
@@ -243,14 +189,6 @@ namespace CookieMonster.CookieMonster_Objects
             startNewLevelTimer();
 
         }
-        private void initGameMap()
-        {
-            engine.gameCamera.resetPos();            
-            String mapFile = "LEVEL_" + level.ToString() + ".pn"+"g";//workaround to force it always as dds
-            mapFile = GameMap.MapsPath + mapFile;
-            _Map = new GameMap(mapFile, this);
-            engine.gameViewport.setGameMap(_Map);//adding map to viewport rendering
-        }
 
         public void InitPC(int x, int y)
         {
@@ -281,6 +219,7 @@ namespace CookieMonster.CookieMonster_Objects
             
             //mobList.Add(_pc);
         }
+
         private bool afterFirstUpdate;
         public void Update()
         {
@@ -325,46 +264,6 @@ namespace CookieMonster.CookieMonster_Objects
             gamePaused = pauseGame;
         }
 
-        private void firstUpdate()
-        {
-            //Chceck if there is new tip to show:
-            tipsManager.newLevel(level);
-            engine.InitCamera();
-        }
-
-        private void slowDownUpdate()
-        {
-            if (slowdownActive && slowdownTimer.enabled == false)
-            {
-                slowdownActive = false;
-                Profile.currentProfile.config.options.sound.musicVol *= 10.0;
-                engine.SoundMan.recalculateMusic();
-                for (int i = 0; i < enemiesList.Count; i++)
-                {
-                    enemiesList[i].resetMovementSpeed();
-                }
-            }
-        }
-
-        private void updateMOBs()
-        {
-            sortedEnemiesList.Clear();
-            _pc.Update();
-            for (int i = 0; i < enemiesList.Count; i++)
-            {
-                enemiesList[i].Update();//update mob
-                int j = 0;
-                for (; j < sortedEnemiesList.Count; j++)
-                {
-                    if (enemiesList[i].pY < sortedEnemiesList[j].pY)
-                        break;
-                    else if (enemiesList[i].pX < sortedEnemiesList[j].pX)
-                        break;
-                }
-                sortedEnemiesList.Insert(j, enemiesList[i]);
-                j++;
-            }
-        }
         public void prepareRender()
         {//handles all object render during Game
             // FIX: We will make sure we passing object 
@@ -413,21 +312,123 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="p"></param>
         public void addPowerUP(PowerUp p)
         {
-           /* int i = 0;
-            while (i<sortedPowerUpList.Count)
-            {
-                if ((sortedPowerUpList[i].pY < p.pY) && (sortedPowerUpList[i].pY < p.pY))
-                    i++;
-                else
-                    break;
-            }
-            sortedPowerUpList.Insert(i, p);
-            */
             sortedPowerUpList.Add(p);
         }
         public void removePowerUp(PowerUp p)
         {
             sortedPowerUpList.Remove(p);
+        }
+
+
+        #region loading_screen
+        private Text loadScreenTxtMsg;
+        private Obj loadScreenBG;
+        private Obj loadScreenAni;
+        private void updateLoadingInfos(string msg)
+        {
+            float xCenter = (float)engine.Width / 2f;
+            float yCenter = (float)engine.Height / 2f;
+
+            float xMinus = TextManager.font_default_20.Measure(msg).Width / 2;
+            loadScreenTxtMsg = new Text(TextManager.font_default_20, xCenter - xMinus, yCenter, msg);
+            __renderLoadScreen();
+            //engine.textManager.onRender();         
+        }
+
+        private void initLoadScreen()
+        {
+            //FIX: remove all previous texts
+            engine.textManager.clearAll();
+            loadScreenBG = new Obj("../data/Textures/MENU/LOADING_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
+            loadScreenAni = new Obj("../data/Textures/MENU/LOADING_ANI_A0.dds", 0.5, 0.42, Obj.align.CENTER_BOTH, false);
+            loadScreenBG.isGUIObjectButUnscaled = true;
+            loadScreenAni.isGUIObjectButUnscaled = true;
+        }
+        private void __renderLoadScreen()
+        {
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            loadScreenBG.Render();  // Using render there is required because there is
+            loadScreenAni.Render(); // no active viewport and it's not rendered right now!!!
+            if (loadScreenTxtMsg != null)
+            {
+                loadScreenTxtMsg.Update();
+                loadScreenTxtMsg.Render();
+            }
+            engine.SwapBuffers();
+        }
+        #endregion
+        private void startGameDurationTimer()
+        {
+            gameDuration = new Timer(Timer.eUnits.MSEC, -1);
+            gameDuration.start();
+        }
+        private void pauseGameDurationTimer()
+        {
+            gameDuration.stop();
+        }
+        private void continueGameDurationTimer()
+        {
+            gameDuration.start();
+        }
+        private void startNewLevelTimer()
+        {
+            //Start new level timer:
+            levelDuration = new Timer(Timer.eUnits.MSEC, -1);
+            levelDuration.start();
+        }
+        private void initializeMOBs()
+        {
+            PC.Initialize();
+            for (int i = 0; i < enemiesList.Count; i++)
+                enemiesList[i].Initialize();
+        }
+        private void initGameMap()
+        {
+            engine.gameCamera.resetPos();
+            String mapFile = "LEVEL_" + level.ToString() + ".pn" + "g";//workaround to force it always as dds
+            mapFile = GameMap.MapsPath + mapFile;
+            _Map = new GameMap(mapFile, this);
+        }
+
+        private void firstUpdate()
+        {
+            //Chceck if there is new tip to show:
+            tipsManager.newLevel(level);
+            engine.InitCamera();
+        }
+
+        private void slowDownUpdate()
+        {
+            if (slowdownActive && slowdownTimer.enabled == false)
+            {
+                slowdownActive = false;
+                Profile.currentProfile.config.options.sound.musicVol *= 10.0;
+                engine.SoundMan.recalculateMusic();
+                for (int i = 0; i < enemiesList.Count; i++)
+                {
+                    enemiesList[i].resetMovementSpeed();
+                }
+            }
+        }
+
+        private void updateMOBs()
+        {
+            sortedEnemiesList.Clear();
+            _pc.Update();
+            for (int i = 0; i < enemiesList.Count; i++)
+            {
+                enemiesList[i].Update();//update mob
+                int j = 0;
+                for (; j < sortedEnemiesList.Count; j++)
+                {
+                    if (enemiesList[i].pY < sortedEnemiesList[j].pY)
+                        break;
+                    else if (enemiesList[i].pX < sortedEnemiesList[j].pX)
+                        break;
+                }
+                sortedEnemiesList.Insert(j, enemiesList[i]);
+                j++;
+            }
         }
 
         //Teleport Stuff:

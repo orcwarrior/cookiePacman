@@ -5,6 +5,9 @@ using System.Text;
 
 namespace CookieMonster.CookieMonster_Objects
 {
+    /// <summary>
+    /// Way it's just an Edge that connects 2 nodes (Waypoint) in graph(Waynet).
+    /// </summary>
     class Way
     {
         public uint weight{get; private set;}//distance between waypoints in grid units (right now: 48pixels per grid unit)

@@ -6,6 +6,9 @@ using QWORD = System.UInt64;
 
 namespace CookieMonster.DLL
 {
+    /// <summary>
+    /// Class handling imports from bass.dll library
+    /// </summary>
     static class Bass
     {
         //tag types:
@@ -71,7 +74,6 @@ namespace CookieMonster.DLL
 
         [DllImport("bass.dll")]
         public static extern bool BASS_ChannelSlideAttribute(int handle,DWORD attrib,float value,int time_ms);
-
 
     }
 }

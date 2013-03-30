@@ -127,7 +127,7 @@ namespace CookieMonster.CookieMonster_Objects
             easeOutTimer = new Timer(Timer.eUnits.MSEC, 200, 0, true, false);
             // Add to Tips Manager:
             tipsManager.Add(this);
-            Layer.currentlyWorkingLayer = -1;
+            Layer.currentlyWorkingLayer = -1; // don't overwrite layers from now
         }
 
         public void Update()
@@ -199,7 +199,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void Close()
         {
-            engine.menuManager.current_menu = null;
+            engine.menuManager.close();
             isOpened = false;
             isClosing = true;
             easeOutTimer.start();

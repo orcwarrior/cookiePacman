@@ -7,8 +7,10 @@ using System.Drawing;
 namespace CookieMonster.CookieMonster_Objects
 {
     /// <summary>
-    /// 
-    /// BIG FUCKING NOTE: Changing name of this class will made
+    /// Class stores inner and outter colors of light gradient.
+    /// *Inner color means color at the center of gradient
+    /// *Outter color is color at the edges of gradient.
+    /// NOTE: Changing name of this class will made
     /// constructor of lightAniData detecting of passed <T> type
     /// obsolete!!!
     /// </summary>
@@ -61,15 +63,22 @@ namespace CookieMonster.CookieMonster_Objects
             
         }
     }
+    /// <summary>
+    /// Type of o lightAniData object (depends on passed T)
+    /// </summary>
     public enum eLightDataType { undef, pos, scale, color };
+    /// <summary>
+    /// Type of light animation looping
+    /// </summary>
     public enum eLightAniType { once, loop,loopStep2First, pingpong };
 
-    // This class contains only a raw data that will be fully
-    // processed by Light class objects itself.
+
     /// <summary> 
+    /// This class contains only a raw data that will be fully
+    /// processed by Light class objects itself.
     /// After redesigning of class (to generic) I decided
     /// that this class will calculate everything by itself
-    /// and return "ready to use" data to Light.
+    /// and return "ready to use" data to holding Light class object.
     /// </summary>
     class lightAniData<T> //where T : Point,lightColors,
     {
@@ -329,7 +338,7 @@ namespace CookieMonster.CookieMonster_Objects
 
         /// <summary>
         /// If Light has some parent(only if dynamic!!!)
-        /// it will "follows" position of paren object.
+        /// it will "follows" position of parent object.
         /// (actually it will copy Pos of parrent in 
         /// update method)
         /// </summary>
@@ -465,7 +474,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void move(Vector2 pos)
         {
-            relPos.Add(pos);
+            relPos = Vector2.Add(relPos, pos);
             for (int i = 0; i < gradsComposition.Count; i++)
                 gradsComposition[i].moveRelatively(pos);
         }

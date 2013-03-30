@@ -413,14 +413,18 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Menu_Options_Sound_Music_Minus()
         {
-            Configuration.prevDouble(ref Profile.currentProfile.config.options.sound.musicVol);
+            double hlp = Profile.currentProfile.config.options.sound.musicVol;
+            Configuration.prevDouble(ref hlp);
+            Profile.currentProfile.config.options.sound.musicVol = hlp;
             Menu options_snd = engine.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
             options_snd.getItem(8).value = Math.Round(Profile.currentProfile.config.options.sound.musicVol, 2).ToString();
             engine.SoundMan.recalculateMusic();
         }
         public static void Menu_Options_Sound_Music_Add()
         {
-            Configuration.nextDouble(ref Profile.currentProfile.config.options.sound.musicVol);
+            double hlp = Profile.currentProfile.config.options.sound.musicVol;
+            Configuration.nextDouble(ref hlp);
+            Profile.currentProfile.config.options.sound.musicVol = hlp;
             Menu options_snd = engine.menuManager.getMenuByName("MENU_OPTIONS_SOUND");
             options_snd.getItem(8).value = Math.Round(Profile.currentProfile.config.options.sound.musicVol, 2).ToString();
             engine.SoundMan.recalculateMusic();

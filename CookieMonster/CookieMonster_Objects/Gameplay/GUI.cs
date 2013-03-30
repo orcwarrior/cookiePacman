@@ -6,6 +6,12 @@ using QuickFont;
 
 namespace CookieMonster.CookieMonster_Objects
 {
+    /// <summary>
+    /// Class is responsible for graphic user interface in-game
+    /// (If I have more time for refractoring, I would made it singleton)
+    /// It's responsible for drawing of whole bar on bottom of screen
+    /// (with power-up's and skills icons, points etc.)
+    /// </summary>
     class GUI : engineReference
     {
         QFont guiFont = TextManager.newQFont("Rumpelstiltskin.ttf", 25);
@@ -55,11 +61,11 @@ namespace CookieMonster.CookieMonster_Objects
             lives = new Obj("../data/Textures/GAME/GUI/LIVE.dds", 0.18, y_obj, Obj.align.CENTER_X, false);
             lives.isGUIObjectButUnscaled = true;
 
-            powerUpTxt = new Text(guiFont,  28, (float)(act.height - textFromDownLine),Lang.cur.Dopalacze);
+            powerUpTxt = new Text(guiFont,  28, (float)(engine.Height - textFromDownLine),Lang.cur.Dopalacze);
             PUControllLetters = new List<Text>();
             controllsFont.Options.Colour = new OpenTK.Graphics.Color4(255, 255, 255, 192);
-            PUControllLetters.Add(new Text(controllsFont, 187, (float)(act.height - textKeyHints), "Z"));
-            PUControllLetters.Add(new Text(controllsFont, 265, (float)(act.height - textKeyHints), "X"));
+            PUControllLetters.Add(new Text(controllsFont, 187, (float)(engine.Height - textKeyHints), "Z"));
+            PUControllLetters.Add(new Text(controllsFont, 265, (float)(engine.Height - textKeyHints), "X"));
 
 
             SkillsBackgrounds = new List<Obj>();
@@ -69,10 +75,10 @@ namespace CookieMonster.CookieMonster_Objects
             tmp = new Obj("../data/Textures/GAME/GUI/GUI_SKILL_BG.dds", 0.955, y_obj, Obj.align.CENTER_X, false);
             tmp.isGUIObjectButUnscaled = true;
             SkillsBackgrounds.Add(tmp);
-            SkillsTxt = new Text(guiFont, act.width - 335, (float)(act.height - textFromDownLine), Lang.cur.umiejetnosci);
+            SkillsTxt = new Text(guiFont, engine.Width - 335, (float)(engine.Height - textFromDownLine), Lang.cur.umiejetnosci);
             SkillsControllLetters = new List<Text>();
-            SkillsControllLetters.Add(new Text(controllsFont, act.width - 148, (float)(act.height - textKeyHints), "C"));
-            SkillsControllLetters.Add(new Text(controllsFont, act.width - 72, (float)(act.height - textKeyHints), "V"));
+            SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 148, (float)(engine.Height - textKeyHints), "C"));
+            SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 72, (float)(engine.Height - textKeyHints), "V"));
 
             SkillBoost = new Obj("../data/Textures/GAME/SKILLS/SKILL_BOOST.dds", 0.895, y_obj, Obj.align.CENTER_X, false);
             SkillBoost.isGUIObjectButUnscaled = true;
@@ -84,7 +90,7 @@ namespace CookieMonster.CookieMonster_Objects
             DisabledSkillIceBolt = new Obj("../data/Textures/GAME/SKILLS/SKILL_ICEBOLT_DISABLED.dds", 0.955, y_obj, Obj.align.CENTER_X, true);
             DisabledSkillIceBolt.isGUIObjectButUnscaled = true;
 
-            Points = new Text(guiFont,  act.width / 2 - 310, (float)(act.height - textFromDownLine),Lang.cur.punkty_0);
+            Points = new Text(guiFont, engine.Width / 2 - 310, (float)(engine.Height - textFromDownLine), Lang.cur.punkty_0);
 
             enterButtonToNextLevel = new Obj("../data/Textures/GAME/GUI/enter_button.dds", 0.5, 0.0, Obj.align.CENTER_X, true);
 
@@ -167,7 +173,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             //Lives:
             const int maxLives = 5;
-            int l; int startX = (int)(600.0 / (double)Viewport.guiBase_width * gm.activeView.width); 
+            int l; int startX = (int)(600.0 / (double)Viewport.guiBase_width * engine.Width); 
             int stepX = 50;
             for (l = 0; ((l + 1 < gm.PC.lives)&&(l<maxLives)); l++)
             {
@@ -179,7 +185,7 @@ namespace CookieMonster.CookieMonster_Objects
                 TextManager txtMan = engine.textManager;
                 Viewport act = engine.activeViewport;
                 if (restLives == null)
-                    restLives = new Text(livesFont, (float)(startX + 10 + l * stepX), (float)(act.height - 70), "+" + (gm.PC.lives - maxLives - 2).ToString());
+                    restLives = new Text(livesFont, (float)(startX + 10 + l * stepX), (float)(engine.Height - 70), "+" + (gm.PC.lives - maxLives - 2).ToString());
                 else restLives.changeText("+" + (gm.PC.lives - maxLives - 2));
                 //Text restLives = txtMan.produceText(livesFont, "+" + (gm.PC.lives - maxLives - 2).ToString(), (float)(startX + 10 + l * stepX), (float)(act.height - 70));
                 restLives.Update();

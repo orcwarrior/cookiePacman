@@ -130,16 +130,16 @@ namespace CookieMonster.CookieMonster_Objects
             QFont heading1 = TextManager.newQFont("KOMIKAX.ttf", 22, true, new OpenTK.Graphics.Color4(0, 112, 186, 255));
             
 
-            float x = engine.activeViewport.width / 2 - heading1.Measure(Lang.cur.Wybierz_Profil).Width / 2;
-            float y = engine.activeViewport.height * 4 / 10 + 10f;
+            float x = engine.Width  / 2 - heading1.Measure(Lang.cur.Wybierz_Profil).Width / 2;
+            float y = engine.Height * 4 / 10 + 10f;
             profile.addItem(new Menu_Item(Lang.cur.Wybierz_Profil, x, y, heading1));
         }
 
         private static void genereateDeleteButton(Menu profile)
         {
-            QFont DeleteProf = TextManager.newQFont("Rumpelstiltskin.ttf", 32, false, new Color4(0, 112, 186, 255));              
-            float x = engine.activeViewport.width / 2 - DeleteProf.Measure(Lang.cur.Usun_Profil).Width / 2 - 120f;
-            float y = engine.activeViewport.height / 2 + 75f; 
+            QFont DeleteProf = TextManager.newQFont("Rumpelstiltskin.ttf", 32, false, new Color4(0, 112, 186, 255));
+            float x = engine.Width / 2 - DeleteProf.Measure(Lang.cur.Usun_Profil).Width / 2 - 120f;
+            float y = engine.Height / 2 + 75f; 
                 if (menuSelectedProfile > 0)
                 {//some profile is selected, can delete it:
                     //DeleteProf = TextManager.newQFont("Rumpelstiltskin.ttf", 32, false, new Color4(0, 112, 186, 255));
@@ -158,8 +158,8 @@ namespace CookieMonster.CookieMonster_Objects
             
             string tmp = InputManager.getInputBuffer();
 
-            float x = engine.activeViewport.width / 2 - OK.Measure(Lang.cur.OK).Width / 2 + 200f;
-            float y = engine.activeViewport.height / 2 + 75f;
+            float x = engine.Width  / 2 - OK.Measure(Lang.cur.OK).Width / 2 + 200f;
+            float y = engine.Height / 2 + 75f;
             if (menuSelectedProfile > 0 || (menuSelectedProfile == 0 && tmp.Length > 0 && profile.inputItem.value != profile.inputItem.defaultValue))
             {//OK Active:
                 QFont OKhover = TextManager.newQFont("Rumpelstiltskin.ttf", 32, true, new Color4(0, 112, 186, 255));
@@ -179,18 +179,18 @@ namespace CookieMonster.CookieMonster_Objects
             QFont profileName = TextManager.newQFont("Rumpelstiltskin.ttf", 24, false, new Color4(220, 220, 220, 255));
             QFont profileName_hover = TextManager.newQFont("Rumpelstiltskin.ttf", 24, false, new Color4(255, 255, 255, 255));
 
-            float y = engine.activeViewport.height / 2 - 18f;
+            float y = engine.Height / 2 - 18f;
 
             float x;
             if (menuSelectedProfile == 0)//create profile:
             {
-                x = engine.activeViewport.width / 2 - profileName.Measure(Lang.cur.stworz_nowy).Width / 2;
+                x = engine.Width / 2 - profileName.Measure(Lang.cur.stworz_nowy).Width / 2;
                 profile.addInputItem(new Menu_Input_Item(x, y, profileName, profileName_hover, null, Lang.cur.stworz_nowy, false));
             }
             else if (menuSelectedProfile > 0)
             {
                 string pName = profilesList[menuSelectedProfile - 1].name;
-                x = engine.activeViewport.width / 2 - profileName.Measure(pName).Width / 2;
+                x = engine.Width / 2 - profileName.Measure(pName).Width / 2;
                 profile.addInputItem(new Menu_Input_Item(x, y,profileName,null,pName,true));
             }
         }

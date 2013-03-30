@@ -15,6 +15,9 @@ namespace CookieMonster.CookieMonster_Objects
         public bool sndMgr_Initialized { get; private set; }
         public SoundManager()
         {
+            //No sound? don't init bass.dll!!!
+            if (Profile.currentProfile.config.commandline.noSound) return;
+
             try
             {
                 sndMgr_Initialized = DLL.Bass.BASS_Init(-1, 44100, 0, 0, (object)null);
@@ -126,6 +129,11 @@ namespace CookieMonster.CookieMonster_Objects
                 loopingMusic[i].recalculateVolume();
             for (int i = 0; i < Music.Count; i++)
                 Music[i].recalculateVolume();
+        }
+        public void removeAllMusic()
+        {
+            loopingMusic.Clear();
+            Music.Clear();
         }
     }
 }

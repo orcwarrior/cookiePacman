@@ -6,6 +6,12 @@ using System.Drawing;
 
 namespace CookieMonster.CookieMonster_Objects
 {
+    /// <summary>
+    /// Class is responsible for creating Portal (teleport) object.
+    /// When on map, portal object is found object instance of this class
+    /// is created, then when another portal with the same _portalColor is found.
+    /// It's added as portalObj2 and creation of portal is finished.
+    /// </summary>
     class Portal
     {
         static private int portalsCount = 0;

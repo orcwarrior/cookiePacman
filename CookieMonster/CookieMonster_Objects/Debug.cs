@@ -8,6 +8,11 @@ using QuickFont;
 
 namespace CookieMonster.CookieMonster_Objects
 {
+    /// <summary>
+    /// DEPRECATED
+    /// Level of debug message (when higher level is active in debugger, than passed Msg level)
+    /// Message will not be passed to debuger.
+    /// </summary>
     enum DebugLVL
     {
         info,fault,warn,error

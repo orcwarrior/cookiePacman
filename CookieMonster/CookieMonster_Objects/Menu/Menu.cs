@@ -13,7 +13,6 @@ namespace CookieMonster.CookieMonster_Objects
     class Menu : engineReference
     {
         public string name { get; private set; }
-        private bool clearViewportOnOpen;
         public delegate void funcOnOpen();
         funcOnOpen onOpen;
         public delegate void funcOnUpdate();
@@ -23,7 +22,6 @@ namespace CookieMonster.CookieMonster_Objects
         private bool opened;
         private bool menuFadeIn;
         private bool menuFadeOut;
-        private bool fadeWithBlack;
         public string menuName{ get {return name;}}
 
         private List<Menu_Item> items;
@@ -64,8 +62,7 @@ namespace CookieMonster.CookieMonster_Objects
             name = n;
             onOpen = _onOpen;
             opened = false;
-            menuFadeIn = menuFadeOut = fadeWithBlack = false;
-            clearViewportOnOpen = true;
+            menuFadeIn = menuFadeOut = false;
             fadeOutTimer = new Timer(Timer.eUnits.MSEC, 200, 0, true, false);
             fadeInTimer = new Timer(Timer.eUnits.MSEC, 400, 0, true, false);
             submenuTimer = new Timer(Timer.eUnits.MSEC, 300, 0, true, false);

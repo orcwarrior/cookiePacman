@@ -138,7 +138,7 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="newPos"></param>
         public void moveRelatively(Vector2 newPos)
         {
-            cPos.Add(newPos);
+            cPos = Vector2.Add(cPos, newPos);
         }
         /// <summary>
         /// Draws this radialGradient To current openGL buffer.

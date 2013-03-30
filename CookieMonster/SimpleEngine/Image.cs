@@ -7,78 +7,6 @@ using CookieMonster;
 
 namespace Engine
 {
-    class TexPoolItem
-    {
-        public uint tex;
-        public int w;
-        public int h;
-        public string path;
-        public override string ToString()
-        {
-            return path.Substring(path.LastIndexOf("/")+1);
-        }
-    }
-    /// <summary>
-    /// OBSOLETE / UNUSED
-    /// </summary>
-    static class TexturesPool
-    {
-        const int texArrSize = 4999;
-        private static int texsCount;
-        private static TexPoolItem[] textures = new TexPoolItem[texArrSize];
-        public static TexPoolItem getImage(string path)
-        {
-            uint hash = (uint)path.GetHashCode() % texArrSize, i = hash;
-
-            while (textures[i] != null)
-            {
-                if (textures[i].path == path)
-                    if (textures[i].tex >= 0)
-                        return textures[i];
-                    else
-                    {
-                        break;
-                    }
-                i = (i + 1) % texArrSize;
-                if (i == hash) { new DebugMsg("texPool overflowed!", DebugLVL.fault); return null; }
-            }
-            //create texture:
-            texsCount++;
-            TexPoolItem tex = new TexPoolItem();
-            TextureTarget texTarget = TextureTarget.Texture2D;
-            ImageDDS.LoadFromDisk(path, out tex.tex, out texTarget);
-            tex.w = ImageDDS.Width;
-            tex.h = ImageDDS.Height;
-            tex.path = path;
-            textures[i] = tex;
-            return tex;
-        }
-        public static void deleteImage(string path)
-        {
-            uint hash = (uint)path.GetHashCode() % texArrSize, i = hash;
-
-            while (textures[i] != null)
-            {
-                if (textures[i].path == path)
-                    textures[i] = null;
-                i = (i + 1) % texArrSize;
-                if (i == hash) { new DebugMsg("texPool overflowed!", DebugLVL.fault); return; }
-            }
-            // so tex is removed, now correct futher hash codes:
-            if (textures[i] == null) return;
-            uint hashBase = hash;
-            uint h = (uint)textures[i].path.GetHashCode();
-            while (h <= hashBase)
-            {
-                hashBase = h;
-                textures[i - 1] = textures[i];
-                i = (i + 1) % texArrSize;
-                if (textures[i] == null) break;
-                h = (uint)textures[i].path.GetHashCode();
-            }
-
-        }
-    }
     class Image : IProperties
     {
         public Bitmap bitmap;          // Used to load image
@@ -274,7 +202,7 @@ namespace Engine
         /// </summary>
         public void BuildTexcoords()
         {   //fix: small offset from the edge helps with "white edges" issue. [DK]
-            float off = 0.001f;
+            float off = 0.005f;
             BuildTexcoords(0.0f + off, 1.0f - off, 0.0f + off, 1.0f - off);
         }
 

@@ -30,7 +30,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             Color4 cc = new Color4(73, 160, 255, 255);
             trackTag_Font.Options.Colour = cc;
-            playerViewport = new Viewport(engine.activeViewport.width, engine.activeViewport.height,true);
+            playerViewport = new Viewport(engine.Width, engine.Height,true);
             playerViewport.partialViewport = true; // it will prevent viewport from rendering game map, texts etc.
             trackTagsDisplayDuration = new Timer(Timer.eUnits.MSEC, 7000, 0, true, false);
             curTrackPath = randomTrackName();
@@ -95,7 +95,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         private void putTrackInfosToViewport()
         {
-            int screenH = engine.activeViewport.height;
+            int screenH = engine.Height;
             //Obj bg = new Obj(trackInfosBG, 5, screenH-120, Obj.align.LEFT);
             //bg.isGUIObject = true;
             //bg.setCurrentTexAlpha(155);

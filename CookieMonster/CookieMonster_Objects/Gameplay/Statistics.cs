@@ -8,6 +8,11 @@ using EngineApp;
 
 namespace CookieMonster.CookieMonster_Objects
 {
+    /// <summary>
+    /// Class gathers all game-session statistics (right now is kinda poor, but maybe it 
+    /// will be extended with more counters and stuff)
+    /// Additionaly class handles display of added points (by eating cookie/enemy) by player.
+    /// </summary>
     class Statistics : engineReference
     {
         static public uint ptsPerCookie = 10;

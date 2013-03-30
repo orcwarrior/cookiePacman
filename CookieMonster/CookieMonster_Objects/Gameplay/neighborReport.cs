@@ -25,7 +25,7 @@ namespace CookieMonster.CookieMonster_Objects
         public neighborReport(int x, int y, GameMap.objType reportedType)//x,y are grid(bitmap) pos!
         {
             _x = x; _y = y;
-            Point pU = new Point(x, y - 1), pR = new Point(x + 1, y), pD, pL;
+            Point pU = new Point(x, y - 1), pR = new Point(x + 1, y);
             dontCreatePath = false;
             ways = 0;
             int gs = GameManager.gridSize;

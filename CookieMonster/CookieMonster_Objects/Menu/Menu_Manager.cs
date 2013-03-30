@@ -281,12 +281,15 @@ namespace CookieMonster.CookieMonster_Objects
         /// <summary>
         /// Close all menus in one step
         /// (closing animations etc. not included)
+        /// *NEW: disable cursor too
         /// </summary>
         public void close()
         {
             if (subSubMenu != null) subSubMenu = null;
             if (subMenu != null) subMenu = null;
             current_menu = null;
+            cursor.addedToViewport = false;
+            cursor.preparedToRender = false;
         }
         /// <summary>
         /// this function shows small alert window on top of menu that will 
@@ -309,8 +312,8 @@ namespace CookieMonster.CookieMonster_Objects
                 Obj BG = new Obj("../data/Textures/MENU/MENU_ALERT_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
                 BG.isGUIObjectButUnscaled = true;
 
-                float x = engine.activeViewportOrAny.width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
-                float y = engine.activeViewportOrAny.height * 3 / 10;
+                float x = engine.Width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
+                float y = engine.Height * 3 / 10;
                 alert = new Menu("ALERT", null);
                 alert.addItem(new Menu_Item("BG", BG, null, null, null, null, null));
                 alert.addItem(new Menu_Item(msg, x, y, Menu.fontSmallAlt, Menu.fontSmallAlt, Menu.fontSmallAlt, Menu_Instances.Menu_Nothing, null, null));
@@ -341,13 +344,13 @@ namespace CookieMonster.CookieMonster_Objects
                 Obj BG = new Obj("../data/Textures/MENU/MENU_CONFIRM_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
                 BG.isGUIObjectButUnscaled = true;
 
-                float x = engine.activeViewportOrAny.width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
-                float y = engine.activeViewportOrAny.height * 3 / 10;
+                float x = engine.Width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
+                float y = engine.Height * 3 / 10;
                 confirm = new Menu("CONFIRM", null);
                 confirm.addItem(new Menu_Item("BG", BG, null, null, null, null, null));
                 confirm.addItem(new Menu_Item(msg, x, y, Menu.fontSmallAlt, Menu.fontSmallAlt, Menu.fontSmallAlt, Menu_Instances.Menu_Nothing, null, null));
 
-                x = engine.activeViewportOrAny.width / 2;
+                x = engine.Width / 2;
                 confirm.addItem(new Menu_Item(Lang.cur.Yes, x + 70, y + 300f, confirmYES, confirmYESHover, Menu.font_Click, yesClick));
                 confirm.addItem(new Menu_Item(Lang.cur.No, x - 140, y + 300f, confirmNO, confirmNOHover, Menu.font_Click, noClick));
             }

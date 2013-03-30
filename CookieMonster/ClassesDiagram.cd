@@ -1,0 +1,848 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Comment CommentText="Niewykorzystywana klasy&#xD;&#xA;&#xD;&#xA;próba napisania własnego bufora do odtw. plików .bik">
+    <Position X="60.083" Y="21.481" Height="1.599" Width="1.7" />
+  </Comment>
+  <Class Name="CookieMonster.CookieMonster_Objects.Camera">
+    <Position X="9.75" Y="3" Width="2" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Camera.eType">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Camera.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAIBgAAAAAAAAAAEAAAMFAAAAAAAACAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Camera.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.commandline" Collapsed="true">
+    <Position X="84.25" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.gameplay" Collapsed="true">
+    <Position X="79.25" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.options" Collapsed="true">
+    <Position X="74.75" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.graphics" Collapsed="true">
+    <Position X="84.25" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAQCAAAAAAAAAAQAAAAAAAAIA=</HashCode>
+      <FileName>CookieMonster_Objects\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.sound" Collapsed="true">
+    <Position X="84.25" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAIAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Configuration">
+    <Position X="67" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAFAAAgAAAAAIAAAEAAIAAABAACAAAAIAAIAAAM=</HashCode>
+      <FileName>CookieMonster_Objects\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.databaseManager" Collapsed="true">
+    <Position X="62.5" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAgAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\databaseManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.DebugMsg" Collapsed="true">
+    <Position X="66" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAgAAgAAAAAIAAAAAAAAAIAAQAAARAAAE=</HashCode>
+      <FileName>CookieMonster_Objects\Debug.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Debug" Collapsed="true">
+    <Position X="62.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQEIAAECBAAAAAICBAAAAACgQAAgIQAABAQCEAAAAg=</HashCode>
+      <FileName>CookieMonster_Objects\Debug.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.engineReference">
+    <Position X="47" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAQAAAAAAAQAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\engineRef.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Bomb">
+    <Position X="35.25" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAQAAAAAQAAAAgAAAAAgAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Bomb.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Cliffs" Collapsed="true">
+    <Position X="66" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAQAAAAAAAAAAAAAAAQQAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Cliffs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.collDynEventArgs" Collapsed="true">
+    <Position X="70.25" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAABAABAAAAAAAAAAI=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\CollisionSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.CollisionReport" Collapsed="true">
+    <Position X="74.75" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAgAAIAAgAAAEEABAASAABCEAABKgAAAAAgQgAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\CollisionSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.CollisionSystem" Collapsed="true">
+    <Position X="79.25" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAIAAAAAAAEAAAAAAAAAAQAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\CollisionSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Enemy">
+    <Position X="44.5" Y="27.5" Width="2.5" />
+    <NestedTypes>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Enemy.enemyType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Gameplay\Enemies\Enemy.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Enemy.eEnemyState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Gameplay\Enemies\Enemy.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AUQACAAAAEAQAAMoQEAABAAyAAIBIABAAAAAAiAAAYA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Enemies\Enemy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.enemyRanged">
+    <Position X="43.75" Y="35.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Enemies\enemyRanged.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Lazer">
+    <Position X="42.75" Y="37.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQSCAAAAAAAAAAAEEQAAAAAEAAAAAACCAAAAAAIBAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Enemies\Lazer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Quickie">
+    <Position X="45" Y="37.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAACAEAQgAgAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Enemies\Quickie.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Thief">
+    <Position X="47.25" Y="35.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAABAAAAAEAQACAAAAAACAAQAAAIAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Enemies\Thief.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Wizard" Collapsed="true" HideInheritanceLine="true">
+    <Position X="79.25" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQACAAAAAAAACAAAEAAwAAAAAAAQAAAAEAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Enemies\Wizard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.GameManager">
+    <Position X="15.5" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>GAQoggBTABoQZFoQughAFghQeQHcAIAACsxmBEKeABI=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\GameManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.GameMap">
+    <Position X="21.25" Y="3" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CookieMonster.CookieMonster_Objects.GameMap.objType">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Gameplay\GameMap.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QACYQERYCWpQFAAQIorDInfQJEkMCKIdAFiAMAQDcAw=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\GameMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.GUI">
+    <Position X="28" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACEAQgAAAkAAIAAUCCQIBAAAAABBBAAAIIAE=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\GUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.MOB">
+    <Position X="42" Y="3" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CookieMonster.CookieMonster_Objects.MOB.eMOBType">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Gameplay\MOB.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="CookieMonster.CookieMonster_Objects.MOB.eState">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Gameplay\MOB.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="CookieMonster.CookieMonster_Objects.MOB.eDir">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Gameplay\MOB.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IBQMGBAVwugwYQBGlCAQGDDcACPKAVK2BAAEzACAzKE=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\MOB.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.MusicPlayer">
+    <Position X="57.75" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAYAAAAgAAAQABAACAAAAAAcUAAgAAAgAM=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\MusicPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.neighborReport" Collapsed="true">
+    <Position X="70.25" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAIIAAQAAAAAAAAAAAAAAgAQACAACAjgBAQCAQI=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\neighborReport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Paths" Collapsed="true">
+    <Position X="79.25" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAQIAAAAABAQAAAAAAAAAAIBAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Paths.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Skill" Collapsed="true">
+    <Position X="62.5" Y="28.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAQAAACEFAAAAAIAAAgAAAIA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Player">
+    <Position X="49.75" Y="27.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AoUBEAAAAEI8BADQCAACAUQIAIcEAgAgACRAAAYCIgA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Portal" Collapsed="true">
+    <Position X="54.5" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAgAAAkAQAAJAMAAAAAAACEAAgEAAIABAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Portal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.PowerUp">
+    <Position X="37.5" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEAAAAAAQAAAAABAAAAAABAAAAABAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\PowerUp.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Projectile">
+    <Position X="39.75" Y="27.5" Width="2.25" />
+    <NestedTypes>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Projectile.eProjType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Gameplay\Projectile.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BQQAAAAIAgAwgCAWAAAABjgAABBBARKAQJAASAIAIRA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Projectile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Statistics">
+    <Position X="30.75" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgAAABCIACAAAAAAgABAAAAAABAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Statistics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.statusScreen">
+    <Position X="48.75" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>lAUAQCCQAEAQAJBgEAAAZBSAAiAEAAABAAAwIABDICA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\statusScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.tipsManager" Collapsed="true">
+    <Position X="79.25" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAQAAAAAAAAAAAAAAAAAAIAAAAQAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\tipWindow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.tipWindow">
+    <Position X="69.75" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>CAQABAAABBAAIAhAAAAAAAAQUARFACAAABAAAACBIAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\tipWindow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.ShortestWaysTable" Collapsed="true">
+    <Position X="79.25" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>wAAAAAgAAAAAAQAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\ShortestWay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.wayDirectionStack" Collapsed="true">
+    <Position X="58.5" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgCAAAAAAAAGAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\ShortestWay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.ShortestWay" Collapsed="true">
+    <Position X="70.25" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACEAAAAAABAAgCAAAAgAAACAgAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\ShortestWay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.wayInInfo" Collapsed="true">
+    <Position X="62.5" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAgAAAAABAACAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\ShortestWay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.wayOutInfo" Collapsed="true">
+    <Position X="70.25" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAABAACAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\ShortestWay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.shortestWayAlgoritm" Collapsed="true">
+    <Position X="74.75" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAQAAAAAIgAABAAAAAgAAEQ4AAAAAQAUAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\ShortestWay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Way" Collapsed="true">
+    <Position X="54.5" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEACAAAAIAAAAAAAAAAQAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\Way.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Waynet" Collapsed="true">
+    <Position X="66" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEBAAAAEAAQgACAAAAEQBAAAAgAEAABASAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\Waynet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Waypoint" Collapsed="true">
+    <Position X="74.75" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAIIAQQAAAAEAABAAAgDAIAEAAAACQDgBAQCAwI=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\Waynet\Waypoint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.hashHelper" Collapsed="true">
+    <Position X="58.5" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgQAAAAAAAAACAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\hashHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.highscoresManager" Collapsed="true">
+    <Position X="66" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\highscoresManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.InputManager" Collapsed="true">
+    <Position X="74.75" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAEAAAAgAAAAAgQAAAAAAAAAAQAAABAgAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\InputManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Lang" Collapsed="true">
+    <Position X="79.25" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>qYgEDLBk0MqywoA7pA0GFEC/AqiAgRgACAAdRAIECAQ=</HashCode>
+      <FileName>CookieMonster_Objects\Lang.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Layer" Collapsed="true">
+    <Position X="84.25" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EEAAABEAAgAAAAEACAACAIAIAQAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>CookieMonster_Objects\Layer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.lightColors" Collapsed="true">
+    <Position X="58.5" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAABAAAAAAAAAAKAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Light.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.lightAniData&lt;T&gt;" Collapsed="true">
+    <Position X="54.5" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAgFAggEAAAAMCBAQABQkgIABAAAAAAAAAgACABA=</HashCode>
+      <FileName>CookieMonster_Objects\Light.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Light">
+    <Position X="51.5" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AEQACCCABAAgAADAAMAgAAAMAAFBAAAAABAAAgAACBA=</HashCode>
+      <FileName>CookieMonster_Objects\Light.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.lightingEngine">
+    <Position X="60.5" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAGEAQAAAABIlAAggAgAIAAAAAAAAQQBgAQAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\lightingEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Menu">
+    <Position X="72.5" Y="3" Width="2.5" />
+    <NestedTypes>
+      <Delegate Name="CookieMonster.CookieMonster_Objects.Menu.funcOnOpen" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Menu\Menu.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="CookieMonster.CookieMonster_Objects.Menu.funcOnUpdate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Menu\Menu.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="CookieMonster.CookieMonster_Objects.Menu.funcOnRender" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Menu\Menu.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QxYAAIQAwAApAAAWxgiAjAUAAMCEghEgYBEgABAAgAA=</HashCode>
+      <FileName>CookieMonster_Objects\Menu\Menu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Menu_Input_Item">
+    <Position X="78.25" Y="11.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCAAAAAAAAAAAAAAAAAAACAAAABCIAQBgBIAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Menu\Menu_Input_Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Menu_Instances" Collapsed="true">
+    <Position X="66" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgIAQAICAQKUAABAACRYgCAFRER2AwAcDkTAAAYMGIw=</HashCode>
+      <FileName>CookieMonster_Objects\Menu\Menu_Instances.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Menu_Item">
+    <Position X="78.25" Y="3" Width="2.25" />
+    <NestedTypes>
+      <Delegate Name="CookieMonster.CookieMonster_Objects.Menu_Item.mouseEvt" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Menu\Menu_Item.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>gBoQAAoAgAAggAJAxQIAAABAAAAEBigAABAFBACAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Menu\Menu_Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Menu_Manager">
+    <Position X="84" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>yQAJAECAgAAAAgUI2gUBCABCIKIgBAQgIaBOAgQAAgA=</HashCode>
+      <FileName>CookieMonster_Objects\Menu\Menu_Manager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Obj">
+    <Position X="12.5" Y="3" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Obj.align">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Obj.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Delegate Name="CookieMonster.CookieMonster_Objects.Obj.funcOnIdle" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Obj.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Class Name="CookieMonster.CookieMonster_Objects.Obj.idleAni">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Obj.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EAApAGihICESUkQUR6EFAYECEICADRDAgBBxDABBQjs=</HashCode>
+      <FileName>CookieMonster_Objects\Obj.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Obj_texAni">
+    <Position X="18.5" Y="3" Width="2" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Obj_texAni.eLoopType">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Obj.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAgEAQhAEACACAAAUQAAAAAAAAAAEAgAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Obj.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Obj_Animation">
+    <Position X="24.75" Y="3" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Obj_Animation.eAniType">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Obj_Animation.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Obj_Animation.eLoopType">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Obj_Animation.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="CookieMonster.CookieMonster_Objects.Obj_Animation.eAffectionFlags">
+        <TypeIdentifier>
+          <NewMemberFileName>CookieMonster_Objects\Obj_Animation.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AgADwAJAAACAiCAAAAVEBAkAAACJABAUgAACQQYKIAI=</HashCode>
+      <FileName>CookieMonster_Objects\Obj_Animation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Profile">
+    <Position X="33.5" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACQySKgICAARUAgQAQAAAAAAQGABAEgABABAAEoAA=</HashCode>
+      <FileName>CookieMonster_Objects\Profile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.radialGradient" Collapsed="true">
+    <Position X="62.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAABACoABAAADAAIACAACQEAAIAgIAIBAIIAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\radialGradient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.mapSave" Collapsed="true">
+    <Position X="62.5" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAgAAAiAAAAAAMAAAAAAAAQAAAABAA=</HashCode>
+      <FileName>CookieMonster_Objects\Savegame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.playerData" Collapsed="true">
+    <Position X="84.25" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACBCgAACAAABAAAAAIACAgAAMEAgEIAAgQQAAABgA=</HashCode>
+      <FileName>CookieMonster_Objects\Savegame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Savegame">
+    <Position X="75.75" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AIQAgAEAAgAAAAAAAAQAEAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Savegame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Sound" Collapsed="true">
+    <Position X="54.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAIAABAAIAAAAAAgAAAAAAAAAAEYCAEqAAAAAACABI=</HashCode>
+      <FileName>CookieMonster_Objects\Sound.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.SoundManager">
+    <Position X="81.5" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAEAAAAEAAAAAAACACAAQAAAAAEAAAAiEABQAAA=</HashCode>
+      <FileName>CookieMonster_Objects\SoundManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Text">
+    <Position X="87" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>BARgAGAAAIAAABACAAAEBAAAAAAAAAgIABRoJABAIIA=</HashCode>
+      <FileName>CookieMonster_Objects\TextManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.QFontConstructorData" Collapsed="true">
+    <Position X="58.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAEAIAAAAAAAACEAACAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\TextManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.TextManager" Collapsed="true">
+    <Position X="62.5" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAoAAAAACEAAAARAAAAEASEAAAAAAAEAMBAAACwCAQI=</HashCode>
+      <FileName>CookieMonster_Objects\TextManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Timer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="74.75" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBARAAACAggAQkAICBAgCAAQAhAACQAAoAAQQAByA=</HashCode>
+      <FileName>CookieMonster_Objects\Timer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Timers_Manager">
+    <Position X="36.5" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AQQAAQAAAIgABAAAgAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>CookieMonster_Objects\Timer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.VideoPlayer">
+    <Position X="54.5" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>CRgAABAARACAAFAAAIEAAAAEAAAAAIiAEAgAAACAAEA=</HashCode>
+      <FileName>CookieMonster_Objects\VideoPlayer\VideoPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.CookieMonster_Objects.Viewport">
+    <Position X="63.75" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAIAQAAAAAABMCIKkAAAACgAIAAEAAFBCAgBAAMI=</HashCode>
+      <FileName>CookieMonster_Objects\Viewport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.BinkGL" Collapsed="true">
+    <Position X="58.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AkACACCbAEABGBIKAQQqLAABAiABCCIIAAgAAURAQII=</HashCode>
+      <FileName>CookieMonster_Objects\VideoPlayer\BinkGL.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.DLL.Bass" Collapsed="true">
+    <Position X="54.5" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAoAggIQADgAAAAAQAgEAEAIUJkAgAAKABEAIEAAEAI=</HashCode>
+      <FileName>DLL\Bass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.DLL.Bink" Collapsed="true">
+    <Position X="58.5" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ggAAAACAAAAABAIAAAQAAEAAQACFAAAABIABAAIQABA=</HashCode>
+      <FileName>DLL\Bink.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EngineApp.Game" Collapsed="true">
+    <Position X="74.75" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEARIQEAABAZAmAAQLgIACAGIAACSCAICBgiBUASAAI=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.Properties.Settings" Collapsed="true">
+    <Position X="66" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAIAAAAAABAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Settings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine.Core" Collapsed="true">
+    <Position X="54.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAABAAAA=</HashCode>
+      <FileName>SimpleEngine\Core.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine.Effect" Collapsed="true">
+    <Position X="70.25" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAECAAIAIAAAgACAAAAAAA=</HashCode>
+      <FileName>SimpleEngine\Effect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine.Image">
+    <Position X="24.5" Y="30" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAgIAAAAkAgAAAAAAAIAAAAAgAAEEABAgAgAAI=</HashCode>
+      <FileName>SimpleEngine\Image.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine.IParticleSystem">
+    <Position X="27.5" Y="30" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="Engine.IParticleSystem.Particle" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>SimpleEngine\IParticleSystem.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAABAAAAMAAAAUAAAAgAAAAAEAAAEQAAIARgIAAQAAA=</HashCode>
+      <FileName>SimpleEngine\IParticleSystem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine.IProperties">
+    <Position X="26.75" Y="24.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>CAIAAAAAAQgAAAAAAACIAAACAAAAEACqQQgBAAAMAAA=</HashCode>
+      <FileName>SimpleEngine\IProperties.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine.Sprite">
+    <Position X="29.75" Y="30" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEQAAgAAAAAAAoBAAAAAAAQAEAAAAAAAAIADEQAAAAA=</HashCode>
+      <FileName>SimpleEngine\Sprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine.VBO" Collapsed="true">
+    <Position X="84.25" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAgAAAAAAAAAAQAAQggAAABAAAAAAAAA=</HashCode>
+      <FileName>SimpleEngine\VBO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine.Helper" Collapsed="true">
+    <Position X="62.5" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>TextureLoaders\Helper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CookieMonster.TextureLoaders.ImageDDS" Collapsed="true">
+    <Position X="70.25" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABABIAAJAREAABEAigUAwEECggAAAAKKVKho=</HashCode>
+      <FileName>TextureLoaders\DDSLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TextureLoaders.TextureLoaderParameters" Collapsed="true">
+    <Position X="66" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAgAAAAJAAAAAAAlAAAAAAAAAAAABAAABAAAAAAAA=</HashCode>
+      <FileName>TextureLoaders\LoaderStatics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Engine.Vertex" Collapsed="true">
+    <Position X="58.5" Y="27.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>SimpleEngine\Types.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Engine.TexCoord" Collapsed="true">
+    <Position X="54.5" Y="27.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAA=</HashCode>
+      <FileName>SimpleEngine\Types.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="CookieMonster.CookieMonster_Objects.DebugLVL" Collapsed="true">
+    <Position X="54.5" Y="29" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAEAAAAAAAAAAAAAQAABAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Debug.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CookieMonster.CookieMonster_Objects.POWER_UP" Collapsed="true">
+    <Position X="70.25" Y="30" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAABAAAAAAAgAAAAAAAAEAAAEAAACAAAAAABA=</HashCode>
+      <FileName>CookieMonster_Objects\Gameplay\PowerUp.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CookieMonster.CookieMonster_Objects.eLightDataType" Collapsed="true">
+    <Position X="62.5" Y="30" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIACAAAAAACAAAAAAAAEAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Light.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CookieMonster.CookieMonster_Objects.eLightAniType" Collapsed="true">
+    <Position X="58.5" Y="29" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAgAAAAABAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Light.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CookieMonster.CookieMonster_Objects.eLightType" Collapsed="true">
+    <Position X="66" Y="30" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>CookieMonster_Objects\Light.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

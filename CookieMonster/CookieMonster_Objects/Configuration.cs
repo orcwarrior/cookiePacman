@@ -8,6 +8,8 @@ namespace CookieMonster.CookieMonster_Objects
     public class commandline
     {
         public bool windowed = false;
+        public bool noSound = false;
+        public bool noMusic;
     }
     public class gameplay
     {
@@ -45,7 +47,9 @@ namespace CookieMonster.CookieMonster_Objects
     public class sound
     {
         public double sfxVol = 0.8;
-        public double musicVol = 1.0;
+
+        private double _musicVol = 0;
+        public double musicVol { get { return _musicVol; } set { _musicVol = value; if (Profile.currentProfile.config.commandline.noMusic) _musicVol = 0; } } 
     }
 
     class Configuration : engineReference
@@ -73,10 +77,14 @@ namespace CookieMonster.CookieMonster_Objects
             //commandline stuff:
             commandline = new CookieMonster_Objects.commandline();
             foreach (string arg in engine.cmdArguments)
+            {
                 switch (arg)
                 {
                     case "-windowed": commandline.windowed = true; break;
+                    case "-nosound": commandline.noSound = true; break;
+                    case "-nomusic": commandline.noMusic = true; break;
                 }
+            }
             //Load default:
             gameplay = new gameplay();
             gameplay.level = gameplay.eDifficultyLevel.NORMAL;
