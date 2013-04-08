@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using EngineApp;
 using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace CookieMonster.CookieMonster_Objects
 {

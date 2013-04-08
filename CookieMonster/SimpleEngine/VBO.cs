@@ -1,5 +1,5 @@
 using System;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace Engine
 {
@@ -17,7 +17,7 @@ namespace Engine
         /// </summary>
         public void Build()
         {
-            if (GL.SupportsExtension("VERSION_1_5"))
+            if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
             {
                 // Delete old VBO
                 if (vboID != 0) GL.DeleteBuffers(1, ref vboID);
@@ -35,7 +35,7 @@ namespace Engine
         /// </summary>
         public void BuildTex()
         {
-            if (GL.SupportsExtension("VERSION_1_5"))
+            if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
             {
                 // Delete old VBO
                 if (texID != 0) GL.DeleteBuffers(1, ref texID);
@@ -85,8 +85,9 @@ namespace Engine
         public void Draw(int lenght, BeginMode mode)
         {
             // Use VBOs if they are supported
-            if (GL.SupportsExtension("VERSION_1_5"))
+            if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
             {
+                
                 GL.EnableClientState(EnableCap.VertexArray);
                 GL.EnableClientState(EnableCap.TextureCoordArray);
 

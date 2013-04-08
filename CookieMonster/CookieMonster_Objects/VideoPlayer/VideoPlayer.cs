@@ -5,6 +5,7 @@ using System.Text;
 using CookieMonster.DLL;
 using CookieMonster;
 using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace CookieMonster.CookieMonster_Objects
 {
@@ -30,7 +31,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             someVideoIsPlaying = true;
             binkBufferReCreationAttempted = false;
-            binkRef = DLL.Bink.BinkOpen(path, Bink.openFlags.BINKNOSKIP|Bink.openFlags.BINKCOPYNOSCALING);
+            binkRef = DLL.Bink.BinkOpen(path, 0);//Bink.openFlags.BINKNOSKIP|Bink.openFlags.BINKCOPYNOSCALING);
                 /*all scallings+different bliting*/
             //1-works on xp x86 and win7 windowed
             

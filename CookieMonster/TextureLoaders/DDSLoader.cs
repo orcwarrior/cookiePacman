@@ -8,6 +8,7 @@ using System.IO;
 using System.Diagnostics;
 using TextureLoaders;
 using System.Drawing;
+using OpenTK.Graphics.OpenGL;
 
 namespace CookieMonster.TextureLoaders
 {
@@ -518,7 +519,7 @@ namespace CookieMonster.TextureLoaders
                     GLError = GL.GetError();
                     if (GLError != ErrorCode.NoError)
                     {
-                        throw new ArgumentException("Error setting Texture Parameters. GL Error: " + GLError + " " + Glu.ErrorString(GLError));
+                        throw new ArgumentException("Error setting Texture Parameters. GL Error: " + GLError + " " + GL.GetError().ToString()/*glu.ErrorString(GLError)*/);
                     }
                     #endregion Set Texture Parameters
 

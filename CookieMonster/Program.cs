@@ -27,23 +27,24 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Reflection;
 
-using OpenTK; 
+using OpenTK;
 using OpenTK.Input;
 using OpenTK.Platform;
 using OpenTK.Graphics;
 using CookieMonster.CookieMonster_Objects;
 using System.Threading;
 using TextureLoaders;
+using OpenTK.Graphics.OpenGL;
 
 namespace EngineApp
 {
     class Game : GameWindow
     {
         [Flags]
-        public enum game_state { Undef = 0,Menu = 2, Game = 4 };//ingame menu = Menu|Game
+        public enum game_state { Undef = 0, Menu = 2, Game = 4 };//ingame menu = Menu|Game
 
         public game_state gameState = game_state.Undef;
-        public Viewport gameViewport{get; private set;}
+        public Viewport gameViewport { get; private set; }
         public Viewport menuViewport { get; private set; }
         public bool activeViewportIsGame { get { return gameViewport == activeViewport; } }
         public Viewport activeViewport
@@ -85,10 +86,10 @@ namespace EngineApp
         // Those values need to be stored at the begining
         // Used for proper rescale of menu items etc. "GUI" type Obj's
         // Now theese values are straight from configuration class
-        
+
         //SimpleEngine stuff:
-        Engine.Core core  = new Engine.Core();
-        
+        Engine.Core core = new Engine.Core();
+
 
 
 
@@ -105,17 +106,17 @@ namespace EngineApp
             Keyboard.KeyDown += new EventHandler<KeyboardKeyEventArgs>(Keyboard_KeyDown);
             Keyboard.KeyUp += new EventHandler<KeyboardKeyEventArgs>(Keyboard_KeyUp);
             KeyPress += new EventHandler<KeyPressEventArgs>(Keyboard_KeyPress);
-            Keyboard.KeyUp += new EventHandler<KeyboardKeyEventArgs>(Profile.Profile_KeyStroke);            
+            Keyboard.KeyUp += new EventHandler<KeyboardKeyEventArgs>(Profile.Profile_KeyStroke);
         }
 
         public void Keyboard_KeyPress(object sender, KeyPressEventArgs p)
         {
             InputManager.KeyPress(sender, p);
-            
+
         }
         public void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(menuManager!=null)
+            if (menuManager != null)
                 menuManager.setButtonState(e.Button, true);
             if (videoPlayer != null)    // skip video on mouse down evt.
                 videoPlayer.keyDown(sender, new KeyboardKeyEventArgs());
@@ -123,27 +124,27 @@ namespace EngineApp
         public void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (menuManager != null)
-            menuManager.setButtonState(e.Button, false);
+                menuManager.setButtonState(e.Button, false);
         }
         public void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs k)
         {
-            if(gameManager!=null)
+            if (gameManager != null)
                 gameManager.KeyboardEvt(sender, k);
             InputManager.KeyDown(sender, k);
 
             //skip playing videos:
             if (videoPlayer != null)   // skip video on keystroke
-            videoPlayer.keyDown(sender, k);
+                videoPlayer.keyDown(sender, k);
 
             if (k.Key == Key.S)
                 gameCamera.Move(0, -50);
             if (k.Key == Key.W)
                 gameCamera.Move(0, 50);
             if (k.Key == Key.A)
-                gameCamera.Move(-50,0);
+                gameCamera.Move(-50, 0);
             if (k.Key == Key.D)
-                gameCamera.Move(50,0);
-                    
+                gameCamera.Move(50, 0);
+
         }
         public void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs k)
         {
@@ -159,9 +160,9 @@ namespace EngineApp
             OpenTK.DisplayDevice.Default.ChangeResolution(filmResolution);
             setScreenMode(true);
             //check is current runing system is winXP:
-           //if(Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5)
-           //     EngineApp.engine.WindowState = OpenTK.WindowState.Fullscreen; //BUGFIX: Set now to fullscreen only on winXP
-            
+            //if(Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major == 5)
+            //     EngineApp.engine.WindowState = OpenTK.WindowState.Fullscreen; //BUGFIX: Set now to fullscreen only on winXP
+
             core.Init();
             //openGL disable unecessary stuff:
             GL.Disable(EnableCap.DepthTest);
@@ -184,10 +185,10 @@ namespace EngineApp
             textManager = new TextManager();
             debugger = new Debug();//debug system uses text manager
             menuViewport = new Viewport(1280, 800, true);
-			gameViewport = new Viewport(1280, 800, true);
-			//Select language:
-			new Lang(Lang.language.PL);
-			menuManager = new Menu_Manager();
+            gameViewport = new Viewport(1280, 800, true);
+            //Select language:
+            new Lang(Lang.language.PL);
+            menuManager = new Menu_Manager();
             gameState = game_state.Menu;//tmp for renderLoadingCaption
             lightEngine = new lightingEngine();
             renderLoadingCaption();//needs profile &txtManager
@@ -231,21 +232,21 @@ namespace EngineApp
             //Open menu
             menuManager.initCursor();
             menuManager.current_menu = new Menu("MENU_PROFILE", Menu_Instances.Menu_Profile_Open, Menu_Manager.cursor);
-            new DebugMsg(this,"gameState");
-            
-         }
+            new DebugMsg(this, "gameState");
+
+        }
 
         private static void initTextureLoaderParameters()
         {
             GL.Enable(EnableCap.Texture2D);
-            GL.TexParameter(TextureTarget.Texture2D,TextureParameterName.TextureWrapS,(int)TextureWrapMode.ClampToEdge);
-            GL.TexParameter(TextureTarget.Texture2D,TextureParameterName.TextureWrapT,(int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             TextureLoaderParameters.MagnificationFilter = TextureMagFilter.Linear;
             TextureLoaderParameters.MinificationFilter = TextureMinFilter.LinearMipmapLinear;
             TextureLoaderParameters.WrapModeS = TextureWrapMode.ClampToEdge;
             TextureLoaderParameters.WrapModeT = TextureWrapMode.ClampToEdge;
             TextureLoaderParameters.EnvMode = TextureEnvMode.Modulate;
-            
+
         }
 
         protected override void OnUnload(EventArgs e)
@@ -260,8 +261,8 @@ namespace EngineApp
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-           // if (videoPlayer.someVideoIsPlaying)
-           //     return; //don't update Game stuff when video is playing 
+            // if (videoPlayer.someVideoIsPlaying)
+            //     return; //don't update Game stuff when video is playing 
 
             SoundMan.Update();
             timeMgr.Update();
@@ -276,10 +277,10 @@ namespace EngineApp
                 gameManager.Update();
 
             if (Keyboard[Key.Escape] && Keyboard[Key.ShiftLeft]) Exit();
-             
+
             if ((time += e.Time) >= 1.0)
             {
-                time = 0;                
+                time = 0;
                 frames = 0;
             }
             if (debugger != null) debugger.Update();
@@ -303,7 +304,7 @@ namespace EngineApp
             lightEngine.renderStaticLightmaps();
             //SwapBuffers(); return;
             GL.DepthMask(false);
-            
+
             //render viewports:
             Viewport.Render();
             //if (((gameState & game_state.Game) == game_state.Game)||(gameViewport.isFading))
@@ -317,7 +318,7 @@ namespace EngineApp
             //lightEngine.Render();
 
             if (debugger != null) debugger.Render();
-            
+
             SwapBuffers();
         }
 
@@ -325,18 +326,18 @@ namespace EngineApp
         /// Sets screen mode simply changing window state
         /// </summary>
         /// <param name="fullscreen">Set to fullscreen?</param>
- 
+
         public void setScreenMode(bool fullscreen)
         {
-         if(fullscreen && Profile.currentProfile.config.commandline.windowed != true)   
-            base.WindowState = WindowState.Fullscreen;
-         else
-            base.WindowState = WindowState.Normal;
+            if (fullscreen && Profile.currentProfile.config.commandline.windowed != true)
+                base.WindowState = WindowState.Fullscreen;
+            else
+                base.WindowState = WindowState.Normal;
         }
         public void InitGameManager()
         {
             gameState = game_state.Game;
-            gameManager = new GameManager();            
+            gameManager = new GameManager();
         }
         public void InitCamera()
         {
@@ -370,7 +371,7 @@ namespace EngineApp
         /// </summary>
         private void initGamePreGameManager()
         {
-            if(SoundMan.sndMgr_Initialized)
+            if (SoundMan.sndMgr_Initialized)
             {
                 try
                 {
@@ -406,7 +407,7 @@ namespace EngineApp
         internal void startGame()
         {
             initGamePreGameManager();
-            videoPlayer.playVideo("../data/Videos/intro.bik");            
+            videoPlayer.playVideo("../data/Videos/intro.bik");
         }
         public void afterIntroVideo()
         {
@@ -414,7 +415,7 @@ namespace EngineApp
             initGamePostGameManager();
         }
         internal void afterLogoVideo()
-        {   
+        {
             //set game state to menu:
             gameState = game_state.Menu;
             //Show "loading..." caption:
@@ -432,8 +433,8 @@ namespace EngineApp
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);//Clear buffer
 
             String msg = "Loading...";
-            float xCenter = (float)engineReference.getEngine().Width/ 2f;
-            float yCenter = (float)Profile.currentProfile.config.options.graphics.resolution.Height/ 2f;
+            float xCenter = (float)engineReference.getEngine().Width / 2f;
+            float yCenter = (float)Profile.currentProfile.config.options.graphics.resolution.Height / 2f;
             float xMinus = TextManager.font_default_20.Measure(msg).Width / 2;
             //Text loading = engine.textManager.produceText(TextManager.font_default_20, msg, xCenter - xMinus, yCenter, QuickFont.QFontAlignment.Left);
             Text loading = new Text(TextManager.font_default_20, xCenter - xMinus, yCenter, msg);

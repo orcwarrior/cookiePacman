@@ -10,7 +10,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CookieMonster</RootNamespace>
     <AssemblyName>CookieMonster</AssemblyName>
-    <ManifestCertificateThumbprint>EFB0778E324A6772143B577508989E5D9E4EDF58</ManifestCertificateThumbprint>
     <ManifestKeyFile>CookieMonster_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <TargetZone>LocalIntranet</TargetZone>
@@ -104,17 +103,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>bin\Release\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK.Compatibility, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>bin\Release\OpenTK.Compatibility.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK.GLControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>bin\Release\OpenTK.GLControl.dll</HintPath>
-    </Reference>
-    <Reference Include="QuickFont, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\QuickFont\QuickFont\bin\Release\QuickFont.dll</HintPath>
+      <HintPath>C:\Users\orcwarrior\Documents\OpenTK\1.0\Binaries\OpenTK\Release\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickFont">
+      <HintPath>..\..\Projekty\Programowanie\PacMan na silniku\QuickFont\QuickFont\bin\Release\QuickFont.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -204,13 +197,11 @@
     <Compile Include="TextureLoaders\LoaderStatics.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Archive\renderStaticPartOfMap.txt" />
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <BaseApplicationManifest Include="Properties\app.manifest" />
-    <None Include="ClassesDiagram.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

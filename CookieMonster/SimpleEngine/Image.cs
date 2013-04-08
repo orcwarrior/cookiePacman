@@ -4,6 +4,7 @@ using OpenTK.Graphics;
 using CookieMonster.CookieMonster_Objects;
 using CookieMonster.TextureLoaders;
 using CookieMonster;
+using OpenTK.Graphics.OpenGL;
 
 namespace Engine
 {
@@ -85,7 +86,7 @@ namespace Engine
                     ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                 GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
-                    OpenTK.Graphics.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+                    OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
                 bitmap.UnlockBits(data);
 
