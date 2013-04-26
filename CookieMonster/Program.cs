@@ -203,8 +203,6 @@ namespace EngineApp
             SoundMan = new SoundManager();
             new DebugMsg(this, "fps", DebugLVL.info);
             new DebugMsg(textManager, "textsCount");
-            new DebugMsg(this, "gameState");
-            new DebugMsg(this, "activeViewportIsGame");
 
             gameCamera = new Camera(Camera.eType.STATIC);
 
@@ -228,11 +226,10 @@ namespace EngineApp
             //play logo video:
             videoPlayer.playVideo("../data/Videos/logo.bik");
 
-            gameState = game_state.Undef;
+            gameState = game_state.Menu;
             //Open menu
             menuManager.initCursor();
             menuManager.current_menu = new Menu("MENU_PROFILE", Menu_Instances.Menu_Profile_Open, Menu_Manager.cursor);
-            new DebugMsg(this, "gameState");
 
         }
 
@@ -252,12 +249,20 @@ namespace EngineApp
         protected override void OnUnload(EventArgs e)
         {
             Viewport.scaleLog.Close();
-            Debug.debugLog.Close();
         }
+
+        public new int Width  { get { return OpenTK.DisplayDevice.Default.Width; } }
+        public new int Height { get { return OpenTK.DisplayDevice.Default.Height; } }
 
         protected override void OnResize(EventArgs e)
         {
             GL.Viewport(0, 0, Width, Height);
+        }
+        public override void Exit()
+        {
+            Profile.currentProfile.encryptToFile();
+            debugger.Free();//save debug file
+            base.Exit();
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
@@ -360,9 +365,9 @@ namespace EngineApp
             using (Game game = new Game(1280, 800))
             {
                 game.cmdArguments = args;
-                game.VSync = VSyncMode.Adaptive;
+                //game.VSync = VSyncMode.Adaptive;
                 game.Title = "CookieMonster Pacman";
-                game.Run(90);
+                game.Run(60);
             }
         }
         /// <summary>

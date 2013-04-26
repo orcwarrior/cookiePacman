@@ -19,7 +19,12 @@ namespace CookieMonster.CookieMonster_Objects
         private Obj visualOnHover;
         private Obj visualOnClick;
         private Obj renderedVisual { get { return _renderedVisual; }
-            set { if (_renderedVisual != null) { _renderedVisual.addedToViewport = false; } _renderedVisual = value; }
+            set 
+            {
+                if (_renderedVisual != null) { _renderedVisual.addedToViewport = false; _renderedVisual.setVisibleWithChilds(false); }
+                _renderedVisual = value;
+                if (_renderedVisual != null) { _renderedVisual.setVisibleWithChilds(true); } 
+            }
         }
         private Obj _renderedVisual;
 
@@ -102,7 +107,9 @@ namespace CookieMonster.CookieMonster_Objects
                 onClick();
             inHover = false;//not true, it's onClick rite now!
             if (visualOnClick != null)
+            {
                 renderedVisual = visualOnClick;
+            }
             if (fontOnClick != null && owner.submenuTimer.enabled == false)//BUGFIX: Don't change visuals during submenu ani!
                 itemText.changeFont(fontOnClick);
             //sometimes actions like nulling item/whole object can happen onClick, so check for them
@@ -118,7 +125,9 @@ namespace CookieMonster.CookieMonster_Objects
                 inHover = true;
                 if (visualOnHover != null)
                 {
+                    renderedVisual.visible = false;
                     renderedVisual = visualOnHover;
+                    renderedVisual.visible = true;
 
                     if (onMouseIn == null)//then play default beep:
                     {
@@ -170,11 +179,11 @@ namespace CookieMonster.CookieMonster_Objects
                 itemX = visual.x; itemY = visual.y;
                 int maxX = itemX + visual.width, maxY = itemY + visual.height;
                 //If there is some child, count them too!
-                if (visual.childObj != null)
+                if (visual.childObjs != null)
                 {
-                    for (int i = 0; i < visual.childObj.Count; i++)
+                    for (int i = 0; i < visual.childObjs.Count; i++)
                     {
-                        Obj tmp = visual.childObj[i];
+                        Obj tmp = visual.childObjs[i];
                         if (visual.x + tmp.x + tmp.width > maxX)
                             maxX = visual.x + tmp.x + tmp.width;
                         if (visual.y + tmp.y + tmp.height > maxX)
@@ -209,8 +218,8 @@ namespace CookieMonster.CookieMonster_Objects
             if (renderedVisual != null)
             {
                 renderedVisual.prepareRender();
-                if (renderedVisual == visualOnClick)
-                    renderedVisual = visualOnHover;
+                //if (renderedVisual == visualOnClick)
+                //   renderedVisual = visualOnHover;
             }
             else if (itemText != null)
             {

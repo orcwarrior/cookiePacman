@@ -66,7 +66,9 @@ namespace CookieMonster.CookieMonster_Objects
             controllsFont.Options.Colour = new OpenTK.Graphics.Color4(255, 255, 255, 192);
             PUControllLetters.Add(new Text(controllsFont, 187, (float)(engine.Height - textKeyHints), "Z"));
             PUControllLetters.Add(new Text(controllsFont, 265, (float)(engine.Height - textKeyHints), "X"));
-
+            //Correct layer of letters:
+            foreach(Text t in PUControllLetters)
+                t.layer = Layer.textGUIFG;
 
             SkillsBackgrounds = new List<Obj>();
             tmp = new Obj("../data/Textures/GAME/GUI/GUI_SKILL_BG.dds", 0.895, y_obj, Obj.align.CENTER_X, false);
@@ -79,6 +81,9 @@ namespace CookieMonster.CookieMonster_Objects
             SkillsControllLetters = new List<Text>();
             SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 148, (float)(engine.Height - textKeyHints), "C"));
             SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 72, (float)(engine.Height - textKeyHints), "V"));
+            //Correct layer of letters:
+            foreach (Text t in SkillsControllLetters)
+                t.layer = Layer.textGUIFG;
 
             SkillBoost = new Obj("../data/Textures/GAME/SKILLS/SKILL_BOOST.dds", 0.895, y_obj, Obj.align.CENTER_X, false);
             SkillBoost.isGUIObjectButUnscaled = true;
@@ -101,7 +106,7 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void prepareRender()
         {
-            Layer.currentlyWorkingLayer = Layer.imgFG;
+            Layer.currentlyWorkingLayer = 1;//Layer.imgFG;
             GameManager gm = engine.gameManager;
             double y_obj = 0.90;
             background.prepareRender();
@@ -200,6 +205,19 @@ namespace CookieMonster.CookieMonster_Objects
             }
 
             Layer.currentlyWorkingLayer = -1;
+        }
+
+        public void Free()
+        {
+            foreach (Obj o in PUBackgrounds)     o.Free();
+            foreach (Obj o in SkillsBackgrounds) o.Free();
+            PUBomb.Free();                PUTimeSlow.Free();
+            SkillBoost.Free();            SkillIceBolt.Free();
+            DisabledSkillBoost.Free(); DisabledSkillIceBolt.Free();
+            foreach (Obj o in skillRefreshingTexs) o.Free();
+            lives.Free();
+            enterButtonToNextLevel.Free();
+            background.Free();
         }
     }
 }

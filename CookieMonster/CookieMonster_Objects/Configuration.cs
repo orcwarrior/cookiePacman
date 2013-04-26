@@ -7,9 +7,11 @@ namespace CookieMonster.CookieMonster_Objects
 {
     public class commandline
     {
-        public bool windowed = false;
-        public bool noSound = false;
-        public bool noMusic;
+        public bool windowed = false;  // -windowed
+        public bool noSound = false;   // -nosound
+        public bool noVideos = false;  // -novideos
+        public bool noMusic;           // -nomusic
+        public DebugLVL debugLevel;    // -debug:n (n=[0,4])
     }
     public class gameplay
     {
@@ -72,6 +74,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             dob -= 0.05; if (dob < 0.0) dob = 0.0;
         }
+
         public Configuration()
         {
             //commandline stuff:
@@ -81,9 +84,18 @@ namespace CookieMonster.CookieMonster_Objects
                 switch (arg)
                 {
                     case "-windowed": commandline.windowed = true; break;
-                    case "-nosound": commandline.noSound = true; break;
-                    case "-nomusic": commandline.noMusic = true; break;
+                    case "-nosound":  commandline.noSound  = true; break;
+                    case "-nomusic":  commandline.noMusic  = true; break;
+                    case "-novideos": commandline.noVideos = true; break;
                 }
+                if(arg.Substring(0,7)=="-debug:")
+                    switch (arg.Substring(7))
+                    {
+                        case "1": commandline.debugLevel = DebugLVL.info;  break;
+                        case "2": commandline.debugLevel = DebugLVL.warn;  break;
+                        case "3": commandline.debugLevel = DebugLVL.fault; break;
+                        case "4": commandline.debugLevel = DebugLVL.error; break;
+                    }
             }
             //Load default:
             gameplay = new gameplay();

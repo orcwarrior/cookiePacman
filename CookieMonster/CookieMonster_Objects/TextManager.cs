@@ -106,6 +106,10 @@ namespace CookieMonster.CookieMonster_Objects
         {
             perPreRenderMove = p;
         }
+        public override string ToString()
+        {
+            return "TXT: " + _msg + "(" + x + "," + y + ")";
+        }
     }
     /// <summary>
     /// When TextManager creates new QFont it will be stored in object of this class
@@ -276,7 +280,12 @@ namespace CookieMonster.CookieMonster_Objects
                 else if (onScreenTexts[layer][i].updatedThisFrame)
                 {
                     Text txt = onScreenTexts[layer][i];
-                    txt.fontFace.Print(txt.msg, new Vector2(txt.x, txt.y));
+                    try
+                    {
+                        txt.fontFace.Print(txt.msg, new Vector2(txt.x, txt.y));
+                    }
+                    catch (Exception e)
+                    { new DebugMsg(e.Message, DebugLVL.fault); }
                     //onScreenTexts[i].Update();
                     onScreenTexts[layer][i].updatedThisFrame = false;
                 }

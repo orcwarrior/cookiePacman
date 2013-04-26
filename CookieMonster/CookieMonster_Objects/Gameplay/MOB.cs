@@ -273,7 +273,7 @@ namespace CookieMonster.CookieMonster_Objects
             pxMove = 1;
             baseSpeed = speed = spd;
             mobType = eMOBType.MOB;//value will be overwritten if object only inherits from MOB
-            
+            shieldVisual.layer = Layer.imgFG2;
         }
         /// <summary>
         /// this method should be called when all objects creations ended
@@ -300,7 +300,9 @@ namespace CookieMonster.CookieMonster_Objects
         /// <param name="type"></param>
         /// <returns></returns>
         public void setStateVisual(Obj vis, string type)
-        {
+        {   // If there is some layer "forced" add new visual to this layer!
+            if (_forcedLayer != -1) vis.layer = _forcedLayer;
+
             string typ = type.ToUpper();
             visuals.Add(vis);
             switch (typ)
@@ -345,7 +347,6 @@ namespace CookieMonster.CookieMonster_Objects
                shieldVisual.x = pX - 32;
                shieldVisual.y = pY - 32;
                int alpha = (int)(255 * (shieldTimer.partDone / 0.2f));
-               new DebugMsg("new shield-alpha: " + alpha + " ("+shieldTimer.partDone+")");
                if(alpha>255)alpha=255;
                shieldVisual.setCurrentTexAlpha((byte)alpha);
                shieldVisual.prepareRender();
@@ -620,6 +621,20 @@ namespace CookieMonster.CookieMonster_Objects
             invincible = true;
         }
 
+        /// <summary>
+        /// New visuals will be added to this layer if there was call of setVisualsLayer method.
+        /// </summary>
+        private int _forcedLayer = -1;
+        /// <summary>
+        /// Set's layer of all created visuals (Obj's)
+        /// </summary>
+        /// <param name="layer">layer to set</param>
+        public void setVisualsLayer(int layer)
+        {
+            _forcedLayer = layer;
+            foreach (Obj vis in visuals)
+                vis.layer = layer;
+        }
         //
         // Private methods
         private void snapToGridY(int _y)
@@ -753,7 +768,7 @@ namespace CookieMonster.CookieMonster_Objects
             fxComicBoom.objAnimation.addKeyframe(0, 0, 0, 1.25, new Timer(Timer.eUnits.FPS, 5));
             fxComicBoom.objAnimation.addKeyframe(0, 0, 0, 1.25, new Timer(Timer.eUnits.MSEC, 100));
             fxComicBoom.objAnimation.setLoopType(Obj_Animation.eLoopType.None);
-            fxComicBoom.layer = Layer.imgFG;
+            fxComicBoom.layer = Layer.imgGUI;
         }
         /// <summary>
         /// Method called when player/enemy was hit

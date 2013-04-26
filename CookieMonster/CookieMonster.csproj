@@ -197,6 +197,7 @@
     <Compile Include="TextureLoaders\LoaderStatics.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="filesBackup\gameMap_backup.txt" />
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>

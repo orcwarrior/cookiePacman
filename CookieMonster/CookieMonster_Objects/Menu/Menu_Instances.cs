@@ -22,6 +22,8 @@ namespace CookieMonster.CookieMonster_Objects
         }
         static public void Menu_InitializeBackground()
         {
+            engine.lightEngine.setupMenuLightingParams();
+
             Viewport mViewport = engine.menuViewport;
 
             Obj Clouds = new Obj("../data/Textures/MENU/menu_clouds.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, true);
@@ -840,7 +842,6 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public static void Menu_Exit_Click_Confirmed()
         {
-            Profile.currentProfile.encryptToFile();
             engine.Exit();
         }
 
@@ -946,8 +947,8 @@ namespace CookieMonster.CookieMonster_Objects
             Sound beep = new Sound(Sound.eSndType.SFX, "../data/Sounds/MENU_BEEP_LONG.ogg", false, false);
             beep.volume = 0.82;
             beep.Play();
-            mgr.setCurrentMenu(mgr.getMenuByName("MENU_MAIN"));
             engine.closeGameManagerSession();
+            mgr.setCurrentMenu(mgr.getMenuByName("MENU_MAIN"));
         }
     }
 }

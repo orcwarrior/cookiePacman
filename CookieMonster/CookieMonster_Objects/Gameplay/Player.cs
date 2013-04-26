@@ -87,6 +87,7 @@ namespace CookieMonster.CookieMonster_Objects
         public Player(int posx, int posy, double spd)
             : base(posx, posy, spd)
         {
+            setVisualsLayer(Layer.imgFG);
             //new DebugMsg("Stworzono obiekt gracza", DebugLVL.info);
             //new DebugMsg("...jest bardzo ladny, naprawde", DebugLVL.info);
             //new DebugMsg(this, "direction", DebugLVL.info);

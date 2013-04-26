@@ -19,6 +19,8 @@ namespace Engine
         /// will be rebuilded (by BuildTexchord).
         /// </summary>
         public bool rebuild = true;
+
+        private bool VBOinited;
         private string _bitmapPath; public string bitmapPath { get { return _bitmapPath; } }
 
         //performance debug
@@ -158,24 +160,27 @@ namespace Engine
         /// <param name="imgH">Height of image part to be drawn.</param>
         public void Draw(int x, int y, int w, int h, int imgX, int imgY, int imgW, int imgH)
         {//fix: small offset from the edge helps with "white edges" issue. [DK]
-            float off = 0.005f;
+            float off = 0.008f;
             // Texture coordinates
             float u1 = 0.0f, u2 = 0.0f, v1 = 0.0f, v2 = 0.0f;
 
             // Calculate coordinates, prevent dividing by zero
-            if (imgX != 0) u1 = 1.0f / ((float)this.w / (float)imgX) + off;
-            if (imgW != 0) u2 = 1.0f / ((float)this.w / (float)imgW) - off;
-            if (imgY != 0) v1 = 1.0f / ((float)this.h / (float)imgY) + off;
-            if (imgH != 0) v2 = 1.0f / ((float)this.h / (float)imgH) - off;
+                if (imgX != 0) u1 = 1.0f / ((float)this.w / (float)imgX) + off;
+                if (imgW != 0) u2 = 1.0f / ((float)this.w / (float)imgW) - off;
+                if (imgY != 0) v1 = 1.0f / ((float)this.h / (float)imgY) + off;
+                if (imgH != 0) v2 = 1.0f / ((float)this.h / (float)imgH) - off;
 
-            
-           if (rebuild)
+            if (rebuild)
            {
                // Check if texture coordinates have changed
-               if (vbo.texcoords[0].u != u1 || vbo.texcoords[1].u != u2 || vbo.texcoords[2].v != v1 || vbo.texcoords[0].v != v2)
+                // DK: If there is texcoords override use it!
+               if (!_checkTexcoordsOverride())
                {
-                   // Update texcoords for all vertices
-                   BuildTexcoords(u1, u2, v1, v2);
+                   if (vbo.texcoords[0].u != u1 || vbo.texcoords[1].u != u2 || vbo.texcoords[2].v != v1 || vbo.texcoords[0].v != v2)
+                   {
+                       // Update texcoords for all vertices
+                       BuildTexcoords(u1, u2, v1, v2);
+                   }
                }
            
                // Check if position coordinates have changed
@@ -228,6 +233,49 @@ namespace Engine
             vbo.texcoords[3].v = v1;
 
             vbo.BuildTex();
+        }
+
+        public bool useTexcoordsOverride { get; set; }
+        public TexCoord[] overrideTexcoords; 
+        /// <summary>
+        /// Builds texcoords for quad.
+        /// </summary>
+        /// <param name="u1">U1.</param>
+        /// <param name="u2">U2.</param>
+        /// <param name="v1">V1.</param>
+        /// <param name="v2">V2.</param>
+        public void OverrideTexcoords(float u1, float u2, float v1, float v2)
+        {
+            useTexcoordsOverride = true;
+            overrideTexcoords = new TexCoord[4];
+            overrideTexcoords[0].u = u1;
+            overrideTexcoords[0].v = v2;
+            overrideTexcoords[1].u = u2;
+            overrideTexcoords[1].v = v2;
+            overrideTexcoords[2].u = u2;
+            overrideTexcoords[2].v = v1;
+            overrideTexcoords[3].u = u1;
+            overrideTexcoords[3].v = v1;
+        }
+
+        private bool _checkTexcoordsOverride()
+        {
+            if (!useTexcoordsOverride) return false;
+            TexCoord[] orginalCoords = new TexCoord[4];
+            orginalCoords[0].u = vbo.texcoords[0].u;
+            orginalCoords[0].v = vbo.texcoords[0].v;
+            orginalCoords[1].u = vbo.texcoords[1].u;
+            orginalCoords[1].v = vbo.texcoords[1].v;
+            orginalCoords[2].u = vbo.texcoords[2].u;
+            orginalCoords[2].v = vbo.texcoords[2].v;
+            orginalCoords[3].u = vbo.texcoords[3].u;
+            orginalCoords[3].v = vbo.texcoords[3].v;
+
+            vbo.texcoords = overrideTexcoords;
+            vbo.BuildTex();
+            //vbo.texcoords = orginalCoords;
+
+            return true;
         }
 
 

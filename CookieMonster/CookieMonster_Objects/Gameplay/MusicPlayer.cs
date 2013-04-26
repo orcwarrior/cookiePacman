@@ -23,7 +23,9 @@ namespace CookieMonster.CookieMonster_Objects
         QFont trackTag_Font = TextManager.newQFont("KOMIKAX.ttf", 20, System.Drawing.FontStyle.Regular, true);
         String curTrackPath;
         Sound currentMusic;
-        string curTrackTitle, curTrackArtist;
+        string s_curTrackTitle, s_curTrackArtist;
+        Text curTrack_Title, curTrack_Artist;
+
         Viewport playerViewport;
         Timer trackTagsDisplayDuration;
         public MusicPlayer()
@@ -32,18 +34,17 @@ namespace CookieMonster.CookieMonster_Objects
             trackTag_Font.Options.Colour = cc;
             playerViewport = new Viewport(engine.Width, engine.Height,true);
             playerViewport.partialViewport = true; // it will prevent viewport from rendering game map, texts etc.
-            trackTagsDisplayDuration = new Timer(Timer.eUnits.MSEC, 7000, 0, true, false);
+            trackTagsDisplayDuration = new Timer(Timer.eUnits.MSEC, 9000, 0, true, false);
             curTrackPath = randomTrackName();
             playTrack();
         }
         public void Update()
         {
             //remove displayed track infos:
-            if (trackTagsDisplayDuration.enabled == false)
+            if (trackTagsDisplayDuration.enabled == true)
             {
-                TextManager txtMan = engine.textManager;
-                txtMan.removeText(curTrackArtist);
-                txtMan.removeText(curTrackTitle);
+                curTrack_Title.Update();
+                curTrack_Artist.Update();
             }
             if (currentMusic.state==Sound.eSoundState.STOP)
             {
@@ -62,8 +63,8 @@ namespace CookieMonster.CookieMonster_Objects
         public void Free()
         {
             TextManager txtMan = engine.textManager;
-            txtMan.removeText(curTrackArtist);
-            txtMan.removeText(curTrackTitle);
+            txtMan.removeText(s_curTrackArtist);
+            txtMan.removeText(s_curTrackTitle);
             trackTagsDisplayDuration.Dispose();
             currentMusic.Free();
         }
@@ -87,9 +88,17 @@ namespace CookieMonster.CookieMonster_Objects
             //filenames need to be in format of "ARTIST - TITLE" to be correctly displayed
             String filename = curTrackPath.Substring(curTrackPath.LastIndexOf("/") + 1);
             filename = filename.Substring(0, filename.LastIndexOf("."));
-            
-            curTrackArtist = filename.Substring(0, filename.LastIndexOf("-"));
-            curTrackTitle  = filename.Substring(filename.LastIndexOf("-")+2);
+
+            try
+            {
+                s_curTrackArtist = filename.Substring(0, filename.LastIndexOf("-"));
+                s_curTrackTitle = filename.Substring(filename.LastIndexOf("-") + 2);
+            }
+            catch (Exception e)
+            {   // Nazwa pliku nie byla w standardowym formacie :(
+                s_curTrackArtist = filename;
+                s_curTrackTitle = "";
+            }
             trackTagsDisplayDuration.start();
             putTrackInfosToViewport();
         }
@@ -103,8 +112,8 @@ namespace CookieMonster.CookieMonster_Objects
             TextManager txtMan = engine.textManager;
             //TODO: Uncoment this is temporary
             Layer.currentlyWorkingLayer = Layer.textGUIFG;
-            new Text(trackTag_Font, 50f, (float)screenH - 110, curTrackArtist);
-            new Text(trackTag_Font, 50f, (float)screenH - 80, curTrackTitle);
+            curTrack_Artist =  new Text(trackTag_Font, 50f, (float)screenH - 150, s_curTrackArtist);
+            curTrack_Title  = new Text(trackTag_Font, 50f, (float)screenH - 120, s_curTrackTitle);
             Layer.currentlyWorkingLayer = -1;
         }
         #endregion

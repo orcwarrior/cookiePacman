@@ -154,9 +154,16 @@ namespace CookieMonster.CookieMonster_Objects
                             if (cur == null || cur.addedToViewport == false || cur.preparedToRender == false)
                             {  // Remove object from viewport
                                 cur.addedToViewport = false; 
-                                viewportsList[j].rendered_objects[i].RemoveAt(k); 
+                                viewportsList[j].rendered_objects[i].RemoveAt(k);
+                                // Remove object childs too!
+                                // (hack: this will do the job):
+                                if (cur.childObjs != null)
+                                    for (int l = 0; l < cur.childObjs.Count; l++)
+                                        cur.childObjs[l].preparedToRender = false;
+
                                 k--; 
                             }
+                            // NOTE: GUI objects aren't refreshed, they're always rendered!
                             if (cur.isGUIObject) cur.Render(0, 0);
                             else
                             {
@@ -171,7 +178,9 @@ namespace CookieMonster.CookieMonster_Objects
                 engine.textManager.Render(i);
                 // render lights from light engine if this is lightning engine layer:
                 if (i == Layer.lightningEngine)
+                {
                     engine.lightEngine.Render();
+                }
             }
 
             // Render once rendered objects (overlaying)
@@ -194,8 +203,13 @@ namespace CookieMonster.CookieMonster_Objects
         public void Clear()
         {
             for (int i = 0; i < rendered_objects.Count; i++)
+            {
                 for (int j = 0; j < rendered_objects[i].Count; j++)
-                rendered_objects[i][j].Free();
+                {
+                    rendered_objects[i][j].Free();
+                }
+                rendered_objects[i].Clear();
+            }
             
             rendered_objects.Clear();
 
@@ -214,6 +228,27 @@ namespace CookieMonster.CookieMonster_Objects
                 while (layer >= rendered_objects.Count) rendered_objects.Add(new List<Obj>());
                 rendered_objects[layer].Add(o);
                 o.addedToViewport = true; // FIX: In menu Obj aren't prepared to render at first, they just being added by this method
+            }
+        }
+
+        /// <summary>
+        /// It will remove object that equal to passed object (if found)
+        /// </summary>
+        /// <param name="path"></param>
+        public void removeObject(Obj o)
+        {
+            for (int i = rendered_objects.Count - 1; i >= 0; i--)
+            {
+                for (int j = 0; j < rendered_objects[i].Count; j++)
+                {
+                    if (rendered_objects[i][j].Equals(o))
+                    {
+                        rendered_objects[i][j].addedToViewport = false;
+                        rendered_objects[i][j].preparedToRender = false;
+                        rendered_objects[i].RemoveAt(j);
+                        break;
+                    }
+                }
             }
         }
         /// <summary>

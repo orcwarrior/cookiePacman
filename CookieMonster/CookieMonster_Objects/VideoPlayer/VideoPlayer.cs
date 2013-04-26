@@ -23,9 +23,11 @@ namespace CookieMonster.CookieMonster_Objects
         public bool someVideoIsPlaying { get; private set; }
         private bool exceptionOnOpeningBuffer;
 		unsafe public void playVideo(string path)
-		{
-            //set OpenTK rendering to black fill:
+        {
             videoBikPath = path;
+            if (Profile.currentProfile.config.commandline.noVideos) { stopPlayingVideo(); return;}
+
+            //set OpenTK rendering to black fill:
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             engine.SwapBuffers();
 

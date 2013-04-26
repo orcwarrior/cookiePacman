@@ -17,8 +17,8 @@ namespace Engine
         /// </summary>
         public void Build()
         {
-            if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
-            {
+            //if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
+            //{
                 // Delete old VBO
                 if (vboID != 0) GL.DeleteBuffers(1, ref vboID);
 
@@ -26,7 +26,7 @@ namespace Engine
                 GL.GenBuffers(1, out vboID);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vboID);
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertices.Length * 2 * sizeof(float)), vertices, BufferUsageHint.StaticDraw);
-            }
+           // }
         }
 
 
@@ -35,8 +35,8 @@ namespace Engine
         /// </summary>
         public void BuildTex()
         {
-            if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
-            {
+           // if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
+           // {
                 // Delete old VBO
                 if (texID != 0) GL.DeleteBuffers(1, ref texID);
 
@@ -44,7 +44,7 @@ namespace Engine
                 GL.GenBuffers(1, out texID);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, texID);
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(texcoords.Length * 2 * sizeof(float)), texcoords, BufferUsageHint.StaticDraw);
-            }
+           // }
         }
 
 
@@ -85,11 +85,11 @@ namespace Engine
         public void Draw(int lenght, BeginMode mode)
         {
             // Use VBOs if they are supported
-            if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
-            {
+           // if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
+           // {
                 
-                GL.EnableClientState(EnableCap.VertexArray);
-                GL.EnableClientState(EnableCap.TextureCoordArray);
+                GL.EnableClientState(ArrayCap.VertexArray);
+                GL.EnableClientState(ArrayCap.TextureCoordArray);
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, vboID);
                 GL.VertexPointer(2, VertexPointerType.Float, 0, 0);//last: null
@@ -98,9 +98,9 @@ namespace Engine
 
                 GL.DrawArrays(mode, 0, lenght);
 
-                GL.DisableClientState(EnableCap.VertexArray);
-                GL.DisableClientState(EnableCap.TextureCoordArray);
-            }
+                GL.DisableClientState(ArrayCap.VertexArray);
+                GL.DisableClientState(ArrayCap.TextureCoordArray);
+          /*  }
             // Use immediate mode
             else
             {
@@ -114,6 +114,7 @@ namespace Engine
 
                 GL.End();
             }
+           */
         }
     }
 }

@@ -18,13 +18,16 @@ namespace CookieMonster.CookieMonster_Objects
     }
     class PowerUp : MOB
     {
-        private POWER_UP _type; public POWER_UP type { get { return _type; } }
         static public GameManager GameMan;
-        public PowerUp(int posx, int posy,String visual)
-            : base(posx, posy, 0)
-        {
-            base.setStateVisual(new Obj(visual,posx,posy,Obj.align.CENTER_BOTH), "DEFAULT");
+        static private int yShift = +6;
 
+        private POWER_UP _type; public POWER_UP type { get { return _type; } }
+        public PowerUp(int posx, int posy,String visual)
+            : base(posx, posy + yShift, 0)
+        { 
+            base.setVisualsLayer(Layer.imgFG2);
+            base.setStateVisual(new Obj(visual, posx, posy,Obj.align.CENTER_BOTH), "DEFAULT");
+            
             base.Move(- base.currentVisual.width / 2,-base.currentVisual.height / 2,false); 
             GameMan.addPowerUP(this);
             base.updateBoundingBox();//for objects without movement, so in future bbox willn't be 

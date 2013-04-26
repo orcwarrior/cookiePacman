@@ -210,7 +210,7 @@ namespace CookieMonster.CookieMonster_Objects
             
             int objToRenderX = 22;//in one loop, in one row/column
             int objToRenderY = 11;
-            int objShiftX = 8;
+            int objShiftX = 16;
             int objShiftY = 16;
             Viewport.ClearAll();
             engine.SwapBuffers();
@@ -220,7 +220,6 @@ namespace CookieMonster.CookieMonster_Objects
             // "Height" loop: (only one row per loop)
             for (int i = 0; i < staticTexCntY; i++)
             {
-                //engine.gameViewport.Clear();
                 // 11 - number of objects per one texture:
                 int texTillEnd = staticTexCntX;
                 // "Width" loop:
@@ -231,13 +230,9 @@ namespace CookieMonster.CookieMonster_Objects
 
                     Camera cam = engine.gameCamera;
                     Point arrayPointer = new Point(j * (objToRenderX - 1), i * (objToRenderY - 1));
-                    //arrayPointer.Offset(new Point(0, (arrayPointer.Y == 0) ? 0 : -1));
-                    Point camShift = new Point((j * (objToRenderX - 1)) * GameManager.gridSize  +j * objShiftX,
-                                               (staticTexSize*i) -32);// + i * objShiftY));
+                    Point camShift = new Point((j * (objToRenderX - 1)) * GameManager.gridSize + j * objShiftX,
+                                               (staticTexSize*i)-10);// + i * objShiftY));
                     //                          (i * (objToRenderY - 1)) * GameManager.gridSize + i * objShiftY - 40);
-
-                    if (i > 0) { camShift.Offset(0, -17); }
-
                     cam.SetPos(-camShift.X, -camShift.Y);
                     new DebugMsg("Moved camera to: (" + camShift.X + "," + camShift.Y + ")["+j+","+i+"]");
                         
@@ -250,7 +245,7 @@ namespace CookieMonster.CookieMonster_Objects
                             {
                                 mapRenderQueueFirst[x, y].prepareRender();
                                 mapRenderQueueFirst[x, y].Render(-camShift.X, -camShift.Y);
-                                //mapRenderQueueFirst[x, y].Free();
+                                mapRenderQueueFirst[x, y].Free();
                             }
                         }
                     } for (int x = arrayPointer.X; (x < arrayPointer.X + objToRenderX && x < mapWidth); x++)
@@ -261,7 +256,7 @@ namespace CookieMonster.CookieMonster_Objects
                             {
                                 paths[x, y].prepareRender();
                                 paths[x, y].Render(-camShift.X, -camShift.Y);
-                                //paths[x, y].Free();
+                                paths[x, y].Free();
                             }
                         }
                     } for (int x = arrayPointer.X; (x < arrayPointer.X + objToRenderX && x < mapWidth); x++)
@@ -272,12 +267,10 @@ namespace CookieMonster.CookieMonster_Objects
                             {
                                 mapRenderQueue[x, y].prepareRender();
                                 mapRenderQueue[x, y].Render(-camShift.X, -camShift.Y);
-                                //mapRenderQueue[x, y].Free();
+                                mapRenderQueue[x, y].Free();
                             }
                         }
                     }
-                    new DebugMsg("First rendered obj at: (" + (arrayPointer.X) * 48 + "," + (arrayPointer.Y) * 48 + "); - camshift");
-                    new DebugMsg("Last rendered obj at: (" + (arrayPointer.X + objToRenderX) * 48 + "," + (objToRenderY + arrayPointer.Y) * 48 + "); - camshift");
                     //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                     //Viewport.Render();
                     //engine.gameViewport.Render();
@@ -297,41 +290,33 @@ namespace CookieMonster.CookieMonster_Objects
                           int idx = (j * 2 + _x) + (i + _y) * staticTexCntX;
                           GL.BindTexture(TextureTarget.Texture2D, _staticBufferTextures[idx]);
                           //GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, (_x * staticTexSize), realYstartPos - ((_y + 1) * staticTexSize), staticTexSize, staticTexSize, 0);
-                          new DebugMsg("Next texture #" + idx + "; started at = ("+(_x * (staticTexSize-2)) +","+ (realYstartPos - staticTexSize) + ");", DebugLVL.info);
-
-                          //GL.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, (_x * staticTexSize), realYstartPos - staticTexSize, staticTexSize, staticTexSize);
-                          GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, (_x * (staticTexSize-2)), realYstartPos- staticTexSize - 32, staticTexSize, staticTexSize, 0);
-                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
-                         // GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Clamp);
-                         // GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Clamp);
-
-                          int startX = (_x * staticTexSize), startY = staticTexSize;// realYstartPos - staticTexSize - 48;
-                          int width,height;
-                          width = height = -staticTexSize;
-                          //GL.Color4(120, 120, 120, 120);
-
-                           // // [DEBUG] Save image to file:
-                           //  GL.PixelStore(PixelStoreParameter.PackAlignment, 1);
-                           //  byte[] raw_img = new byte[staticTexSize * staticTexSize * 32];
-                           //  unsafe
-                           //  {
-                           //   fixed (byte* p = raw_img)
-                           //   {
-                           //       IntPtr ptr = (IntPtr)p;
-                           //       GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, raw_img);
-                           //       Bitmap tex = new Bitmap(staticTexSize, staticTexSize, staticTexSize * 32/8, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ptr);
-                           //       tex.Save("stat" + idx + ".png");
-                           //   }
-                           //  } 
-                           // new DebugMsg("Created mapTEX[" + idx + "] - (" + (_x * staticTexSize) + "," + (realYstartPos - ((_y + 1) * staticTexSize)) + ")");
+                          GL.CopyTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, (_x * staticTexSize), realYstartPos -  staticTexSize - 48, staticTexSize, staticTexSize, 0);
+                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Clamp);
+                          GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Clamp);
+                            
+                            // [DEBUG] Save image to file:
+                             GL.PixelStore(PixelStoreParameter.PackAlignment, 1);
+                             byte[] raw_img = new byte[staticTexSize * staticTexSize * 32];
+                             unsafe
+                             {
+                              fixed (byte* p = raw_img)
+                              {
+                                  IntPtr ptr = (IntPtr)p;
+                                  GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Rgba, PixelType.UnsignedByte, raw_img);
+                                  Bitmap tex = new Bitmap(staticTexSize, staticTexSize, staticTexSize * 32/8, System.Drawing.Imaging.PixelFormat.Format32bppArgb, ptr);
+                                  tex.Save("stat" + idx + ".png");
+                              }
+                             } 
+                            new DebugMsg("Created mapTEX[" + idx + "] - (" + (_x * staticTexSize) + "," + (realYstartPos - ((_y + 1) * staticTexSize)) + ")");
                         }
                     }
                     //engine.SwapBuffers();
                     //for (int z = 0; z < int.MaxValue / 8; z++) ;
-                    //System.Threading.Thread.Sleep(1500);
-                    GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                     engine.SwapBuffers();
+                    System.Threading.Thread.Sleep(1500);
+                    GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
                     GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                     engine.gameViewport.Clear();
@@ -368,9 +353,9 @@ namespace CookieMonster.CookieMonster_Objects
         private void _prepareRenderOfMapStaticPart(int _x,int _y)
         {
             const int xCorrection = 0;  //-60;
-            const int yCorrection = -64;// +48;   //-50;
+            const int yCorrection = -75 + 48;   //-50;
             int xoff,yoff;
-            int staticTexSizeY = staticTexSize;// -20;
+            int staticTexSizeY = staticTexSize+20;// -20;
             for (int y = staticTexCntY-1; y >=0; y--)
             {
                 yoff = (realYstartPos - staticTexSizeY) + ((staticTexSizeY) * y) - _y + yCorrection;
@@ -399,15 +384,14 @@ namespace CookieMonster.CookieMonster_Objects
             int w = engine.Width;
             int h = engine.Height;
             Camera c = engine.gameCamera;
-            float x = 880 - 80;
-            float y = -543;
-            Point camOffsetFix = new Point(c.camOffsetX + 2000, c.camOffsetY + 2000);
+            float x = 880;
+            float y = 550;
 
             background.isGUIObjectButUnscaled = true;
             background.x = 0; background.width = w;
             background.y = 0; background.height = h;
-            background.OverrideTexcoords((0 - camOffsetFix.X / x), (1.8f - camOffsetFix.X / x),
-                                         (0 + camOffsetFix.Y / y), (1.8f + camOffsetFix.Y / y));
+            background.BuildTexcoords( (0 - c.camOffsetX / x) , (1.8f - c.camOffsetX / x),
+                                       (0 + c.camOffsetY / y),  (1.8f + c.camOffsetY / y)  );
             background.prepareRender();
         }
         /// <summary>

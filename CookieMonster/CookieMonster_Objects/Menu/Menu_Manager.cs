@@ -9,7 +9,7 @@ namespace CookieMonster.CookieMonster_Objects
 {
     class Menu_Manager : engineReference
     {
-        public static Obj cursor{get; set;}
+        public static Obj cursor { get { return _cursor; } set { _cursor = value; value.layer = Layer.cursor; } } private static Obj _cursor;
         private List<Menu> Menus_List = new List<Menu>();
         private bool menus_crossfading;
         private Menu fadingInMenu;
@@ -51,6 +51,7 @@ namespace CookieMonster.CookieMonster_Objects
             }
         }
         public bool cursorRendered;
+
         public Menu_Manager()
         {
             
@@ -60,7 +61,7 @@ namespace CookieMonster.CookieMonster_Objects
         {
             cursor = new Obj("../data/Textures/MENU/MENU_CURSOR.dds", 0.5, 0.5, Obj.align.LEFT); //bugfix: probably something wrong in quickFont causes texture load error
             cursor = new Obj("../data/Textures/MENU/MENU_CURSOR.dds", 0.5, 0.5, Obj.align.LEFT);
-            cursor.layer = Layer.imgFG;
+            cursor.layer = Layer.cursor;
             cursor.isGUIObjectButUnscaled = true;
         }
         public void setCurrentMenu(Menu m)
@@ -131,55 +132,7 @@ namespace CookieMonster.CookieMonster_Objects
             inputIdleChecksCount = 0;
             toggleTheatherMode(0);
         }
-        private void checkInputIdle()
-        { 
-            if (!inputIdleCheck.enabled)
-            {
-                inputIdleCheck.start();
-                Point curCursor = new Point(engine.Mouse.X, engine.Mouse.Y);
-                if ((Math.Abs(mouseIdleLastPos.X - curCursor.X) < mouseIdleRange)
-                && (Math.Abs(mouseIdleLastPos.Y - curCursor.Y) < mouseIdleRange))
-                {
-                    inputIdleChecksCount++;
-                    if (inputIdleChecksCount > 6 * 2)
-                        toggleTheatherMode(1);
-                }
-                else
-                {
-                    inputIdleChecksCount = 0;
-                    toggleTheatherMode(0);
-                }
-                mouseIdleLastPos = curCursor;
-            }
-        }
-        private int theatherModeState = 2;//0-turning off theather mode; 1-setting To theather mode
-                                          //2-Nothing happening;
-        private void toggleTheatherMode(int state)
-        {
-            // Don't enter theather mode if flag is not set
-            if((canEnterIdleMode==false)&&(state==1)) return;
 
-            if ((engine.gameState & Game.game_state.Game) == Game.game_state.Game
-            ||  (engine.gameState & Game.game_state.Menu) != Game.game_state.Menu)
-                return; //INGAME MENU or not even in menu? well fuck it then.
-            if (state == theatherModeState) return; //this state is already on
-            if (state == 0 && theatherModeState == 2) return; //toggle off couldn't occur when theather was in just inited state;
-            theatherModeState = state;
-            if (state == 1)
-            {
-                if (current_menu != null) current_menu.fadeOut();
-                if (subMenu != null) subMenu.fadeOut();
-                if (subSubMenu != null) subSubMenu.fadeOut();
-                cursor.setAllTexsAlpha(0);
-            }
-            else if (state == 0)
-            {
-                if (current_menu != null) current_menu.fadeIn();
-                if (subMenu != null) subMenu.fadeIn();
-                if (subSubMenu != null) subSubMenu.fadeIn();
-                cursor.setAllTexsAlpha(255);
-            }
-        }
 
         public void onRender()
         {
@@ -214,7 +167,7 @@ namespace CookieMonster.CookieMonster_Objects
             if (mb <= MouseButton.LastButton) return buttons_state[(int)mb];
             return false;
         }
-        public void setButtonState( MouseButton mb, bool value)
+        public void setButtonState(MouseButton mb, bool value)
         {
             if (mb <= MouseButton.LastButton) buttons_state[(int)mb] = value;
 
@@ -247,7 +200,7 @@ namespace CookieMonster.CookieMonster_Objects
             subMenu.Enable();//make sure opened menu will be enabled
         }
 
-        internal void openAsSubSubmenu(Menu subSub)
+        public void openAsSubSubmenu(Menu subSub)
         {
             addMenu(subSub);
             if (subSubMenu == null)
@@ -259,7 +212,7 @@ namespace CookieMonster.CookieMonster_Objects
             subSubMenu.Enable();//make sure opened menu will be enabled
         }
         public int closingSubmenusLevel { get; private set; }
-        internal void closeSubmenu(Menu sub)
+        public void closeSubmenu(Menu sub)
         {
             if (subSubMenu != null)//subsub to close
             {
@@ -282,6 +235,7 @@ namespace CookieMonster.CookieMonster_Objects
         /// Close all menus in one step
         /// (closing animations etc. not included)
         /// *NEW: disable cursor too
+        /// *NEW: Clears whole menuViewport from objects. [2013-04-10 23:23:49]
         /// </summary>
         public void close()
         {
@@ -290,6 +244,7 @@ namespace CookieMonster.CookieMonster_Objects
             current_menu = null;
             cursor.addedToViewport = false;
             cursor.preparedToRender = false;
+            engine.menuViewport.Clear();
         }
         /// <summary>
         /// this function shows small alert window on top of menu that will 
@@ -330,6 +285,8 @@ namespace CookieMonster.CookieMonster_Objects
         private QuickFont.QFont confirmNO, confirmNOHover;
         public void showConfirm(string msg,Menu_Item.mouseEvt yesClick,Menu_Item.mouseEvt noClick)
         {
+            int oldLayer = Layer.currentlyWorkingLayer;
+            Layer.currentlyWorkingLayer = Layer.textGUIFG;
             confirm = getMenuByName("CONFIRM");
             if (confirm == null)
             {
@@ -343,6 +300,7 @@ namespace CookieMonster.CookieMonster_Objects
 
                 Obj BG = new Obj("../data/Textures/MENU/MENU_CONFIRM_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
                 BG.isGUIObjectButUnscaled = true;
+                BG.layer = Layer.imgGUIFG;
 
                 float x = engine.Width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
                 float y = engine.Height * 3 / 10;
@@ -353,6 +311,7 @@ namespace CookieMonster.CookieMonster_Objects
                 x = engine.Width / 2;
                 confirm.addItem(new Menu_Item(Lang.cur.Yes, x + 70, y + 300f, confirmYES, confirmYESHover, Menu.font_Click, yesClick));
                 confirm.addItem(new Menu_Item(Lang.cur.No, x - 140, y + 300f, confirmNO, confirmNOHover, Menu.font_Click, noClick));
+                Layer.currentlyWorkingLayer = oldLayer;
             }
         }
         public void closeConfirm()
@@ -360,6 +319,63 @@ namespace CookieMonster.CookieMonster_Objects
             confirm.removeMenuItem(confirm.getItemByName("BG"));
             confirm = null; 
                
+        }
+
+        // -----------------------------
+        // private methods
+
+        /// <summary>
+        /// If there is no any input in main menu for some time, menu will switch to 
+        /// "theater mode"
+        /// </summary>
+        private void checkInputIdle()
+        {
+            if (!inputIdleCheck.enabled)
+            {
+                inputIdleCheck.start();
+                Point curCursor = new Point(engine.Mouse.X, engine.Mouse.Y);
+                if ((Math.Abs(mouseIdleLastPos.X - curCursor.X) < mouseIdleRange)
+                && (Math.Abs(mouseIdleLastPos.Y - curCursor.Y) < mouseIdleRange))
+                {
+                    inputIdleChecksCount++;
+                    if (inputIdleChecksCount > 6 * 2)
+                        toggleTheatherMode(1);
+                }
+                else
+                {
+                    inputIdleChecksCount = 0;
+                    toggleTheatherMode(0);
+                }
+                mouseIdleLastPos = curCursor;
+            }
+        }
+        private int theatherModeState = 2;//0-turning off theather mode; 1-setting To theather mode
+        //2-Nothing happening;
+        private void toggleTheatherMode(int state)
+        {
+            // Don't enter theather mode if flag is not set
+            if ((canEnterIdleMode == false) && (state == 1)) return;
+
+            if ((engine.gameState & Game.game_state.Game) == Game.game_state.Game
+            || (engine.gameState & Game.game_state.Menu) != Game.game_state.Menu)
+                return; //INGAME MENU or not even in menu? well fuck it then.
+            if (state == theatherModeState) return; //this state is already on
+            if (state == 0 && theatherModeState == 2) return; //toggle off couldn't occur when theather was in just inited state;
+            theatherModeState = state;
+            if (state == 1)
+            {
+                if (current_menu != null) current_menu.fadeOut();
+                if (subMenu != null) subMenu.fadeOut();
+                if (subSubMenu != null) subSubMenu.fadeOut();
+                cursor.setAllTexsAlpha(0);
+            }
+            else if (state == 0)
+            {
+                if (current_menu != null) current_menu.fadeIn();
+                if (subMenu != null) subMenu.fadeIn();
+                if (subSubMenu != null) subSubMenu.fadeIn();
+                cursor.setAllTexsAlpha(255);
+            }
         }
     }
 }

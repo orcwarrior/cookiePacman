@@ -100,6 +100,8 @@ namespace CookieMonster.CookieMonster_Objects
             InitTeleportFX();
             startGameDurationTimer();
             startNewLevelTimer();
+
+            engine.lightEngine.setupGameLightingParams();
         }
 
         /// <summary>
@@ -154,6 +156,8 @@ namespace CookieMonster.CookieMonster_Objects
             //todo set current time to old time
             gameDuration.currentTime = sav.player.gameDuration;
             startNewLevelTimer();
+
+            engine.lightEngine.setupGameLightingParams();
         }
 
         public void nextLevel()
@@ -169,6 +173,7 @@ namespace CookieMonster.CookieMonster_Objects
             updateLoadingInfos("...dealokuje pamiec...");
             powerPillTimer.restart();
             powerPillTimer.stop();
+            Map.Free();
             enemiesList = new List<Enemy>();
             sortedEnemiesList = new List<Enemy>();
             _sortedPowerUpList = new List<PowerUp>();
@@ -231,6 +236,8 @@ namespace CookieMonster.CookieMonster_Objects
                 afterFirstUpdate = true;
                 firstUpdate();
             }
+            //update music player:
+            mPlayer.Update();
             // tipWindow(s) update:
             pauseGame = tipsManager.Update();
             //update StatusScreen(this needed only when he's easing-out
@@ -241,8 +248,6 @@ namespace CookieMonster.CookieMonster_Objects
                 powerPillUpdate();
                 //update collisions:
                 collSys.Update();
-                //update music player:
-                mPlayer.Update();
                 //re-sort MOB list: & update them
                 updateMOBs();
 
@@ -286,7 +291,8 @@ namespace CookieMonster.CookieMonster_Objects
                 projectilesList[i].prepareRender();
 
             // Render lightmaps:
-            engine.lightEngine.Render();
+            // NOTE: Nope, lights are rendered by viewport right now (static Render() method)
+            //engine.lightEngine.Render();
 
             //music player render:
             mPlayer.prepareRender();
@@ -386,7 +392,7 @@ namespace CookieMonster.CookieMonster_Objects
         private void initGameMap()
         {
             engine.gameCamera.resetPos();
-            String mapFile = "LEVEL_" + level.ToString() + ".pn" + "g";//workaround to force it always as dds
+            String mapFile = "LEVEL_" + level.ToString() + ".pn" + "g";//workaround to force it always as png
             mapFile = GameMap.MapsPath + mapFile;
             _Map = new GameMap(mapFile, this);
         }
@@ -580,6 +586,8 @@ namespace CookieMonster.CookieMonster_Objects
         public void Free()
         {
             mPlayer.Free();
+            statusScr.Free();
+            gui.Free();
         }
 
         internal void GameOver()

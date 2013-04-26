@@ -21,23 +21,33 @@ namespace CookieMonster.CookieMonster_Objects
         public const int _imgUnderTextBG = 0;
         /// <summary>0</summary>
         public const int textBG = 0;
+
+
         /// <summary>1</summary>
         public const int imgBG = 1;
         /// <summary>1</summary>
         public const int textFG = 1;
+        /// <summary>1</summary>
+        public const int objDefaultLayer = imgBG;
         /// <summary>2</summary>
         public const int imgFG = 2;
         /// <summary>3</summary>
-        public const int lightningEngine = 3;
+        public const int imgFG2 = 3;
         /// <summary>3</summary>
+        public const int lightningEngine = 3;
+
+        // -- GUI LAYERS --
+        /// <summary>4</summary>
         public const int textGUIBG = 4;
         /// <summary>4</summary>
         public const int imgGUI = 4;
-        /// <summary>4</summary>
+        /// <summary>5</summary>
         public const int textGUIFG = 5;
-        /// <summary>5 TOP MOST</summary>
-        public const int cursor = 5;
-        /// <summary>6</summary>
-        public const int MAX = 6;
+        /// <summary>5</summary>
+        public const int imgGUIFG = 5;
+        /// <summary>6 TOP MOST</summary>
+        public const int cursor = 6;
+        /// <summary>7</summary>
+        public const int MAX = 7;
     }
 }

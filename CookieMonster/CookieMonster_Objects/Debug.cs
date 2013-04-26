@@ -13,9 +13,9 @@ namespace CookieMonster.CookieMonster_Objects
     /// Level of debug message (when higher level is active in debugger, than passed Msg level)
     /// Message will not be passed to debuger.
     /// </summary>
-    enum DebugLVL
+    public enum DebugLVL
     {
-        info,fault,warn,error
+        none,info,fault,warn,error
     }
     class DebugMsg
     {
@@ -45,10 +45,6 @@ namespace CookieMonster.CookieMonster_Objects
                 _lvl = l;
             if(debugSys!=null)
                 debugSys.addDebugMsg(this);
-
-
-            //write to debugfile:
-            Debug.debugLog.WriteLine(_msg);
         }
         unsafe public DebugMsg(object watchedObj,string fieldname, DebugLVL l)
         {
@@ -132,6 +128,11 @@ namespace CookieMonster.CookieMonster_Objects
 
         public void addDebugMsg(DebugMsg d)
         {
+            if (filterMessage(d)) return; // if message is filtered, don't add it to messages.
+
+            //write to debugfile:
+            Debug.debugLog.WriteLine(d.msg);
+
             if (d.referencedObj == null)//it's dynamic message
             {
                 if ((dynamicMessagesQuery.Count > 0) || (dynamicMessages.Count >= dynamicMsgMax))
@@ -145,7 +146,6 @@ namespace CookieMonster.CookieMonster_Objects
                 if (dynMsgRemainingTime != null) return;
                 dynMsgRemainingTime = new Timer(Timer.eUnits.MSEC, dynamicMsgDuration, 0, true, false);
                 dynMsgRemainingTime.start();
-
             }
             else
             {
@@ -156,6 +156,11 @@ namespace CookieMonster.CookieMonster_Objects
                     staticMessages.RemoveAt(0);//remove first message, just proceed by one ;)
                 }
             }
+        }
+
+        private bool filterMessage(DebugMsg d)
+        {
+            return d.lvl < Profile.currentProfile.config.commandline.debugLevel;
         }
         public void Update()
         {
@@ -220,6 +225,11 @@ namespace CookieMonster.CookieMonster_Objects
             txt_dynamicMessages = new List<Text>();
             for (int i = 0; i < dynamicMsgMax; i++)
                 txt_dynamicMessages.Add(new Text(debug_font, dynamicStart.X, dynamicStart.Y - (debugMsgLineHeight * i), "", dynamicAlign, 300));
+        }
+
+        internal void Free()
+        {
+            debugLog.Close();
         }
     }
 }

@@ -94,11 +94,12 @@ namespace CookieMonster.CookieMonster_Objects
             Viewport v = engine.activeViewport;
             GameMap m = engine.gameManager.Map;
             int oldX = camOffsetX, oldY = camOffsetY;
-            camOffsetX = (engine.Width - m.mapWidth * GameManager.gridSize) / 2;
-            camOffsetY = (engine.Height - m.mapHeight * GameManager.gridSize) / 2;
+            camOffsetX = (OpenTK.DisplayDevice.Default.Width - m.mapWidth * GameManager.gridSize) / 2;
+            camOffsetY = (OpenTK.DisplayDevice.Default.Height - m.mapHeight * GameManager.gridSize) / 2;
             heroLocationBooster = 1;
             //move Lights:
             engine.lightEngine.moveLights(new OpenTK.Vector2(camOffsetX - oldX, camOffsetY - oldY));
+            new DebugMsg("Camera centered to Point: [" + camOffsetX + "," + camOffsetY + "]");
         }
         internal void resetPos()
         {

@@ -54,6 +54,8 @@ namespace CookieMonster.CookieMonster_Objects
 
         public statusScreen()
         {
+            //FIX: So status screen elements will be added to menu viewport
+            engine.gameState = Game.game_state.Menu;
             easeInTimer = new Timer(Timer.eUnits.MSEC, 400, 0, true, false);
             easeOutTimer = new Timer(Timer.eUnits.MSEC, 200, 0, true, false);
             background = new Obj("../data/Textures/GAME/GUI/STATUSSCREEN_BG.dds", 0.5, 0.45, Obj.align.CENTER_BOTH);
@@ -65,15 +67,18 @@ namespace CookieMonster.CookieMonster_Objects
             cookieDstXPos = cookie.x;// +cookie.width;
             cookieMoveWidth = 950;
             cookie.x += cookieMoveWidth;
+            cookie.layer = Layer.imgGUI;
 
             pause = new Obj("../data/Textures/GAME/GUI/STATUSSCREEN_PAUSE.dds", 1.0, 0.85, Obj.align.RIGHT);
             pause.isGUIObjectButUnscaled = true; pause.x -= 200;
+            pause.layer = Layer.imgGUIFG;
 
 
             FontStatus_BIG = TextManager.newQFont("Rumpelstiltskin.ttf", 37,FontStyle.Regular,true);
             FontStatus_Small = TextManager.newQFont("Rumpelstiltskin.ttf", 28, FontStyle.Regular, true);
             FontStatus_Little = TextManager.newQFont("Rumpelstiltskin.ttf", 25, FontStyle.Regular, true);
             TalentPtsStars = new List<Obj>();
+            engine.gameState = Game.game_state.Game;
         }
         public void Show()
         {
@@ -86,9 +91,12 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void Hide()
         {
+            cookie.setCurrentTexAlpha(0);// BUGFIX
+
             easeInTimer.restart(); easeInTimer.stop();
             easeOutTimer.start();
             engine.gameState &= ~Game.game_state.Menu;
+            engine.menuManager.close();
         }
         public void Update()
         {
@@ -150,8 +158,8 @@ namespace CookieMonster.CookieMonster_Objects
             //Talent Pts
             pX = menuArea.Right+90;
             pY = menuArea.Top + (int)(menuArea.Height * 0.085);//8%
-            TalentPts_initial2 = new Text(FontStatus_BIG, pX - 15, pY - 10, Lang.cur.PKT_TALENTU__P + "        ", QFontAlignment.Right, 300);
-            TalentPts_initial = new Text(FontStatus_BIG, pX + 2, pY - 10, Lang.cur.PKT_TALENTU__T + "     ", QFontAlignment.Right, 300);
+            TalentPts_initial2 = new Text(FontStatus_BIG, pX - 4, pY - 10, Lang.cur.PKT_TALENTU__P + "        ", QFontAlignment.Right, 300);
+            TalentPts_initial = new Text(FontStatus_BIG, pX + 68, pY - 10, Lang.cur.PKT_TALENTU__T + "     ", QFontAlignment.Right, 300);
             TalentPts = new Text(FontStatus_Small, pX + 4, pY, " " + Lang.cur.KT_ALENTU, QFontAlignment.Right, 300);
             //TalentPts_initial2 = txtMan.produceText(FontStatus_BIG, Lang.cur.PKT_TALENTU__P + "        ", pX - 15, pY - 10, QFontAlignment.Right);
             //TalentPts_initial = txtMan.produceText(FontStatus_BIG, Lang.cur.PKT_TALENTU__T + "     ", pX + 2, pY - 10, QFontAlignment.Right);
@@ -164,6 +172,7 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 Obj star = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX - starXStep * i, pY, Obj.align.RIGHT);
                 star.isGUIObjectButUnscaled = true;
+                star.layer = Layer.imgGUIFG;
                 TalentPtsStars.Add(star);
             }
 
@@ -184,10 +193,14 @@ namespace CookieMonster.CookieMonster_Objects
             pY -= (int)(menuArea.Height * 0.02);
             Obj add = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);
             add.isGUIObjectButUnscaled = true;
+            add.layer = Layer.imgGUIFG;
             Obj addOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);
             addOn.isGUIObjectButUnscaled = true;
+            addOn.layer = Layer.imgGUIFG;
             Obj addClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);
             addClick.isGUIObjectButUnscaled = true;
+            addClick.layer = Layer.imgGUIFG;
+
             menu_status.addItem(new Menu_Item("raiseSpeed", add, addOn, addClick, Menu_Instances.Status_ButtonOnHover,null, Menu_Instances.Status_AtrBoostClick));
 
             pY -= (int)(menuArea.Height * 0.006);
@@ -206,10 +219,13 @@ namespace CookieMonster.CookieMonster_Objects
             pY -= (int)(menuArea.Height * 0.02);
             add = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);
             add.isGUIObjectButUnscaled = true;
+            add.layer = Layer.imgGUIFG;
             addOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);
             addOn.isGUIObjectButUnscaled = true;
+            addOn.layer = Layer.imgGUIFG;
             addClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);
             addClick.isGUIObjectButUnscaled = true;
+            addClick.layer = Layer.imgGUIFG;
             menu_status.addItem(new Menu_Item("raiseMaxLives", add, addOn, addClick, Menu_Instances.Status_ButtonOnHover, null, Menu_Instances.Status_AtrMaxLivesClick));
 
             pY -= (int)(menuArea.Height * 0.006);
@@ -232,9 +248,9 @@ namespace CookieMonster.CookieMonster_Objects
             pX += (int)(menuArea.Width * 0.55);
             pY -= (int)(menuArea.Height * 0.02);
 
-            Obj root = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X); root.isGUIObjectButUnscaled = true;
-            Obj rootOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X); rootOn.isGUIObjectButUnscaled = true;
-            Obj rootClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X); rootClick.isGUIObjectButUnscaled = true;
+            Obj root = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);          root.isGUIObjectButUnscaled = true;      root.layer = Layer.imgGUIFG;
+            Obj rootOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);       rootOn.isGUIObjectButUnscaled = true;    rootOn.layer = Layer.imgGUIFG;
+            Obj rootClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);rootClick.isGUIObjectButUnscaled = true; rootClick.layer = Layer.imgGUIFG;
 
             pX = 32; // absolute pre-positioning of whole group of other stars
             int tpCost;
@@ -248,7 +264,11 @@ namespace CookieMonster.CookieMonster_Objects
                 addOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);
                 addOn.isGUIObjectButUnscaled = true;  rootOn.addChildObj(addOn);
                 addClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);
-                addClick.isGUIObjectButUnscaled = true; rootClick.addChildObj(addClick);         
+                addClick.isGUIObjectButUnscaled = true; rootClick.addChildObj(addClick);
+                //Layers fix:
+                add.layer = Layer.imgGUIFG;
+                addOn.layer = Layer.imgGUIFG;
+                addClick.layer = Layer.imgGUIFG;   
             }
             menu_status.addItem(new Menu_Item("raiseBoost", root, rootOn, rootClick, Menu_Instances.Status_ButtonOnHover, null, Menu_Instances.Status_SkillBoost));
 
@@ -266,6 +286,11 @@ namespace CookieMonster.CookieMonster_Objects
             rootOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X); rootOn.isGUIObjectButUnscaled = true;
             rootClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X); rootClick.isGUIObjectButUnscaled = true;
 
+            root.layer = Layer.imgGUIFG;
+            rootOn.layer = Layer.imgGUIFG;
+            rootClick.layer = Layer.imgGUIFG;
+
+
             pX = 32; // absolute pre-positioning of whole group of other stars
 
             if (s == null) tpCost = new Skill(Skill.skillNames.IceBolt).baseTalentPointCost;
@@ -279,6 +304,10 @@ namespace CookieMonster.CookieMonster_Objects
                 addOn.isGUIObjectButUnscaled = true; rootOn.addChildObj(addOn);
                 addClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);
                 addClick.isGUIObjectButUnscaled = true; rootClick.addChildObj(addClick);
+                // Layers fix:
+                add.layer = Layer.imgGUIFG;
+                addOn.layer = Layer.imgGUIFG;
+                addClick.layer = Layer.imgGUIFG;   
             }
             menu_status.addItem(new Menu_Item("raiseBoost", root, rootOn, rootClick, Menu_Instances.Status_ButtonOnHover, null, Menu_Instances.Status_SkillIceBolt));
 
@@ -286,8 +315,10 @@ namespace CookieMonster.CookieMonster_Objects
             pX = menuArea.Left+35; pY = menuArea.Bottom-210;
             Obj toMenu = new Obj("../data/Textures/GAME/GUI/STATUSCREEN_TOMENU.dds", pX, pY, Obj.align.CENTER_X);
             toMenu.isGUIObjectButUnscaled = true;
+            toMenu.layer = Layer.imgGUIFG;
             Obj toMenuHover = new Obj("../data/Textures/GAME/GUI/STATUSCREEN_TOMENU_ACTIVE.dds", pX, pY, Obj.align.CENTER_X);
             toMenuHover.isGUIObjectButUnscaled = true;
+            toMenuHover.layer = Layer.imgGUIFG;
             menu_status.addItem(new Menu_Item("toMenu", toMenu, toMenuHover, toMenuHover, Menu_Instances.Status_ButtonOnHover, null, Menu_Instances.Status_exitToMenuClick));
 
             // Set Text working layer back to default:
@@ -322,6 +353,14 @@ namespace CookieMonster.CookieMonster_Objects
             Skills_icebolt.Update();
 
             pause.prepareRender();
+        }
+
+        internal void Free()
+        {
+            active = false;
+            cookie.Free();
+            pause.Free();
+            background.Free();
         }
     }
 }

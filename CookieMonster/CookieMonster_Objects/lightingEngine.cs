@@ -18,10 +18,11 @@ namespace CookieMonster.CookieMonster_Objects
         int lightMapGrayTexture;
         /// <summary>
         /// How strong shadows are rendered
+        /// NOTE: Only static lights
         /// </summary>
-        public float lightMulStrength   = 0.1f;
-        public float lightAddStrength   = 0.75f;
-        public float lightColorStrength = 0f;
+        private float lightMulStrength   = 0.1f;
+        private float lightAddStrength   = 0.75f;
+        private float lightColorStrength = 0f;
 
         /// <summary>
         /// if value is true static Lights lightmap need to be recalculated
@@ -221,6 +222,17 @@ namespace CookieMonster.CookieMonster_Objects
             //GL.Disable(EnableCap.Blend);
         }
 
+        public void setupMenuLightingParams()
+        {
+            lightMulStrength = 0.1f;
+            lightAddStrength = 0.75f;
+            lightColorStrength = 0f;
+        }
+        public void setupGameLightingParams()
+        {
+            lightAddStrength = 0.6f;
+            lightMulStrength = 0.2f;
+        }
         /// <summary>
         /// If it's true, all lights stored in lighting engine
         /// willn't render.

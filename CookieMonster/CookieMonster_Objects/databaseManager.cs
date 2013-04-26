@@ -16,8 +16,8 @@ namespace CookieMonster.CookieMonster_Objects
                 // so we need to avoid reading from null!
                 if (Profile.currentProfile == null || Profile.currentProfile.onlineAccountAlreadyCreated) return false;
 
-                string hash = calculateProfileHash();
-                string hlp = calculateHelper();
+                string hash = _calculateProfileHash();
+                string hlp = _calculateHelper();
 
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://cookie.site50.net/createAccount.php?name=" + Profile.currentProfile.name + "&h=" + hash + "&hlp=" + hlp);
 
@@ -44,17 +44,16 @@ namespace CookieMonster.CookieMonster_Objects
             return false;//profile wasn't created,
         }
 
-        private static string calculateHelper()
+        private static string _calculateHelper()
         {
             string hlp = System.Windows.Forms.SystemInformation.ComputerName + ";";
             hlp += System.Windows.Forms.SystemInformation.UserName + ";";
             hlp += Environment.OSVersion + ";";
             hlp += Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
             return  hashHelper.EncodeTo64(hlp);
-
         }
 
-        private static string calculateProfileHash()
+        private static string _calculateProfileHash()
         {
             string hash = Profile.currentProfile.name;
             int len = hash.Length;

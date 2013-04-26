@@ -25,10 +25,6 @@ namespace CookieMonster.CookieMonster_Objects
         public bool addedToViewport { get; set; }
         public bool preparedToRender { get; set; }
         public bool hasAnimatedTexture { get { return texAni.Count != 0; } }
-        private Engine.Image tex;// Engine.Image of this object (it's texture)
-
-        private double vposx, vposy;//0-0px 1.0-x/y size of screen
-        private int posx, posy; //actual position on screen
 
         public double orginalWidth { get; private set; }
         public double orginalHeight { get; private set; }
@@ -37,7 +33,7 @@ namespace CookieMonster.CookieMonster_Objects
         public align objAlign { get; private set; }
 
         public Obj parentObj { get; private set; } //parent obj that this obj will be relatively positioned to
-        public List<Obj> childObj { get; private set; } //u can add child objects there that will be rendered next to this main
+        public List<Obj> childObjs { get; private set; } //u can add child objects there that will be rendered next to this main
         //object, note that they pos will be threaten relatively, not absolute
         public Obj_Animation objAnimation { get { return ani; } }
 
@@ -47,6 +43,22 @@ namespace CookieMonster.CookieMonster_Objects
         private Obj_texAni texAni = null;
         private Obj_Animation ani = null;
 
+        private Engine.Image tex;// Engine.Image of this object (it's texture)
+
+        private double vposx, vposy;//0-0px 1.0-x/y size of screen
+        private int posx, posy; //actual position on screen
+
+        private Viewport _myViewport;
+        public Viewport myViewport
+        {
+            get { return _myViewport; }
+            set
+            {
+                if (_myViewport == value) return; // it will don't change anything
+                if (_myViewport != null) _myViewport.removeObject(this);
+                _myViewport = value; addedToViewport = false;
+            }
+        }
         /// <summary>
         /// If it's set to false, object will not render.
         /// </summary>
@@ -215,8 +227,10 @@ namespace CookieMonster.CookieMonster_Objects
             visible = true;
             id = id_ctr;
             id_ctr++;
-            layer = Layer.imgBG;
+            layer = Layer.objDefaultLayer;
             texAni = new Obj_texAni(this, "");
+            // Add object to current viewport
+            _myViewport = engine.activeViewportOrAny;
         }
         /// <summary>
         /// Create Obj base on existing openGL Texture.
@@ -294,12 +308,18 @@ namespace CookieMonster.CookieMonster_Objects
         }
         #endregion
 
-
+        public void setVisibleWithChilds(bool val)
+        {
+            visible = val;
+            if (childObjs == null) return;
+            foreach (Obj o in childObjs)
+                o.visible = val;
+        }
         public void addChildObj(Obj child)
         {
-            if (childObj == null)
-                childObj = new List<Obj>();
-            childObj.Add(child);
+            if (childObjs == null)
+                childObjs = new List<Obj>();
+            childObjs.Add(child);
             child.setParent(this);
         }
         public void setParent(Obj parent)
@@ -311,20 +331,19 @@ namespace CookieMonster.CookieMonster_Objects
         /// </summary>
         public void prepareRender()
         {
-            if (!visible) return;
+            if (!visible) {preparedToRender=false; return;}
 
+            if ( (parentObj != null)&&(!parentObj.preparedToRender) ) {preparedToRender=false; return;}
+            
             preparedToRender = true;
             if (!addedToViewport)
             {   //add object to viewport if it's not already in.
-                engine.activeViewport.addObject(this);
+                if (myViewport != null) myViewport.addObject(this);
+                else    engine.activeViewportOrAny.addObject(this);
                 addedToViewport = true;
             }
 
             int oldX = x, oldY = y;
-            //if (parentObj != null) //Obj has a parent, so we need to recalculate position of this Obj
-            //{
-            //    x += parentObj.x; y += parentObj.y;
-            //}
             //if(!objInViewport(activeCam)) return;
             //compute animation frame:
             if (ani != null && (engine.gameManager == null || !engine.gameManager.gamePaused || !ani.isIngameAnimation))
@@ -359,10 +378,10 @@ namespace CookieMonster.CookieMonster_Objects
                     }
                 }
             }
-            //renders childs if there is some of them
-            if (childObj != null)
-                for (int i = 0; i < childObj.Count; i++)
-                    childObj[i].prepareRender();
+            // Prepares render of childs if there is some of them
+            if (childObjs != null)
+                for (int i = 0; i < childObjs.Count; i++)
+                    childObjs[i].prepareRender();
             x = oldX; y = oldY;
         }
         /// <summary>
@@ -377,6 +396,14 @@ namespace CookieMonster.CookieMonster_Objects
                 tex.Draw(x + offX + parentObj.x, y + offY + parentObj.y);
             else
                 tex.Draw(x + offX, y + offY);
+
+            //Draw child objects (if present):
+            // if (childObjs != null)
+            //     for (int i = 0; i < childObjs.Count; i++)
+            //     {
+            //         childObjs[i].prepareRender();
+            //         childObjs[i].Render();
+            //     }
         }
 
         private bool objInViewport(Camera activeCam)
@@ -392,6 +419,7 @@ namespace CookieMonster.CookieMonster_Objects
         public void Free()
         {
             addedToViewport = false;
+            //TODO: Reimplement it, fix
             //if (tex != null)
             //    tex.Free();
             //if (texAni != null)
@@ -696,16 +724,16 @@ namespace CookieMonster.CookieMonster_Objects
             Render(0, 0);
         }
 
-        internal void BuildTexcoords(float u1, float u2, float v1, float v2)
+        internal void OverrideTexcoords(float u1, float u2, float v1, float v2)
         {
-            tex.BuildTexcoords(u1, u2, v1, v2);
+            tex.OverrideTexcoords(u1, u2, v1, v2);
             // Build texcoordinates of all animation
             // textures too:
             if (hasAnimatedTexture)
             {
                 for (int i = 0; i < texAni.Count; i++)
                 {
-                    texAni[i].BuildTexcoords(u1, u2, v1, v2);
+                    texAni[i].OverrideTexcoords(u1, u2, v1, v2);
                     //texAni[i].rebuild = false;
                 }
             }
