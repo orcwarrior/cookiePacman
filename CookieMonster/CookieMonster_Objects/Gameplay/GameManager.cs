@@ -53,9 +53,8 @@ namespace CookieMonster.CookieMonster_Objects
             get { return _gridSize; }
         }
         //returns true when player can proceed to next level;
-        //TODO: Back to normal (commented)
-        //public bool canStartNextLevel { get { return statistics.lvlPoints >= Map.cookiesCount * Statistics.ptsPerCookie; } }
-        public bool canStartNextLevel { get { return true; } }
+        public bool canStartNextLevel { get { return statistics.lvlPoints >= Map.cookiesCount * Statistics.ptsPerCookie; } }
+        
         public GameManager()
         {
             engine.gameState = Game.game_state.Game;
@@ -348,8 +347,8 @@ namespace CookieMonster.CookieMonster_Objects
             engine.textManager.clearAll();
             loadScreenBG = new Obj("../data/Textures/MENU/LOADING_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
             loadScreenAni = new Obj("../data/Textures/MENU/LOADING_ANI_A0.dds", 0.5, 0.42, Obj.align.CENTER_BOTH, false);
-            loadScreenBG.isGUIObjectButUnscaled = true;
-            loadScreenAni.isGUIObjectButUnscaled = true;
+            loadScreenBG.ignoreCameraOffset = true;
+            loadScreenAni.ignoreCameraOffset = true;
         }
         private void __renderLoadScreen()
         {

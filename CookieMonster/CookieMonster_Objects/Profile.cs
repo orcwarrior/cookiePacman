@@ -124,7 +124,7 @@ namespace CookieMonster.CookieMonster_Objects
         private static void generateStaticObjs(Menu profile)
         {
             Obj profileLoginFrame = new Obj("../data/Textures/MENU/MENU_PROFILE.dds", 0.5, 0.43, Obj.align.CENTER_BOTH, false);
-            profileLoginFrame.isGUIObjectButUnscaled = true;
+            profileLoginFrame.ignoreCameraOffset = true;
             profile.addItem(new Menu_Item("BG", profileLoginFrame, null, null, null, null, null));
 
             QFont heading1 = TextManager.newQFont("KOMIKAX.ttf", 22, true, new OpenTK.Graphics.Color4(0, 112, 186, 255));
@@ -222,7 +222,7 @@ namespace CookieMonster.CookieMonster_Objects
                 profile.addItem(new Menu_Item("ArrR", arrRight, null, null, null, null, null));
             }
 
-            arrRight.isGUIObjectButUnscaled = true;
+            arrRight.ignoreCameraOffset = true;
             arrRight.x += 125;
         }
         public static void Menu_RightProfile()
@@ -247,7 +247,7 @@ namespace CookieMonster.CookieMonster_Objects
                 arrLeft = new Obj("../data/Textures/MENU/MENU_ARROW_LEFT_DISABLED.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
                 profile.addItem(new Menu_Item("ArrL", arrLeft, null, null, null, null, null));
             }
-            arrLeft.isGUIObjectButUnscaled = true;
+            arrLeft.ignoreCameraOffset = true;
             arrLeft.x -= 125;
         }
         public static void Menu_LeftProfile()

@@ -62,7 +62,7 @@ namespace CookieMonster.CookieMonster_Objects
             cursor = new Obj("../data/Textures/MENU/MENU_CURSOR.dds", 0.5, 0.5, Obj.align.LEFT); //bugfix: probably something wrong in quickFont causes texture load error
             cursor = new Obj("../data/Textures/MENU/MENU_CURSOR.dds", 0.5, 0.5, Obj.align.LEFT);
             cursor.layer = Layer.cursor;
-            cursor.isGUIObjectButUnscaled = true;
+            cursor.ignoreCameraOffset = true;
         }
         public void setCurrentMenu(Menu m)
         {            
@@ -265,7 +265,7 @@ namespace CookieMonster.CookieMonster_Objects
                 }
         
                 Obj BG = new Obj("../data/Textures/MENU/MENU_ALERT_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
-                BG.isGUIObjectButUnscaled = true;
+                BG.ignoreCameraOffset = true;
 
                 float x = engine.Width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;
                 float y = engine.Height * 3 / 10;
@@ -299,7 +299,7 @@ namespace CookieMonster.CookieMonster_Objects
                 }
 
                 Obj BG = new Obj("../data/Textures/MENU/MENU_CONFIRM_BG.dds", 0.5, 0.5, Obj.align.CENTER_BOTH, false);
-                BG.isGUIObjectButUnscaled = true;
+                BG.ignoreCameraOffset = true;
                 BG.layer = Layer.imgGUIFG;
 
                 float x = engine.Width / 2 - Menu.fontSmallAlt.Measure(msg).Width / 2;

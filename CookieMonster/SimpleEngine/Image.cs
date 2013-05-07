@@ -11,7 +11,8 @@ namespace Engine
     class Image : IProperties
     {
         public Bitmap bitmap;          // Used to load image
-        public uint texture;            // Holds image data
+        public uint texture;            // Holds image data (openGL texID)
+        
         public VBO vbo = new VBO();
 
         /// <summary>
@@ -51,9 +52,7 @@ namespace Engine
             // Hook texture with passed ID:
             // get needed texture parameters:
             texture = (uint)texID;
-            GL.BindTexture(TextureTarget.Texture2D, texID);
-            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out w);
-            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out h);
+            correctTexDimensions();
         }
 
         /// <summary>
@@ -68,6 +67,11 @@ namespace Engine
                 //this method was shity and won't helped at all
                 //TexPoolItem t = TexturesPool.getImage(path);
                 TextureTarget texTarget = TextureTarget.Texture2D;
+                //Set parrameters for call in new thread:
+                _loadTextureWorker_pTexTarget = texTarget;
+                _loadTextureWorker_pPath = path;
+                //[TODO] Temporary disabled, fix it!!!
+                //new System.Threading.Thread(_loadTextureWorker).Start();
                 ImageDDS.LoadFromDisk(path, out texture, out texTarget);
                 w = ImageDDS.Width;  h = ImageDDS.Height;
             }
@@ -98,6 +102,21 @@ namespace Engine
             }
          }
 
+        private int _loadTextureWorker_attempts=0;
+        private string _loadTextureWorker_pPath;
+        private TextureTarget _loadTextureWorker_pTexTarget;
+        private void _loadTextureWorker()
+        {
+            if (_loadTextureWorker_attempts > 3) return;
+            try
+            {
+                _loadTextureWorker_attempts++;
+                ImageDDS.LoadFromDisk(_loadTextureWorker_pPath, out texture, out _loadTextureWorker_pTexTarget);
+                correctTexDimensions();
+                System.Threading.Thread.CurrentThread.Abort();
+            }
+            catch (System.Exception e) { System.Threading.Thread.Sleep(25); _loadTextureWorker(); } 
+        }
 
         /// <summary>
         /// Deletes texture from memory.
@@ -107,6 +126,12 @@ namespace Engine
             GL.DeleteTextures(1, ref texture);
         }
 
+        public void correctTexDimensions()
+        {
+            GL.BindTexture(TextureTarget.Texture2D, texture);
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out w);
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out h);
+        }
 
         /// <summary>
         /// Draws image.
@@ -299,5 +324,6 @@ namespace Engine
 
             vbo.Build();
         }
+
     }
 }

@@ -59,18 +59,19 @@ namespace CookieMonster.CookieMonster_Objects
             easeInTimer = new Timer(Timer.eUnits.MSEC, 400, 0, true, false);
             easeOutTimer = new Timer(Timer.eUnits.MSEC, 200, 0, true, false);
             background = new Obj("../data/Textures/GAME/GUI/STATUSSCREEN_BG.dds", 0.5, 0.45, Obj.align.CENTER_BOTH);
-            background.isGUIObjectButUnscaled = true;
+            background.ignoreCameraOffset = true;
+            background.layer = Layer.imgGUI;
             menuArea = new Rectangle(background.x + 53, background.y + 216, 500, 750);
 
             cookie = new Obj("../data/Textures/GAME/GUI/STATUSSCREEN_COOKIE.dds", 1.05, 1.09, Obj.align.RIGHT);
-            cookie.isGUIObjectButUnscaled = true;
+            cookie.ignoreCameraOffset = true;
             cookieDstXPos = cookie.x;// +cookie.width;
             cookieMoveWidth = 950;
             cookie.x += cookieMoveWidth;
             cookie.layer = Layer.imgGUI;
 
             pause = new Obj("../data/Textures/GAME/GUI/STATUSSCREEN_PAUSE.dds", 1.0, 0.85, Obj.align.RIGHT);
-            pause.isGUIObjectButUnscaled = true; pause.x -= 200;
+            pause.ignoreCameraOffset = true; pause.x -= 200;
             pause.layer = Layer.imgGUIFG;
 
 
@@ -91,17 +92,20 @@ namespace CookieMonster.CookieMonster_Objects
         }
         public void Hide()
         {
-            cookie.setCurrentTexAlpha(0);// BUGFIX
 
             easeInTimer.restart(); easeInTimer.stop();
             easeOutTimer.start();
             engine.gameState &= ~Game.game_state.Menu;
             engine.menuManager.close();
         }
+
         public void Update()
         {
             if (easeInTimer.enabled)
             { // menu is easing in
+                //fixes:
+                background.visible = true;
+                cookie.visible = true;
                 double multi = ((easeInTimer.currentTime - 150.0) / easeInTimer.totalTime);
                 if (multi < 0.0) multi = 0.0;
                 cookie.x = cookieDstXPos + (int)(cookieMoveWidth * multi);
@@ -115,7 +119,6 @@ namespace CookieMonster.CookieMonster_Objects
                 if (multi > 1.0) multi = 1.0;
                 background.setCurrentTexAlpha((byte)(255.0 * multi));
                 cookie.setCurrentTexAlpha((byte)(255.0 * multi));
-
             }
             else if (active && !menuCreated)
             {// menu just eased in -> time to create menu
@@ -127,6 +130,12 @@ namespace CookieMonster.CookieMonster_Objects
             else if (!easeOutTimer.enabled && active && !((engine.gameState & Game.game_state.Menu) == Game.game_state.Menu))
             { // status menu just has easedout
                 active = false;
+                //fixes:
+                background.visible = false;
+                cookie.visible = false;
+                new DebugMsg("Menu Eased-out; alpha: " + cookie.getCurrentTexAlpha(), DebugLVL.info);
+                cookie.setCurrentTexAlpha(0);
+                easeInTimer.stop();
             }
         }
         public void prepareRender()
@@ -147,6 +156,7 @@ namespace CookieMonster.CookieMonster_Objects
 
 
             Layer.currentlyWorkingLayer = Layer.textGUIBG;
+
             menu_status.clearMenuItems();
             //Level X:
             pX = menuArea.Left + lMargin;
@@ -165,13 +175,15 @@ namespace CookieMonster.CookieMonster_Objects
             //TalentPts_initial = txtMan.produceText(FontStatus_BIG, Lang.cur.PKT_TALENTU__T + "     ", pX + 2, pY - 10, QFontAlignment.Right);
             //TalentPts        = txtMan.produceText(FontStatus_Small, " "+Lang.cur.KT_ALENTU, pX + 4, pY, QFontAlignment.Right);
             //Talent Stars:
+            foreach (Obj star in TalentPtsStars)
+                star.Free();
             TalentPtsStars.Clear();
             int starXStep = 40;
             pY += (int)(menuArea.Height * 0.12); pX += 20;
             for (int i = 0; i < engine.gameManager.PC.talentPoints; i++)
             {
                 Obj star = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX - starXStep * i, pY, Obj.align.RIGHT);
-                star.isGUIObjectButUnscaled = true;
+                star.ignoreCameraOffset = true;
                 star.layer = Layer.imgGUIFG;
                 TalentPtsStars.Add(star);
             }
@@ -189,16 +201,17 @@ namespace CookieMonster.CookieMonster_Objects
             int speed = (int)gm.PC.speed;
             Atributes_speed_val = new Text(FontStatus_Little,  pX, pY, speed.ToString());
 
+            //Speed Atr. star:
             pX += (int)(menuArea.Width * 0.15);
-            pY -= (int)(menuArea.Height * 0.02);
+            pY -= (int)(menuArea.Height * 0.035);
             Obj add = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);
-            add.isGUIObjectButUnscaled = true;
+            add.ignoreCameraOffset = true;
             add.layer = Layer.imgGUIFG;
             Obj addOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);
-            addOn.isGUIObjectButUnscaled = true;
+            addOn.ignoreCameraOffset = true;
             addOn.layer = Layer.imgGUIFG;
             Obj addClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);
-            addClick.isGUIObjectButUnscaled = true;
+            addClick.ignoreCameraOffset = true;
             addClick.layer = Layer.imgGUIFG;
 
             menu_status.addItem(new Menu_Item("raiseSpeed", add, addOn, addClick, Menu_Instances.Status_ButtonOnHover,null, Menu_Instances.Status_AtrBoostClick));
@@ -216,15 +229,15 @@ namespace CookieMonster.CookieMonster_Objects
             Atributes_maxLives_val = new Text(FontStatus_Little,  pX, pY, gm.PC.maxLives.ToString());
 
             pX += (int)(menuArea.Width * 0.15);
-            pY -= (int)(menuArea.Height * 0.02);
+            pY -= (int)(menuArea.Height * 0.030);
             add = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);
-            add.isGUIObjectButUnscaled = true;
+            add.ignoreCameraOffset = true;
             add.layer = Layer.imgGUIFG;
             addOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);
-            addOn.isGUIObjectButUnscaled = true;
+            addOn.ignoreCameraOffset = true;
             addOn.layer = Layer.imgGUIFG;
             addClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);
-            addClick.isGUIObjectButUnscaled = true;
+            addClick.ignoreCameraOffset = true;
             addClick.layer = Layer.imgGUIFG;
             menu_status.addItem(new Menu_Item("raiseMaxLives", add, addOn, addClick, Menu_Instances.Status_ButtonOnHover, null, Menu_Instances.Status_AtrMaxLivesClick));
 
@@ -246,11 +259,11 @@ namespace CookieMonster.CookieMonster_Objects
             Skills_boost = new Text(FontStatus_Little,  pX, pY, Lang.cur.TRAMPY_MOCY+"("+lvl+")");
             
             pX += (int)(menuArea.Width * 0.55);
-            pY -= (int)(menuArea.Height * 0.02);
+            pY -= (int)(menuArea.Height * 0.03);
 
-            Obj root = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);          root.isGUIObjectButUnscaled = true;      root.layer = Layer.imgGUIFG;
-            Obj rootOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);       rootOn.isGUIObjectButUnscaled = true;    rootOn.layer = Layer.imgGUIFG;
-            Obj rootClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);rootClick.isGUIObjectButUnscaled = true; rootClick.layer = Layer.imgGUIFG;
+            Obj root = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);          root.ignoreCameraOffset = true;      root.layer = Layer.imgGUIFG;
+            Obj rootOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);       rootOn.ignoreCameraOffset = true;    rootOn.layer = Layer.imgGUIFG;
+            Obj rootClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);rootClick.ignoreCameraOffset = true; rootClick.layer = Layer.imgGUIFG;
 
             pX = 32; // absolute pre-positioning of whole group of other stars
             int tpCost;
@@ -260,11 +273,11 @@ namespace CookieMonster.CookieMonster_Objects
             { // generate rest of 'needed' stars as child of "main" star
                 pX +=starXStep; pY = 0;
                 add = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);
-                add.isGUIObjectButUnscaled = true; root.addChildObj(add);
+                add.ignoreCameraOffset = true; root.addChildObj(add);
                 addOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);
-                addOn.isGUIObjectButUnscaled = true;  rootOn.addChildObj(addOn);
+                addOn.ignoreCameraOffset = true;  rootOn.addChildObj(addOn);
                 addClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);
-                addClick.isGUIObjectButUnscaled = true; rootClick.addChildObj(addClick);
+                addClick.ignoreCameraOffset = true; rootClick.addChildObj(addClick);
                 //Layers fix:
                 add.layer = Layer.imgGUIFG;
                 addOn.layer = Layer.imgGUIFG;
@@ -280,11 +293,11 @@ namespace CookieMonster.CookieMonster_Objects
             Skills_icebolt = new Text(FontStatus_Little,  pX, pY, Lang.cur.LODOWY_POCISK+"(" + lvl + ")");
 
             pX += (int)(menuArea.Width * 0.55);
-            pY -= (int)(menuArea.Height * 0.02);
+            pY -= (int)(menuArea.Height * 0.035);
 
-            root = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X); root.isGUIObjectButUnscaled = true;
-            rootOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X); rootOn.isGUIObjectButUnscaled = true;
-            rootClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X); rootClick.isGUIObjectButUnscaled = true;
+            root = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X); root.ignoreCameraOffset = true;
+            rootOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X); rootOn.ignoreCameraOffset = true;
+            rootClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X); rootClick.ignoreCameraOffset = true;
 
             root.layer = Layer.imgGUIFG;
             rootOn.layer = Layer.imgGUIFG;
@@ -299,11 +312,11 @@ namespace CookieMonster.CookieMonster_Objects
             { // generate rest of 'needed' start as child of "main" star
                 pX += starXStep; pY = 0;
                 add = new Obj("../data/Textures/GAME/GUI/STAR_GRAY.dds", pX, pY, Obj.align.CENTER_X);
-                add.isGUIObjectButUnscaled = true; root.addChildObj(add);
+                add.ignoreCameraOffset = true; root.addChildObj(add);
                 addOn = new Obj("../data/Textures/GAME/GUI/STAR_COLOR.dds", pX, pY, Obj.align.CENTER_X);
-                addOn.isGUIObjectButUnscaled = true; rootOn.addChildObj(addOn);
+                addOn.ignoreCameraOffset = true; rootOn.addChildObj(addOn);
                 addClick = new Obj("../data/Textures/GAME/GUI/STAR_COLOR_BIG.dds", pX, pY, Obj.align.CENTER_X);
-                addClick.isGUIObjectButUnscaled = true; rootClick.addChildObj(addClick);
+                addClick.ignoreCameraOffset = true; rootClick.addChildObj(addClick);
                 // Layers fix:
                 add.layer = Layer.imgGUIFG;
                 addOn.layer = Layer.imgGUIFG;
@@ -314,10 +327,10 @@ namespace CookieMonster.CookieMonster_Objects
             //TO MENU BUTTON:
             pX = menuArea.Left+35; pY = menuArea.Bottom-210;
             Obj toMenu = new Obj("../data/Textures/GAME/GUI/STATUSCREEN_TOMENU.dds", pX, pY, Obj.align.CENTER_X);
-            toMenu.isGUIObjectButUnscaled = true;
+            toMenu.ignoreCameraOffset = true;
             toMenu.layer = Layer.imgGUIFG;
             Obj toMenuHover = new Obj("../data/Textures/GAME/GUI/STATUSCREEN_TOMENU_ACTIVE.dds", pX, pY, Obj.align.CENTER_X);
-            toMenuHover.isGUIObjectButUnscaled = true;
+            toMenuHover.ignoreCameraOffset = true;
             toMenuHover.layer = Layer.imgGUIFG;
             menu_status.addItem(new Menu_Item("toMenu", toMenu, toMenuHover, toMenuHover, Menu_Instances.Status_ButtonOnHover, null, Menu_Instances.Status_exitToMenuClick));
 

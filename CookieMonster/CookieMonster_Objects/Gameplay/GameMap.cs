@@ -368,7 +368,7 @@ namespace CookieMonster.CookieMonster_Objects
         private void _prepareRenderOfMapStaticPart(int _x,int _y)
         {
             const int xCorrection = 0;  //-60;
-            const int yCorrection = -64;// +48;   //-50;
+            const int yCorrection = -64 + 8;// +48;   //-50;
             int xoff,yoff;
             int staticTexSizeY = staticTexSize;// -20;
             for (int y = staticTexCntY-1; y >=0; y--)
@@ -403,7 +403,7 @@ namespace CookieMonster.CookieMonster_Objects
             float y = -543;
             Point camOffsetFix = new Point(c.camOffsetX + 2000, c.camOffsetY + 2000);
 
-            background.isGUIObjectButUnscaled = true;
+            background.ignoreCameraOffset = true;
             background.x = 0; background.width = w;
             background.y = 0; background.height = h;
             background.OverrideTexcoords((0 - camOffsetFix.X / x), (1.8f - camOffsetFix.X / x),

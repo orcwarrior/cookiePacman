@@ -12,6 +12,8 @@ namespace CookieMonster.CookieMonster_Objects
     {
         public QFont fontFace { get; private set; }
         ProcessedText txt;
+        /// <summary>Is this text auto updated by TextMenager?</summary>
+        public bool autoUpdate { get; protected set; }
         public int layer { get; set; } // which layer it will be rendered at
         public bool active { get { if (timeActive != null) return timeActive.enabled; return true; } }
         public bool updatedThisFrame { get; set; }
@@ -97,10 +99,15 @@ namespace CookieMonster.CookieMonster_Objects
         {
             x = (float)_x; y = (float)_y;
         }
+        /// <summary>
+        /// NOTE: Method sets autoUpdate flag to true!!
+        /// </summary>
+        /// <param name="ms"></param>
         public void setLifeTime(float ms)
         {
             timeActive = new Timer(Timer.eUnits.MSEC, (int)ms);
             timeActive.start();
+            autoUpdate = true;
         }
         public void setAnimationMove(Point p)
         {
@@ -275,6 +282,10 @@ namespace CookieMonster.CookieMonster_Objects
             QFont.Begin();
             for (int i = 0; i < onScreenTexts[layer].Count; i++)
             {
+                // auto update text's with flag on:
+                if (onScreenTexts[layer][i].autoUpdate)
+                { onScreenTexts[layer][i].Update(); }
+
                 if (onScreenTexts[layer][i].active == false || onScreenTexts[layer][i].updatedThisFrame == false)
                 { onScreenTexts[layer][i].addedToViewport = false; onScreenTexts[layer].RemoveAt(i); i--; }
                 else if (onScreenTexts[layer][i].updatedThisFrame)

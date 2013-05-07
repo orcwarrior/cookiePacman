@@ -387,7 +387,7 @@ namespace CookieMonster.CookieMonster_Objects
             float x = 880;
             float y = 550;
 
-            background.isGUIObjectButUnscaled = true;
+            background.ignoreCameraOffset = true;
             background.x = 0; background.width = w;
             background.y = 0; background.height = h;
             background.BuildTexcoords( (0 - c.camOffsetX / x) , (1.8f - c.camOffsetX / x),

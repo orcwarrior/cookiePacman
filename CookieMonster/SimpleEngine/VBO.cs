@@ -84,6 +84,7 @@ namespace Engine
         /// <param name="mode">Mode used for drawing.</param>
         public void Draw(int lenght, BeginMode mode)
         {
+            if (texID == 0 || vboID == 0) return; // tex isn't generated yet.
             // Use VBOs if they are supported
            // if (GL.GetString(StringName.Extensions).Contains("VERSION_1_5"))
            // {

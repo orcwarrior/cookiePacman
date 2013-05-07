@@ -21,9 +21,13 @@ namespace CookieMonster.CookieMonster_Objects
         static private UInt32 id_ctr = 1;
 
         public UInt32 id { get; private set; }
-        public int layer { get; set; }//layer (in Viewport) of texture first 0 layer is drawn, then 1, then..
+        private int _layer;
+        public int layer { get { return _layer; } set { _correctObjLayer(value); } }
+
+        //layer (in Viewport) of texture first 0 layer is drawn, then 1, then..
         public bool addedToViewport { get; set; }
         public bool preparedToRender { get; set; }
+        public bool ignoreCameraOffset { get; set; }
         public bool hasAnimatedTexture { get { return texAni.Count != 0; } }
 
         public double orginalWidth { get; private set; }
@@ -227,7 +231,7 @@ namespace CookieMonster.CookieMonster_Objects
             visible = true;
             id = id_ctr;
             id_ctr++;
-            layer = Layer.objDefaultLayer;
+            _layer = Layer.objDefaultLayer;
             texAni = new Obj_texAni(this, "");
             // Add object to current viewport
             _myViewport = engine.activeViewportOrAny;
@@ -639,14 +643,14 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 if ((_isGUIObject == false) && (value == true))
                 {
+                    
                     guiObjRescale();
                 }
                 _isGUIObject = value;
+                //Fix: now Camera offset ignoring is extruded from isGUIObject flag
+                //     since all GUI Obj's all always rendered, even if not.
+                ignoreCameraOffset = true;
             }
-        }
-        public bool isGUIObjectButUnscaled
-        {
-            set { _isGUIObject = value; }
         }
 
         public void Rotate(float deg)
@@ -737,7 +741,14 @@ namespace CookieMonster.CookieMonster_Objects
                     //texAni[i].rebuild = false;
                 }
             }
-            //tex.rebuild = false; // prevent VBO from rebuilding see docu. on rebuild
+        }
+
+        private void _correctObjLayer(int value)
+        {
+            if (value == _layer) return;
+            //This will do the job of changing layer of object
+            if (myViewport != null) myViewport.removeObject(this);
+            _layer = value;
         }
     }
 
@@ -890,10 +901,10 @@ namespace CookieMonster.CookieMonster_Objects
                     ret.Add(hlp2);
                     hlp2 = hlp.Remove(idx + 2, 1); hlp2 = hlp2.Insert(idx + 2, i.ToString());
                     i++;
-                };
+                }
                 return ret;
-            };
-
+            }
         }
+
     }
 }

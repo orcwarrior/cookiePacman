@@ -91,7 +91,7 @@ namespace CookieMonster.CookieMonster_Objects
 
         static tipWindow()
         {
-            background.isGUIObjectButUnscaled = true;
+            background.ignoreCameraOffset = true;
         }
         /// <summary>
         /// Creates and inits (puts on screen)
@@ -108,7 +108,7 @@ namespace CookieMonster.CookieMonster_Objects
             // Image:
             image = new Obj(imgPath,0.5,0.5,Obj.align.CENTER_Y);
             image.x -= 732/2 + 100;//732 - width of background
-            image.isGUIObjectButUnscaled = true;
+            image.ignoreCameraOffset = true;
             // Setup proper layers for tipWindow Obj's:
             background.layer = Layer.imgGUI;
             image.layer = Layer.imgGUI;

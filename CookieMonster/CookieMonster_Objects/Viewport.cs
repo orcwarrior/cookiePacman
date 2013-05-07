@@ -134,6 +134,7 @@ namespace CookieMonster.CookieMonster_Objects
             // k - current Obj rendered from actual Viewport layer
             for (int i = 0; i < Layer.MAX; i++)
             {
+
                 for (int j = 0; j < viewportsList.Count;j++ )
                 {   // Some special threatment for game viewport:
                     if ((i == 0) && (viewportsList[j].partialViewport == false) && (engine.gameManager != null) && viewportsList[j] == engine.gameViewport)
@@ -147,7 +148,10 @@ namespace CookieMonster.CookieMonster_Objects
                     
                     // check if this layer don't exceed count of layers in current viewport
                     if (viewportsList[j].rendered_objects.Count > i)
-                    {   
+                    {
+
+                        bool doBreak = false;
+                        if (7 == i) doBreak = true; 
                         for (int k = 0; k < viewportsList[j].rendered_objects[i].Count; k++)
                         {
                             cur = viewportsList[j].rendered_objects[i][k];
@@ -163,13 +167,21 @@ namespace CookieMonster.CookieMonster_Objects
 
                                 k--; 
                             }
+                            if (cur.ignoreCameraOffset)
+                            {
+                                cur.Render(0, 0);
+                                cur.preparedToRender = false;
+                            }
                             // NOTE: GUI objects aren't refreshed, they're always rendered!
-                            if (cur.isGUIObject) cur.Render(0, 0);
+                            else if (cur.isGUIObject)//&& (!cur.ignoreCameraOffset)
+                            {
+                                cur.Render(0, 0);
+                            }
                             else
                             {
                                 cur.Render(activeCam.camOffsetX, activeCam.camOffsetY);
                                 cur.preparedToRender = false; // set to false, cause if it's still false in next call of Render()
-                                                              // it will means that object wasn't udpated, so it shouldn't be rendered anymore
+                                // it will means that object wasn't udpated, so it shouldn't be rendered anymore
                             }
                         }
                     }

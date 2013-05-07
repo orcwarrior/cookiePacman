@@ -769,6 +769,22 @@ namespace CookieMonster.CookieMonster_Objects
             fxComicBoom.objAnimation.addKeyframe(0, 0, 0, 1.25, new Timer(Timer.eUnits.MSEC, 100));
             fxComicBoom.objAnimation.setLoopType(Obj_Animation.eLoopType.None);
             fxComicBoom.layer = Layer.imgGUI;
+
+            //Play BAM SFX:
+            //
+            Sound bamSFX;
+            int rnd = GameManager.variantizer.Next(4);
+                 if (rnd == 0)
+                     bamSFX = new Sound(Sound.eSndType.SFX, "../data/Sounds/IMPACT_FX_1.ogg", false, false, 0.95);
+            else if (rnd == 1)
+                     bamSFX = new Sound(Sound.eSndType.SFX, "../data/Sounds/IMPACT_FX_2.ogg", false, false, 0.95);
+            else if (rnd == 2)
+                     bamSFX = new Sound(Sound.eSndType.SFX, "../data/Sounds/IMPACT_FX_3.ogg", false, false, 0.95);
+            else if (rnd == 3)
+                     bamSFX = new Sound(Sound.eSndType.SFX, "../data/Sounds/IMPACT_FX_4.ogg", false, false, 0.95);
+            else
+                     bamSFX = new Sound(Sound.eSndType.SFX, "../data/Sounds/IMPACT_FX_5.ogg", false, false, 0.95);
+                 bamSFX.Play();
         }
         /// <summary>
         /// Method called when player/enemy was hit

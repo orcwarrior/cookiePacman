@@ -53,10 +53,9 @@ namespace CookieMonster.CookieMonster_Objects
             //Text msg = new Text(ptFont,  (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10), "+" + v.ToString() + "pts.");
             Text msg = new Text(ptFont, (float)(engine.gameManager.PC.pX + 30 + curCam.camOffsetX), (float)(engine.gameManager.PC.pY + curCam.camOffsetY + 10), pipe);
             msg.setLifeTime(600);
+            msg.layer = Layer.textGUIFG;
             msg.setAnimationMove(new Point(0, -3));
             //engine.textManager.addText(msg);
-            
-            
         }
         public void addEatenCookies(uint v)
         {

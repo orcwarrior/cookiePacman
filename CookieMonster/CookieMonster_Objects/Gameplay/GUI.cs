@@ -34,8 +34,8 @@ namespace CookieMonster.CookieMonster_Objects
         Obj enterButtonToNextLevel;
         public GUI()
         {
-            const int textFromDownLine = 70;
-            const int textKeyHints = 85;
+            const int textFromDownLine = 48;
+            const int textKeyHints = 62;
             Viewport act = engine.activeViewport;
             TextManager txtMan = engine.textManager;
             double y_bg = 0.8575;
@@ -43,70 +43,72 @@ namespace CookieMonster.CookieMonster_Objects
             background = new Obj("../data/Textures/GAME/GUI/BG.dds", 0.5, y_bg, Obj.align.CENTER_X);
             background.isGUIObject = true;//so it won't move with camera
 
-            livesFont.Options.Colour = new OpenTK.Graphics.Color4(200,  230, 250, 255);
+            livesFont.Options.Colour = new OpenTK.Graphics.Color4(200, 230, 250, 255);
             //Power ups:
             PUBackgrounds = new List<Obj>();
-            Obj tmp = new Obj("../data/Textures/GAME/GUI/GUI_PU_BG.dds", 0.1565, y_obj, Obj.align.CENTER_X, false);
-            tmp.isGUIObjectButUnscaled = true;
+            Obj tmp = new Obj("../data/Textures/GAME/GUI/GUI_PU_BG.dds", 0.1595, y_obj, Obj.align.CENTER_X, false);
+            tmp.ignoreCameraOffset = true;
             PUBackgrounds.Add(tmp);
-            tmp = new Obj("../data/Textures/GAME/GUI/GUI_PU_BG.dds", 0.2175, y_obj, Obj.align.CENTER_X, false);
-            tmp.isGUIObjectButUnscaled = true;
+            tmp = new Obj("../data/Textures/GAME/GUI/GUI_PU_BG.dds", 0.2225, y_obj, Obj.align.CENTER_X, false);
+            tmp.ignoreCameraOffset = true;
             PUBackgrounds.Add(tmp);
 
 
-            PUBomb = new Obj("../data/Textures/GAME/SOB/Bomb.dds", 0.1565, y_obj, Obj.align.CENTER_X, false);
-            PUBomb.isGUIObjectButUnscaled = true;
-            PUTimeSlow = new Obj("../data/Textures/GAME/SOB/TIME_SLOW.dds", 0.2175, y_obj, Obj.align.CENTER_X, false);
-            PUTimeSlow.isGUIObjectButUnscaled = true;
+            PUBomb = new Obj("../data/Textures/GAME/SOB/Bomb.dds", 0.1595, y_obj, Obj.align.CENTER_X, false);
+            PUBomb.ignoreCameraOffset = true;
+            PUTimeSlow = new Obj("../data/Textures/GAME/SOB/TIME_SLOW.dds", 0.2225, y_obj, Obj.align.CENTER_X, false);
+            PUTimeSlow.ignoreCameraOffset = true;
             lives = new Obj("../data/Textures/GAME/GUI/LIVE.dds", 0.18, y_obj, Obj.align.CENTER_X, false);
-            lives.isGUIObjectButUnscaled = true;
+            lives.ignoreCameraOffset = true;
 
-            powerUpTxt = new Text(guiFont,  28, (float)(engine.Height - textFromDownLine),Lang.cur.Dopalacze);
+            powerUpTxt = new Text(guiFont, 28, (float)(engine.Height - textFromDownLine), Lang.cur.Dopalacze);
             PUControllLetters = new List<Text>();
             controllsFont.Options.Colour = new OpenTK.Graphics.Color4(255, 255, 255, 192);
-            PUControllLetters.Add(new Text(controllsFont, 187, (float)(engine.Height - textKeyHints), "Z"));
-            PUControllLetters.Add(new Text(controllsFont, 265, (float)(engine.Height - textKeyHints), "X"));
+            PUControllLetters.Add(new Text(controllsFont, 192, (float)(engine.Height - textKeyHints), "Z"));
+            PUControllLetters.Add(new Text(controllsFont, 268, (float)(engine.Height - textKeyHints), "X"));
             //Correct layer of letters:
-            foreach(Text t in PUControllLetters)
+            foreach (Text t in PUControllLetters)
                 t.layer = Layer.textGUIFG;
 
             SkillsBackgrounds = new List<Obj>();
-            tmp = new Obj("../data/Textures/GAME/GUI/GUI_SKILL_BG.dds", 0.895, y_obj, Obj.align.CENTER_X, false);
-            tmp.isGUIObjectButUnscaled = true;
+            tmp = new Obj("../data/Textures/GAME/GUI/GUI_SKILL_BG.dds", 0.904, y_obj, Obj.align.CENTER_X, false);
+            tmp.ignoreCameraOffset = true;
             SkillsBackgrounds.Add(tmp);
-            tmp = new Obj("../data/Textures/GAME/GUI/GUI_SKILL_BG.dds", 0.955, y_obj, Obj.align.CENTER_X, false);
-            tmp.isGUIObjectButUnscaled = true;
+            tmp = new Obj("../data/Textures/GAME/GUI/GUI_SKILL_BG.dds", 0.9645, y_obj, Obj.align.CENTER_X, false);
+            tmp.ignoreCameraOffset = true;
             SkillsBackgrounds.Add(tmp);
             SkillsTxt = new Text(guiFont, engine.Width - 335, (float)(engine.Height - textFromDownLine), Lang.cur.umiejetnosci);
             SkillsControllLetters = new List<Text>();
-            SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 148, (float)(engine.Height - textKeyHints), "C"));
-            SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 72, (float)(engine.Height - textKeyHints), "V"));
+            SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 134, (float)(engine.Height - textKeyHints), "C"));
+            SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 62, (float)(engine.Height - textKeyHints), "V"));
             //Correct layer of letters:
             foreach (Text t in SkillsControllLetters)
                 t.layer = Layer.textGUIFG;
 
-            SkillBoost = new Obj("../data/Textures/GAME/SKILLS/SKILL_BOOST.dds", 0.895, y_obj, Obj.align.CENTER_X, false);
-            SkillBoost.isGUIObjectButUnscaled = true;
-            SkillIceBolt = new Obj("../data/Textures/GAME/SKILLS/SKILL_ICEBOLT.dds", 0.955, y_obj, Obj.align.CENTER_X, true);
-            SkillIceBolt.isGUIObjectButUnscaled = true;
+            SkillBoost = new Obj("../data/Textures/GAME/SKILLS/SKILL_BOOST.dds", 0.905, y_obj, Obj.align.CENTER_X, false);
+            SkillBoost.ignoreCameraOffset = true;
+            SkillIceBolt = new Obj("../data/Textures/GAME/SKILLS/SKILL_ICEBOLT.dds", 0.964, y_obj, Obj.align.CENTER_X, true);
+            SkillIceBolt.ignoreCameraOffset = true;
 
-            DisabledSkillBoost = new Obj("../data/Textures/GAME/SKILLS/SKILL_BOOST_DISABLED.dds", 0.895, y_obj, Obj.align.CENTER_X, true);
-            DisabledSkillBoost.isGUIObjectButUnscaled = true;
-            DisabledSkillIceBolt = new Obj("../data/Textures/GAME/SKILLS/SKILL_ICEBOLT_DISABLED.dds", 0.955, y_obj, Obj.align.CENTER_X, true);
-            DisabledSkillIceBolt.isGUIObjectButUnscaled = true;
+            DisabledSkillBoost = new Obj("../data/Textures/GAME/SKILLS/SKILL_BOOST_DISABLED.dds", 0.905, y_obj, Obj.align.CENTER_X, true);
+            DisabledSkillBoost.ignoreCameraOffset = true;
+            DisabledSkillIceBolt = new Obj("../data/Textures/GAME/SKILLS/SKILL_ICEBOLT_DISABLED.dds", 0.964, y_obj, Obj.align.CENTER_X, true);
+            DisabledSkillIceBolt.ignoreCameraOffset = true;
 
             Points = new Text(guiFont, engine.Width / 2 - 310, (float)(engine.Height - textFromDownLine), Lang.cur.punkty_0);
 
             enterButtonToNextLevel = new Obj("../data/Textures/GAME/GUI/enter_button.dds", 0.5, 0.0, Obj.align.CENTER_X, true);
-
+            enterButtonToNextLevel.layer = Layer.imgGUIFG;
             // Init skill refreshing tex's:
             skillRefreshingTexs = new Obj[100];
-            for(int i=0;i<100;i++)
-                skillRefreshingTexs[i] = new Obj("../data/Textures/GAME/GUI/SKILL_REFRESHING_" + i + ".dds", 0.895, y_obj, Obj.align.CENTER_X, false);
+            for (int i = 0; i < 100; i++)
+            {
+                skillRefreshingTexs[i] = new Obj("../data/Textures/GAME/GUI/SKILL_REFRESHING_" + i + ".dds", 0.905, y_obj, Obj.align.CENTER_X, false);
+                skillRefreshingTexs[i].layer = Layer.imgGUIFG + 1;
+            }
         }
         public void prepareRender()
         {
-            Layer.currentlyWorkingLayer = 1;//Layer.imgFG;
             GameManager gm = engine.gameManager;
             double y_obj = 0.90;
             background.prepareRender();
@@ -129,16 +131,19 @@ namespace CookieMonster.CookieMonster_Objects
             {
                 Skill boost = gm.PC.hasSkill(Skill.skillNames.Boost);
                 if (boost.cooldownTimer.enabled)
-                {
-                    double part = 1.0 - (boost.cooldownTimer.currentTime / (double)boost.cooldownTimer.totalTime);
+                { // Show cooldown timer:
+                    double part = boost.cooldownTimer.partDoneReverse;
+                    
                     part = Math.Max(0f,Math.Min(0.99f,Math.Round(part, 2)));// 100% safe etc. :P
                     part *= 100;
                     int p = (int)part;
                     Obj tmp = skillRefreshingTexs[p];
-                    tmp.vx = 0.870;
-                    //new Obj("../data/Textures/GAME/GUI/SKILL_REFRESHING_" + p + ".dds", 0.895, y_obj, Obj.align.CENTER_X, false);
-                    tmp.isGUIObjectButUnscaled = true;
-                    /*tmp.setRenderOnce();*/ tmp.prepareRender();
+                    tmp.vx = 0.874;
+                    tmp.layer = Layer.imgGUI;
+                    tmp.ignoreCameraOffset = true;
+                    new DebugMsg("Choosen cooldown_tex: " + p,DebugLVL.info);
+                    tmp.prepareRender();
+
                     DisabledSkillBoost.prepareRender();
                 }
                 else
@@ -152,16 +157,17 @@ namespace CookieMonster.CookieMonster_Objects
                 Skill iceBolt = gm.PC.hasSkill(Skill.skillNames.IceBolt);
                 if (iceBolt.cooldownTimer.enabled)
                 {
-                    double part = 1.0 - (iceBolt.cooldownTimer.currentTime / (double)iceBolt.cooldownTimer.totalTime);
+                    double part = iceBolt.cooldownTimer.partDoneReverse;
                     part = Math.Max(0f, Math.Min(0.99f, Math.Round(part, 2)));// 100% safe etc. :P
                     part *= 100;
                     int p = (int)part;
                     if (p > 99) p = 99; else if (p < 0) p = 0;
                     Obj tmp = skillRefreshingTexs[p];
-                    tmp.vx = 0.930;
-                    //new Obj("../data/Textures/GAME/GUI/SKILL_REFRESHING_" + p + ".dds", 0.955, y_obj, Obj.align.CENTER_X, false);
-                    tmp.isGUIObjectButUnscaled = true;
-                    /*tmp.setRenderOnce(); */tmp.prepareRender();
+                    tmp.vx = 0.95;
+                    tmp.layer = Layer.imgGUI;
+                    tmp.ignoreCameraOffset = true;
+                    tmp.prepareRender();
+
                     DisabledSkillIceBolt.prepareRender();
                 }
                 else
@@ -201,10 +207,10 @@ namespace CookieMonster.CookieMonster_Objects
 
             if (engine.gameManager.canStartNextLevel)
             {
+                enterButtonToNextLevel.layer = Layer.imgGUIFG;
                 enterButtonToNextLevel.prepareRender();
             }
 
-            Layer.currentlyWorkingLayer = -1;
         }
 
         public void Free()

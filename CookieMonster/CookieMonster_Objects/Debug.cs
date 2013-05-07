@@ -131,6 +131,7 @@ namespace CookieMonster.CookieMonster_Objects
             if (filterMessage(d)) return; // if message is filtered, don't add it to messages.
 
             //write to debugfile:
+            //if(Debug.debugLog!=null)
             Debug.debugLog.WriteLine(d.msg);
 
             if (d.referencedObj == null)//it's dynamic message

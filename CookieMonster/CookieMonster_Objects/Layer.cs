@@ -47,7 +47,7 @@ namespace CookieMonster.CookieMonster_Objects
         public const int imgGUIFG = 5;
         /// <summary>6 TOP MOST</summary>
         public const int cursor = 6;
-        /// <summary>7</summary>
-        public const int MAX = 7;
+        /// <summary>8</summary>
+        public const int MAX = 8;
     }
 }
