@@ -4,6 +4,14 @@ using System.Text;
 
 namespace CookieMonster.CookieMonster_Objects
 {
+    /// <summary>
+    /// Obiekt przechowujący dane zwiazane z zapisem wyników JEDNEGO ukończonego poziomu.
+    /// ***
+    /// Pola istotna dla bazy danych:
+    /// * level => levelID
+    /// * lvlScore => score
+    /// * lvlDuration => levelTime
+    /// </summary>
     class mapSave
     {
         internal uint data;

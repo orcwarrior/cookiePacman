@@ -135,7 +135,7 @@ namespace EngineApp
             //skip playing videos:
             if (videoPlayer != null)   // skip video on keystroke
                 videoPlayer.keyDown(sender, k);
-
+            /* Moving map(testing):
             if (k.Key == Key.S)
                 gameCamera.Move(0, -50);
             if (k.Key == Key.W)
@@ -144,6 +144,7 @@ namespace EngineApp
                 gameCamera.Move(-50, 0);
             if (k.Key == Key.D)
                 gameCamera.Move(50, 0);
+             * *****/
 
         }
         public void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs k)

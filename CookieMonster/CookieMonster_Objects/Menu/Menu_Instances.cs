@@ -182,6 +182,11 @@ namespace CookieMonster.CookieMonster_Objects
             //itemH.addAni(new Obj_Animation(itemH, itemH.x - 18, itemH.y - 6, 18.0, hoverscale,true));
             //itemH.getObjAnimation().setLoopType(Obj_Animation.eLoopType.None);
             main.addItem(new Menu_Item("MAIN_EXIT", item, itemH, null, null, null, Menu_Exit_Click));
+
+            //OPEN ONLINE-PROFILE
+            //TODO: Use disabled-font if player wasn't able to log-in into profile
+            main.addItem(new Menu_Item(Lang.cur.openOnlineProfile, 0.8f*engine.Width, 0.94f*engine.Height, Menu.fontSmall, Menu.fontSmall_Click, Menu.fontSmall_Click, Menu_Main_OpenOnlineProfile));
+            
         }
         public static void Menu_NewGame_Click()
         {
@@ -845,6 +850,10 @@ namespace CookieMonster.CookieMonster_Objects
             engine.Exit();
         }
 
+        public static void Menu_Main_OpenOnlineProfile()
+        {
+            Profile.currentProfile.openOnlineAccout();
+        }
         //---------------------------------
         // END OF MENU MAIN STUFF
         // --------------------------------

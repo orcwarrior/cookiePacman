@@ -40,6 +40,7 @@ namespace CookieMonster.CookieMonster_Objects
         private CollisionSystem collSys; 
         private MusicPlayer mPlayer;
         private GUI gui;
+        private onlineGameSession onlineSession;
         private Statistics stats; public Statistics statistics { get { return stats; } }
         private Player _pc;
         private List<Bomb> _plantedBombs; 
@@ -53,12 +54,11 @@ namespace CookieMonster.CookieMonster_Objects
             get { return _gridSize; }
         }
         //returns true when player can proceed to next level;
-        public bool canStartNextLevel { get { return statistics.lvlPoints >= Map.cookiesCount * Statistics.ptsPerCookie; } }
-        
+        //public bool canStartNextLevel { get { return statistics.lvlPoints >= Map.cookiesCount * Statistics.ptsPerCookie; } }
+        public bool canStartNextLevel { get { return true; } }
         public GameManager()
         {
             engine.gameState = Game.game_state.Game;
-
             initLoadScreen();
             updateLoadingInfos("..."+Lang.cur.Inicjuje_Game_Managera+"...");
             //init other clases static fields:
@@ -91,6 +91,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             //create statistics:
             stats = new Statistics();
+            onlineSession = new onlineGameSession();
 
             updateLoadingInfos("..."+Lang.cur.inicjalizuje_obiekty_poziomu+"...");
             initializeMOBs();
@@ -144,6 +145,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             //create statistics:
             stats = new Statistics(sav);
+            onlineSession = new onlineGameSession();
             
             updateLoadingInfos("..." + Lang.cur.inicjalizuje_obiekty_poziomu + "...");
             initializeMOBs();
@@ -166,8 +168,10 @@ namespace CookieMonster.CookieMonster_Objects
             Projectile.forceProjectileVisualsReinit();
 
             pauseGameDurationTimer();
-            //update saveGame
+            // update saveGame
             Profile.currentProfile.autoSave();
+            // post last level score to online database:
+            onlineSession.postLevelScoresToDatabase();
 
             updateLoadingInfos("...dealokuje pamiec...");
             powerPillTimer.restart();

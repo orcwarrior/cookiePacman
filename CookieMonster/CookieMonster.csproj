@@ -138,6 +138,7 @@
     <Compile Include="CookieMonster_Objects\Gameplay\MOB.cs" />
     <Compile Include="CookieMonster_Objects\Gameplay\MusicPlayer.cs" />
     <Compile Include="CookieMonster_Objects\Gameplay\neighborReport.cs" />
+    <Compile Include="CookieMonster_Objects\Gameplay\onlineGameSession.cs" />
     <Compile Include="CookieMonster_Objects\Gameplay\Paths.cs" />
     <Compile Include="CookieMonster_Objects\Gameplay\Player.cs" />
     <Compile Include="CookieMonster_Objects\Gameplay\Portal.cs" />

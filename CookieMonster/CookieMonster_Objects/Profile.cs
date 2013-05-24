@@ -4,6 +4,8 @@ using System.Text;
 using EngineApp;
 using QuickFont;
 using OpenTK.Graphics;
+using System.Net;
+using System.IO;
 
 namespace CookieMonster.CookieMonster_Objects
 {
@@ -13,6 +15,7 @@ namespace CookieMonster.CookieMonster_Objects
         static private string profileExt = ".CMprofile";
         static private Profile hlpProfile;
         static private Profile _current;
+        static public string profileNameAndIDSep = "_%_";
         static public Profile currentProfile { 
             get {
                 if (_current == null) return hlpProfile;
@@ -22,6 +25,8 @@ namespace CookieMonster.CookieMonster_Objects
         }
         static public List<Profile> profilesList { get; private set; }
         static public int menuSelectedProfile { get; private set; }
+
+
         public string name { get; private set; }
         public Configuration config { get; private set; }
         public Savegame save { get; private set; }
@@ -29,8 +34,9 @@ namespace CookieMonster.CookieMonster_Objects
         // Stuff on server database:
 
         // true when user connected to database and generated new user in a table
-        public bool onlineAccountAlreadyCreated { get; private set; }
-        private int onlineAccount_ID;
+        public bool onlineAccount_AlreadyCreated  { get; private set; }
+        public int onlineAccount_ID               { get; private set; }
+        public bool onlineAccount_CreationDisabled{ get; private set; }
         
         static Profile()
         {
@@ -85,9 +91,14 @@ namespace CookieMonster.CookieMonster_Objects
             engine.SoundMan.recalculateSFX();
 
             //if online profile wasn't created, try to create one:
-            if (!onlineAccountAlreadyCreated)
-                currentProfile.onlineAccountAlreadyCreated = databaseManager.tryToCreateAccount();
+            if (!onlineAccount_AlreadyCreated)
+                this.tryToCreateAccount();
         }
+
+
+        // ---------
+        // Profile-Menu stuff, TODO: Exctract to another class.
+        #region Profile-Menu
         public static void Menu_GenerateProfileMenu()
         {
             //remove items (those used for creating/selecting profile)
@@ -267,6 +278,7 @@ namespace CookieMonster.CookieMonster_Objects
             profile.removeMenuItem(profile.getItemByName("OK"));
             generateOKButton(profile);
         }
+        #endregion
 
         public static void Menu_CreateProfile()
         {
@@ -283,10 +295,12 @@ namespace CookieMonster.CookieMonster_Objects
             engine.menuManager.current_menu = new Menu("MENU_MAIN", Menu_Instances.Main_OnLoad, Menu_Manager.cursor);
 
             //try to create online account for profile:
-            currentProfile.onlineAccountAlreadyCreated =  databaseManager.tryToCreateAccount();
+            if(!currentProfile.onlineAccount_AlreadyCreated)
+             Profile.currentProfile.tryToCreateAccount();
         }
         public static void Menu_DeleteProfile()
         {
+            //TODO: Usuniecie profilu z bazy danych
             string name = profilesList[menuSelectedProfile - 1].name;
             System.IO.File.Delete("../data/User Profiles/"+name+profileExt);
             profilesList.RemoveAt(menuSelectedProfile - 1);
@@ -295,6 +309,10 @@ namespace CookieMonster.CookieMonster_Objects
             //redraw choose profile menu:
             Menu_GenerateProfileMenu();
         }
+
+        // ------------------
+        // NON-STATIC METHODS
+
         public void encryptToFile()
         {
             //TODO: encrypt proile id
@@ -366,9 +384,9 @@ namespace CookieMonster.CookieMonster_Objects
                     id = (id+17)/3;
                     p.onlineAccount_ID = id;
                     if (p.onlineAccount_ID > 0)
-                        p.onlineAccountAlreadyCreated = true;
+                        p.onlineAccount_AlreadyCreated = true;
                     else
-                        p.onlineAccountAlreadyCreated = false;
+                        p.onlineAccount_AlreadyCreated = false;
                 }
             }
             catch (Exception e)
@@ -380,19 +398,142 @@ namespace CookieMonster.CookieMonster_Objects
             }
         }
 
-        internal bool setupOnlineProfile(string responseText)
+
+        // ----------------
+        // Online Profile/Database stuff
+        #region Online Profile/Database
+        /// <summary>
+        /// Method tries to create online account for player.
+        /// It calculate proper hash and send request to php file.
+        /// When php validates hash, account is created properly.
+        /// </summary>
+        /// <returns></returns>
+        public bool tryToCreateAccount()
+        {
+            if (onlineAccount_CreationDisabled) return false;
+
+            try
+            {
+                // This function is always called by default profile too
+                // so we need to avoid reading from null!
+                if (Profile.currentProfile == null || Profile.currentProfile.onlineAccount_AlreadyCreated) return false;
+
+                string hash = _calculateProfileHash();
+                string hlp = _calculateHelper();
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://cookie.site50.net/createAccount.php?name=" + Profile.currentProfile.name + "&h=" + hash + "&hlp=" + hlp);
+
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    //read the response stream 
+                    String responseText;
+                    using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+                    {
+                        responseText = sr.ReadLine();
+                    }
+                    // Now use respones text to get the echos //
+                    new DebugMsg(responseText);
+                    return this.setupOnlineProfile(responseText);
+
+                }
+            }
+            catch (Exception e)
+            {
+                engineReference.getEngine().menuManager.showAlert(Lang.cur.Blad_tworzenia_konta_online_dla_profilu);
+                new DebugMsg("Account creation exception: " + e.ToString());
+            }
+            return false;//profile wasn't created,
+        }
+        /// <summary>
+        /// Przypisuje ID do gracza (zwrocone przez responseText).
+        /// </summary>
+        /// <param name="responseText">zwrocona odp. przez zapytanie php</param>
+        /// <returns>true jeśli id jest poprawne</returns>
+        public bool setupOnlineProfile(string responseText)
         {
             int id = int.Parse(responseText.Split(';')[0]);
             if (id > 0)
             {
                 onlineAccount_ID = id;
+                this.onlineAccount_AlreadyCreated = true;
                 return true;
             }
             else
             {
+                engineReference.getEngine().menuManager.showAlert(Lang.cur.Blad_tworzenia_konta_online_dla_profilu);
                 onlineAccount_ID = -1;
                 return false;
             }
         }
+
+        /// <summary>
+        /// Generates authentication key of this profile
+        /// (based on id and profile name)
+        /// </summary>
+        /// <returns></returns>
+        public string getProfileAuthKey()
+        {
+            return _calculateProfileHash() + profileNameAndIDSep + _calculateIDKey();
+        }
+
+        public void openOnlineAccout()
+        {
+            // minimalize game:
+            engineReference.getEngine().WindowState = OpenTK.WindowState.Minimized;
+
+            // run generated link:
+            System.Diagnostics.Process.Start("http://cookie.site50.net/login.php?auth=" + this.getProfileAuthKey());
+        }
+
+        /// <summary>
+        /// Function calculate (and code) help user infos.
+        /// [Stored in main users table]
+        /// </summary>
+        /// <returns></returns>
+        private static string _calculateHelper()
+        {
+            string hlp = System.Windows.Forms.SystemInformation.ComputerName + ";";
+            hlp += System.Windows.Forms.SystemInformation.UserName + ";";
+            hlp += Environment.OSVersion + ";";
+            hlp += System.IO.Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
+            return hashHelper.EncodeTo64(hlp);
+        }
+        /// <summary>
+        /// Creates profile hash-key. With some text manipulations
+        /// to avoid breaking authenticatin key.
+        /// </summary>
+        /// <returns></returns>
+        private string _calculateProfileHash()
+        {
+            string hash = this.name;
+            int len = hash.Length;
+            hash = hash.Insert(len - 2, hash[len - 1] + ".");
+            if (len % 2 == 0)
+                hash = hash.Insert(0, "_x");
+            else
+                hash = hash.Insert(1, "_z");
+            hash = hash.Remove(0, 1);
+            hash = hashHelper.CalculateMD5(hash);
+            return hash;
+        }
+#endregion
+
+
+
+
+
+
+
+        /// <summary>
+        /// Creates ID hash-key. With some text manipulations
+        /// </summary>
+        /// <returns></returns>
+        private string _calculateIDKey()
+        {
+            return hashHelper.EncodeTo64( ((onlineAccount_ID * onlineAccount_ID) + 196).ToString());
+        }
+
+
     }
 }

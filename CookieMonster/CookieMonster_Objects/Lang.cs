@@ -95,6 +95,8 @@ namespace CookieMonster.CookieMonster_Objects
         public string tip2_title;
         public string tip2_contents;
         public string Blad_tworzenia_konta_online_dla_profilu;
+        public string Blad_tworzenia_sesji_gry;
+        public string openOnlineProfile;
         #endregion
 
         public Lang(language l)
@@ -115,6 +117,9 @@ namespace CookieMonster.CookieMonster_Objects
                 Komunikat_Bledu                 = "Komunikat błędu:";
                 Usuwam_Powyzszy_Profil          = "Usuwam powyższy profil :(";
                 Blad_tworzenia_konta_online_dla_profilu = "Błąd podczas tworzenia konta\nonline dla twojego profilu\nsprawdź połączenie internowe oraz\nustawienia firewall'a. Kolejne próby\nutworzenia konta online\nbęda podejmowane później.";
+                Blad_tworzenia_sesji_gry = "Błąd podczas tworzenia nowej sesji gry online w.";
+                openOnlineProfile = "Profil online.";
+                
                 //GUI:
                 Dopalacze       = "dopalacze";
                 umiejetnosci    = "umiejętności";
@@ -197,7 +202,8 @@ namespace CookieMonster.CookieMonster_Objects
               
                 tip2_title             = "Pierwszy poziom";
                 tip2_contents          = "Gratulacje!\nWłasnie osiągnąłeś pierwszy poziom!\nZa każdy poziom otrzymujesz punkty talentu za które możesz rozwijać umiejętności swojego Ciasteczkowego Potwora! Kliknij klawisz ESCAPE aby otworzyć Menu Postaci.";
-            }
+            
+}
             else if(l == language.EN)
             {
                 //profile:

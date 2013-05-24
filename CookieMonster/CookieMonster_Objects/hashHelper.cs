@@ -25,6 +25,21 @@ namespace CookieMonster.CookieMonster_Objects
             }
             return sb.ToString();
         }
+
+        static public string CalculateSHA1(string input)
+        {
+            SHA1 sha1 = System.Security.Cryptography.SHA1.Create();
+            byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input);
+            byte[] hash = sha1.ComputeHash(inputBytes);
+
+            // step 2, convert byte array to hex string
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString();
+        }
         /// <summary>
         /// The method create a Base64 encoded string from a normal string.
         /// </summary>
