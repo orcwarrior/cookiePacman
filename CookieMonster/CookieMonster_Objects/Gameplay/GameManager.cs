@@ -40,7 +40,7 @@ namespace CookieMonster.CookieMonster_Objects
         private CollisionSystem collSys; 
         private MusicPlayer mPlayer;
         private GUI gui;
-        private onlineGameSession onlineSession;
+        private onlineGameSession onlineSession; public uint onlineGameSession_ID {get{return onlineSession.gameSessionID;}}
         private Statistics stats; public Statistics statistics { get { return stats; } }
         private Player _pc;
         private List<Bomb> _plantedBombs; 
@@ -82,7 +82,8 @@ namespace CookieMonster.CookieMonster_Objects
             initGameMap();
 
             //create gui:
-            updateLoadingInfos("..."+Lang.cur.tworze_GUI+"...");
+            updateLoadingInfos("..." + Lang.cur.tworze_GUI + "...");
+            new DebugMsg("pre GUI creation (Sav)...");
             gui = new GUI();
             //music player init
             statusScr = new statusScreen();
@@ -91,7 +92,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             //create statistics:
             stats = new Statistics();
-            onlineSession = new onlineGameSession();
+            onlineSession = new onlineGameSession(true);
 
             updateLoadingInfos("..."+Lang.cur.inicjalizuje_obiekty_poziomu+"...");
             initializeMOBs();
@@ -137,6 +138,8 @@ namespace CookieMonster.CookieMonster_Objects
 
             //create gui:
             updateLoadingInfos("..." + Lang.cur.tworze_GUI + "...");
+
+            new DebugMsg("pre GUI creation (Sav)...");
             gui = new GUI();
             //music player init
             statusScr = new statusScreen();
@@ -145,7 +148,7 @@ namespace CookieMonster.CookieMonster_Objects
 
             //create statistics:
             stats = new Statistics(sav);
-            onlineSession = new onlineGameSession();
+            onlineSession = new onlineGameSession(false);
             
             updateLoadingInfos("..." + Lang.cur.inicjalizuje_obiekty_poziomu + "...");
             initializeMOBs();
@@ -168,6 +171,8 @@ namespace CookieMonster.CookieMonster_Objects
             Projectile.forceProjectileVisualsReinit();
 
             pauseGameDurationTimer();
+            // try to create online gameID (it's needed for savegame)
+            onlineSession.tryToCreateOnlineGameSessionID();
             // update saveGame
             Profile.currentProfile.autoSave();
             // post last level score to online database:

@@ -69,6 +69,7 @@ namespace CookieMonster.CookieMonster_Objects
         internal UInt16 data3;
         internal uint data4;//gameDuration + checksum
 
+        public uint gameID { get; set; }//chill, this don't have2be too hardcoded :)
         //public uint level : 8; (0-256)
         public uint level
         {
@@ -214,6 +215,9 @@ namespace CookieMonster.CookieMonster_Objects
 
         private void updatePlayerData()
         {
+            // game id:
+            player.gameID = engine.gameManager.onlineGameSession_ID;
+
             Player pc = engine.gameManager.PC;
             player.level = (uint)pc.level;
             player.exp = (uint)pc.exp;
@@ -254,6 +258,11 @@ namespace CookieMonster.CookieMonster_Objects
             player.data4Checksum = player.gameDuration % 59;
 
         }
+        /// <summary>
+        /// Stores all Savegame data to string tha
+        /// can be decoded by decrypt method.
+        /// </summary>
+        /// <returns></returns>
         public string encrypt()
         {
             string buffer = "";
@@ -263,6 +272,7 @@ namespace CookieMonster.CookieMonster_Objects
             buffer += player.data2.ToString("X") + sep;
             buffer += player.data3.ToString("X") + sep;
             buffer += player.data4.ToString("X") + sep;
+            buffer += player.gameID.ToString("X") + sep; // < 28.05.13 new stuff
             //map(s):
             for (int i = 0; i < maps.Count; i++)
             {
@@ -291,6 +301,11 @@ namespace CookieMonster.CookieMonster_Objects
             buffer = buffer.Substring(buffer.IndexOf("x") + 1);
             hlp = buffer.Substring(0, buffer.IndexOf("x"));
             player.data4 = Convert.ToUInt32(hlp, 16);
+
+            //Online game id:
+            buffer = buffer.Substring(buffer.IndexOf("x") + 1);
+            hlp = buffer.Substring(0, buffer.IndexOf("x"));
+            player.gameID = Convert.ToUInt32(hlp, 16);
 
             //check for playerData checksums
             uint checksum;

@@ -15,7 +15,7 @@
     <TargetZone>LocalIntranet</TargetZone>
     <SignManifests>false</SignManifests>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -108,6 +108,7 @@
     </Reference>
     <Reference Include="QuickFont">
       <HintPath>..\..\Projekty\Programowanie\PacMan na silniku\QuickFont\QuickFont\bin\Release\QuickFont.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -177,6 +178,12 @@
     <Compile Include="CookieMonster_Objects\Viewport.cs" />
     <Compile Include="DLL\Bass.cs" />
     <Compile Include="DLL\Bink.cs" />
+    <Compile Include="Forms\errorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\errorForm.Designer.cs">
+      <DependentUpon>errorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -225,6 +232,11 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\errorForm.resx">
+      <DependentUpon>errorForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

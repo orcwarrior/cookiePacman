@@ -74,10 +74,10 @@ namespace CookieMonster.CookieMonster_Objects
             pause.ignoreCameraOffset = true; pause.x -= 200;
             pause.layer = Layer.imgGUIFG;
 
-
-            FontStatus_BIG = TextManager.newQFont("Rumpelstiltskin.ttf", 37,FontStyle.Regular,true);
-            FontStatus_Small = TextManager.newQFont("Rumpelstiltskin.ttf", 28, FontStyle.Regular, true);
+            //Line 2x and 3x under caused CRASH 
             FontStatus_Little = TextManager.newQFont("Rumpelstiltskin.ttf", 25, FontStyle.Regular, true);
+            FontStatus_Small = TextManager.newQFont("Rumpelstiltskin.ttf", 28, FontStyle.Regular, true);
+            FontStatus_BIG = TextManager.newQFont("Rumpelstiltskin.ttf", 37, FontStyle.Regular, true);
             TalentPtsStars = new List<Obj>();
             engine.gameState = Game.game_state.Game;
         }

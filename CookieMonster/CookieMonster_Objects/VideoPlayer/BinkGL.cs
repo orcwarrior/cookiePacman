@@ -805,16 +805,17 @@ namespace CookieMonster
         {
             // Added (orc):
             // set dst posx/y to position that will render video in the center of screen
+
+            int hlp = (int)(engine.Width / 2 - src.binkRef->Width / 2);
+            //if (hlp < 0) hlp = 0;
+            UInt32 dstx = (uint)Math.Max(hlp, 0);
+            hlp = (int)(engine.Height / 2 - src.binkRef->Height / 2);
+            if (hlp < 0) hlp = 0;
+            UInt32 dsty = (uint)Math.Max(hlp, 0);
+            // Decompress the Bink frame.
+            // (by binkw.dll)
             try
             {
-                int hlp = (int)(engine.Width / 2 - src.binkRef->Width / 2);
-                //if (hlp < 0) hlp = 0;
-                UInt32 dstx = (uint)Math.Max(hlp, 0);
-                hlp = (int)(engine.Height / 2 - src.binkRef->Height / 2);
-                if (hlp < 0) hlp = 0;
-                UInt32 dsty = (uint)Math.Max(hlp, 0);
-                // Decompress the Bink frame.
-                // (by binkw3.dll)
                 DLL.Bink.BinkDoFrame(src.binkRef);
                 // Lock the 3D image so that we can copy the decompressed frame into it.
                 while (DLL.Bink.BinkWait(src.binkRef) > 0)
@@ -842,9 +843,9 @@ namespace CookieMonster
                 {   // so re-create bink buffer using different flag (1)
                     src.recreateBinkBuffer();
                 }
-                catch { }
+                catch { throw new Exception("Problem with bink buffer initialization."); }
             }
-                DLL.Bink.BinkNextFrame(src.binkRef);
+            DLL.Bink.BinkNextFrame(src.binkRef);
         }
 
 

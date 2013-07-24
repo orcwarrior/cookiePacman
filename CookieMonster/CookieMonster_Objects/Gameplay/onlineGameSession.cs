@@ -12,11 +12,29 @@ namespace CookieMonster.CookieMonster_Objects
     class onlineGameSession : engineReference
     {
         /// <summary>Nazwa sesji gry zgodna z nazwą przechowywaną w Bazie danych.</summary>
-        public int gameSessionID { get; private set; }
+        public uint gameSessionID { get; private set; }
         
-        public onlineGameSession()
+        public onlineGameSession(bool newgame)
         {
-            gameSessionID = -1;
+            if (!newgame && Profile.currentProfile.save != null)
+                gameSessionID = Profile.currentProfile.save.player.gameID;
+            else
+                gameSessionID = 0;
+        }
+        /// <summary>
+        /// Method tries to connect to server (if account is still not created, it will try to do this
+        /// too) and request for a new game id.
+        /// </summary>
+        public void tryToCreateOnlineGameSessionID()
+        {
+            if (Profile.currentProfile.onlineAccount_AlreadyCreated || Profile.currentProfile.tryToCreateAccount())
+            {
+                // Create game session ID if still not created:
+                if (gameSessionID == 0)
+                {
+                    gameSessionID = _createGameSessionID();
+                }
+            }
         }
         public void postLevelScoresToDatabase()
         {
@@ -24,12 +42,6 @@ namespace CookieMonster.CookieMonster_Objects
                 // (If one is still not created)
             if (Profile.currentProfile.onlineAccount_AlreadyCreated || Profile.currentProfile.tryToCreateAccount())
             {
-
-                // Create game session ID if still not created:
-                if (gameSessionID == -1)
-                {
-                    gameSessionID = _createGameSessionID();
-                }
 
                 Savegame sav = Profile.currentProfile.save;
                 mapSave lvl = sav.maps[sav.maps.Count - 1];
@@ -68,7 +80,7 @@ namespace CookieMonster.CookieMonster_Objects
             }
         }
 
-        private int _createGameSessionID()
+        private uint _createGameSessionID()
         {
             try
             {
@@ -85,7 +97,7 @@ namespace CookieMonster.CookieMonster_Objects
                     }
                     // Now use respones text to get the echos //
                     new DebugMsg(responseText);
-                    return int.Parse(responseText);
+                    return uint.Parse(responseText);
                 }
             }
             catch (Exception e)
@@ -93,7 +105,7 @@ namespace CookieMonster.CookieMonster_Objects
                 engineReference.getEngine().menuManager.showAlert(Lang.cur.Blad_tworzenia_konta_online_dla_profilu);
                 new DebugMsg("Game Session creation exception: " + e.ToString());
             }
-            return -1;
+            return 0;
         }
         private string generateGameSessionHash()
         {

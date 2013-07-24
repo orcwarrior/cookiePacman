@@ -126,7 +126,15 @@ namespace CookieMonster.CookieMonster_Objects
         {
             Camera activeCam = engine.gameCamera;
 
-
+            // Some special threatment for game viewport:
+            if ((engine.gameState & Game.game_state.Game) == Game.game_state.Game)
+            {
+               // if (engine.gameManager.Map.generatingStaticMap == false)
+               // {
+                    engine.gameManager.prepareRender();
+                    engine.gameManager.Map.renderBackground();
+              //  }
+            }
             Obj cur;
             // Rendering objects in viewports loop:
             // i - current rendering layer
@@ -137,15 +145,16 @@ namespace CookieMonster.CookieMonster_Objects
 
                 for (int j = 0; j < viewportsList.Count;j++ )
                 {   // Some special threatment for game viewport:
-                    if ((i == 0) && (viewportsList[j].partialViewport == false) && (engine.gameManager != null) && viewportsList[j] == engine.gameViewport)
-                    {
-                        if (engine.gameManager.Map.generatingStaticMap == false)
-                        {
-                            engine.gameManager.prepareRender();
-                            engine.gameManager.Map.renderBackground();
-                        }
-                    }
-                    
+                    // if ((i == 0) && (viewportsList[j].partialViewport == false) && (engine.gameManager != null) && viewportsList[j] == engine.gameViewport)
+                    // {
+                    //     if (engine.gameManager.Map.generatingStaticMap == false)
+                    //     {
+                    //         engine.gameManager.prepareRender();
+                    //         engine.gameManager.Map.renderBackground();
+                    //     }
+                    // }
+                    // TEMP REMOVED FROM THERE
+
                     // check if this layer don't exceed count of layers in current viewport
                     if (viewportsList[j].rendered_objects.Count > i)
                     {

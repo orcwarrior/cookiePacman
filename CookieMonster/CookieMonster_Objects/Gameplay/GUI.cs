@@ -22,6 +22,8 @@ namespace CookieMonster.CookieMonster_Objects
         List<Obj> SkillsBackgrounds;
         Obj PUBomb; Obj PUTimeSlow;
         Obj SkillBoost; Obj SkillIceBolt;
+        Obj Cooldown_Boost, Cooldown_IceBolt;
+
         Obj DisabledSkillBoost; Obj DisabledSkillIceBolt;
         Obj[] skillRefreshingTexs;
         Obj lives;
@@ -40,11 +42,15 @@ namespace CookieMonster.CookieMonster_Objects
             TextManager txtMan = engine.textManager;
             double y_bg = 0.8575;
             double y_obj = 0.90;
+
+            new DebugMsg("Creating GUI bar background...");
             background = new Obj("../data/Textures/GAME/GUI/BG.dds", 0.5, y_bg, Obj.align.CENTER_X);
             background.isGUIObject = true;//so it won't move with camera
 
+            new DebugMsg("Creating livesFont...");
             livesFont.Options.Colour = new OpenTK.Graphics.Color4(200, 230, 250, 255);
             //Power ups:
+            new DebugMsg("Creating pUPs BGs...");
             PUBackgrounds = new List<Obj>();
             Obj tmp = new Obj("../data/Textures/GAME/GUI/GUI_PU_BG.dds", 0.1595, y_obj, Obj.align.CENTER_X, false);
             tmp.ignoreCameraOffset = true;
@@ -54,13 +60,16 @@ namespace CookieMonster.CookieMonster_Objects
             PUBackgrounds.Add(tmp);
 
 
+            new DebugMsg("Creating pUPs Items TEXs...");
             PUBomb = new Obj("../data/Textures/GAME/SOB/Bomb.dds", 0.1595, y_obj, Obj.align.CENTER_X, false);
             PUBomb.ignoreCameraOffset = true;
             PUTimeSlow = new Obj("../data/Textures/GAME/SOB/TIME_SLOW.dds", 0.2225, y_obj, Obj.align.CENTER_X, false);
             PUTimeSlow.ignoreCameraOffset = true;
+            new DebugMsg("Creating pUPs lives TEXs...");
             lives = new Obj("../data/Textures/GAME/GUI/LIVE.dds", 0.18, y_obj, Obj.align.CENTER_X, false);
             lives.ignoreCameraOffset = true;
 
+            new DebugMsg("Creating pUPs triggerKeys Texts...");
             powerUpTxt = new Text(guiFont, 28, (float)(engine.Height - textFromDownLine), Lang.cur.Dopalacze);
             PUControllLetters = new List<Text>();
             controllsFont.Options.Colour = new OpenTK.Graphics.Color4(255, 255, 255, 192);
@@ -70,6 +79,7 @@ namespace CookieMonster.CookieMonster_Objects
             foreach (Text t in PUControllLetters)
                 t.layer = Layer.textGUIFG;
 
+            new DebugMsg("Creating skills BGs...");
             SkillsBackgrounds = new List<Obj>();
             tmp = new Obj("../data/Textures/GAME/GUI/GUI_SKILL_BG.dds", 0.904, y_obj, Obj.align.CENTER_X, false);
             tmp.ignoreCameraOffset = true;
@@ -77,6 +87,8 @@ namespace CookieMonster.CookieMonster_Objects
             tmp = new Obj("../data/Textures/GAME/GUI/GUI_SKILL_BG.dds", 0.9645, y_obj, Obj.align.CENTER_X, false);
             tmp.ignoreCameraOffset = true;
             SkillsBackgrounds.Add(tmp);
+
+            new DebugMsg("Creating skills triggerKeys Texts...");
             SkillsTxt = new Text(guiFont, engine.Width - 335, (float)(engine.Height - textFromDownLine), Lang.cur.umiejetnosci);
             SkillsControllLetters = new List<Text>();
             SkillsControllLetters.Add(new Text(controllsFont, engine.Width - 134, (float)(engine.Height - textKeyHints), "C"));
@@ -85,27 +97,35 @@ namespace CookieMonster.CookieMonster_Objects
             foreach (Text t in SkillsControllLetters)
                 t.layer = Layer.textGUIFG;
 
+            new DebugMsg("Creating skills TEXs...");
             SkillBoost = new Obj("../data/Textures/GAME/SKILLS/SKILL_BOOST.dds", 0.905, y_obj, Obj.align.CENTER_X, false);
             SkillBoost.ignoreCameraOffset = true;
             SkillIceBolt = new Obj("../data/Textures/GAME/SKILLS/SKILL_ICEBOLT.dds", 0.964, y_obj, Obj.align.CENTER_X, true);
             SkillIceBolt.ignoreCameraOffset = true;
 
+            new DebugMsg("Creating skills disabled TEXs...");
             DisabledSkillBoost = new Obj("../data/Textures/GAME/SKILLS/SKILL_BOOST_DISABLED.dds", 0.905, y_obj, Obj.align.CENTER_X, true);
             DisabledSkillBoost.ignoreCameraOffset = true;
             DisabledSkillIceBolt = new Obj("../data/Textures/GAME/SKILLS/SKILL_ICEBOLT_DISABLED.dds", 0.964, y_obj, Obj.align.CENTER_X, true);
             DisabledSkillIceBolt.ignoreCameraOffset = true;
 
+            new DebugMsg("Creating skills pts Text...");
             Points = new Text(guiFont, engine.Width / 2 - 310, (float)(engine.Height - textFromDownLine), Lang.cur.punkty_0);
 
+            new DebugMsg("Creating enter button Obj...");
             enterButtonToNextLevel = new Obj("../data/Textures/GAME/GUI/enter_button.dds", 0.5, 0.0, Obj.align.CENTER_X, true);
             enterButtonToNextLevel.layer = Layer.imgGUIFG;
             // Init skill refreshing tex's:
+            new DebugMsg("Initing skill Refreshing OBJs...");
             skillRefreshingTexs = new Obj[100];
             for (int i = 0; i < 100; i++)
             {
                 skillRefreshingTexs[i] = new Obj("../data/Textures/GAME/GUI/SKILL_REFRESHING_" + i + ".dds", 0.905, y_obj, Obj.align.CENTER_X, false);
-                skillRefreshingTexs[i].layer = Layer.imgGUIFG + 1;
+                skillRefreshingTexs[i].layer = Layer.imgGUI;
+                // this should fix 'blinking' bug:
+                skillRefreshingTexs[i].prepareRender();
             }
+            new DebugMsg("GUI Constructor END...");
         }
         public void prepareRender()
         {
@@ -137,13 +157,24 @@ namespace CookieMonster.CookieMonster_Objects
                     part = Math.Max(0f,Math.Min(0.99f,Math.Round(part, 2)));// 100% safe etc. :P
                     part *= 100;
                     int p = (int)part;
-                    Obj tmp = skillRefreshingTexs[p];
-                    tmp.vx = 0.874;
-                    tmp.layer = Layer.imgGUI;
-                    tmp.ignoreCameraOffset = true;
-                    new DebugMsg("Choosen cooldown_tex: " + p,DebugLVL.info);
-                    tmp.prepareRender();
 
+                    // bugfix: LOL ITS REALLY SOME KIND
+                    // OF MAGIC AND STUFF, BUT THIS REALLY HELPS:
+                    // (rendering both current cooldown value 
+                    //  tex, and succesor tex for cooldown)
+                    int p_succesor = (p + 1) % 100;
+                    skillRefreshingTexs[p].vx = 1.05; // let it be rendered off-screen
+                    skillRefreshingTexs[p].prepareRender();
+
+                    // prevent using same tex for both cooldowns:
+                    if (skillRefreshingTexs[p] == Cooldown_Boost) p = (p == 0) ? p + 1 : p - 1;
+
+                    //skillRefreshingTexs[p_succesor] = skillRefreshingTexs[p];
+                    skillRefreshingTexs[p_succesor].vx = 0.878;
+                    skillRefreshingTexs[p_succesor].layer = Layer.imgGUI;
+                    skillRefreshingTexs[p_succesor].ignoreCameraOffset = true;
+                    skillRefreshingTexs[p_succesor].prepareRender();
+                    // END OF MAGICAL BUGFIX
                     DisabledSkillBoost.prepareRender();
                 }
                 else
@@ -160,13 +191,27 @@ namespace CookieMonster.CookieMonster_Objects
                     double part = iceBolt.cooldownTimer.partDoneReverse;
                     part = Math.Max(0f, Math.Min(0.99f, Math.Round(part, 2)));// 100% safe etc. :P
                     part *= 100;
+                    //part = part - (part % 10);
                     int p = (int)part;
                     if (p > 99) p = 99; else if (p < 0) p = 0;
-                    Obj tmp = skillRefreshingTexs[p];
-                    tmp.vx = 0.95;
-                    tmp.layer = Layer.imgGUI;
-                    tmp.ignoreCameraOffset = true;
-                    tmp.prepareRender();
+
+                    // bugfix: LOL ITS REALLY SOME KIND
+                    // OF MAGIC AND STUFF, BUT THIS REALLY HELPS:
+                    // (rendering both current cooldown value 
+                    //  tex, and succesor tex for cooldown)
+                    int p_succesor = (p + 1) % 100;
+                    skillRefreshingTexs[p].vx = 1.05; // let it be rendered off-screen
+                    skillRefreshingTexs[p].prepareRender();
+
+                    // prevent using same tex for both cooldowns:
+                    if (skillRefreshingTexs[p] == Cooldown_Boost) p = (p == 0) ? p + 1 : p - 1;
+
+                    //skillRefreshingTexs[p_succesor] = skillRefreshingTexs[p];
+                    skillRefreshingTexs[p_succesor].vx = 0.9385;
+                    skillRefreshingTexs[p_succesor].layer = Layer.imgGUI;
+                    skillRefreshingTexs[p_succesor].ignoreCameraOffset = true;
+                    skillRefreshingTexs[p_succesor].prepareRender();
+                    // END OF MAGICAL BUGFIX
 
                     DisabledSkillIceBolt.prepareRender();
                 }

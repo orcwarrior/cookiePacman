@@ -53,6 +53,10 @@ namespace CookieMonster.CookieMonster_Objects
         private int posx, posy; //actual position on screen
 
         private Viewport _myViewport;
+        /// <summary>
+        /// Setting value to null will remove Obj
+        /// from it's viewport.
+        /// </summary>
         public Viewport myViewport
         {
             get { return _myViewport; }

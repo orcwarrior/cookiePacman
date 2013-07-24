@@ -5,6 +5,7 @@ using System.Text;
 using System.Runtime.Remoting;
 using System.Drawing;
 using QuickFont;
+using System.Diagnostics;
 
 namespace CookieMonster.CookieMonster_Objects
 {
@@ -41,7 +42,7 @@ namespace CookieMonster.CookieMonster_Objects
         unsafe public DebugMsg(string msg, DebugLVL l)
         {
             System.DateTime now = System.DateTime.Now;
-            _msg = "["+(now.Minute%10).ToString() +":"+ (now.Second % 60).ToString() + "]" + msg;
+            _msg = "[" + (now.Minute % 10).ToString() + ":" + (now.Second % 60).ToString() + "]" + msg;
                 _lvl = l;
             if(debugSys!=null)
                 debugSys.addDebugMsg(this);
@@ -97,7 +98,6 @@ namespace CookieMonster.CookieMonster_Objects
         static Point dynamicStart = new Point(50, 700);
         static Point staticStart = new Point(1200 - 300, 700); // 300 - total width of dynamic msg
         static int dynamicMsgDuration = 500;
-
         const int dynamicMsgMax = 10;
         const QFontAlignment dynamicAlign = QFontAlignment.Left;
         const int staticMsgMax = 10;
@@ -116,6 +116,9 @@ namespace CookieMonster.CookieMonster_Objects
 
         public Debug()
         {
+            //Set's autoflush of write buffer to true
+            Debug.debugLog.AutoFlush = true;
+
             DebugMsg.debugSys = this;//DebugMsg class need reference to current Debug instance
             
             dynamicMessages = new List<DebugMsg>();
@@ -125,15 +128,33 @@ namespace CookieMonster.CookieMonster_Objects
             // them simply can be generated onrun of Render method
             _createTextObjectForMessages();
         }
+        
+        /// <summary>
+        /// NOTE: Actual stack frame of method that creates
+        /// debugMsg is at index 5
+        /// </summary>
+        /// <returns></returns>
+        private string _getUnderlyingStackMethodInfos()
+        {
+            StackTrace stackTrace = new StackTrace(true);           // get call stack with filenames infos too
+            if (stackTrace != null)
+            {
+                StackFrame underlyingStackFrame = stackTrace.GetFrame(StackTrace.METHODS_TO_SKIP+4);
+                string filename =  underlyingStackFrame.GetFileName();
+                if(filename != null)
+                    filename = filename.Substring(filename.LastIndexOf('\\')+1);
+                return "[" + filename + "->" + underlyingStackFrame.GetMethod().Name + ":" + underlyingStackFrame.GetFileLineNumber() + "]";
+            }
+            return "[NOINFO]";
 
+        }
         public void addDebugMsg(DebugMsg d)
         {
             if (filterMessage(d)) return; // if message is filtered, don't add it to messages.
 
             //write to debugfile:
             //if(Debug.debugLog!=null)
-            Debug.debugLog.WriteLine(d.msg);
-
+            Debug.debugLog.WriteLine(_getUnderlyingStackMethodInfos()+"  "+d.msg.Substring(d.msg.IndexOf(']')+1));
             if (d.referencedObj == null)//it's dynamic message
             {
                 if ((dynamicMessagesQuery.Count > 0) || (dynamicMessages.Count >= dynamicMsgMax))
@@ -161,7 +182,10 @@ namespace CookieMonster.CookieMonster_Objects
 
         private bool filterMessage(DebugMsg d)
         {
-            return d.lvl < Profile.currentProfile.config.commandline.debugLevel;
+            if(Profile.currentProfile!= null)
+                return d.lvl > Profile.currentProfile.config.commandline.debugLevel;
+            
+            else return false; 
         }
         public void Update()
         {

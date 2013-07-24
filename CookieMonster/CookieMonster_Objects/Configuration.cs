@@ -95,6 +95,7 @@ namespace CookieMonster.CookieMonster_Objects
                         case "2": commandline.debugLevel = DebugLVL.warn;  break;
                         case "3": commandline.debugLevel = DebugLVL.fault; break;
                         case "4": commandline.debugLevel = DebugLVL.error; break;
+                        default:  commandline.debugLevel = DebugLVL.none; break;
                     }
             }
             //Load default:

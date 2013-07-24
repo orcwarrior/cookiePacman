@@ -139,7 +139,6 @@ namespace CookieMonster.CookieMonster_Objects
             profile.addItem(new Menu_Item("BG", profileLoginFrame, null, null, null, null, null));
 
             QFont heading1 = TextManager.newQFont("KOMIKAX.ttf", 22, true, new OpenTK.Graphics.Color4(0, 112, 186, 255));
-            
 
             float x = engine.Width  / 2 - heading1.Measure(Lang.cur.Wybierz_Profil).Width / 2;
             float y = engine.Height * 4 / 10 + 10f;

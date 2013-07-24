@@ -45,6 +45,8 @@ namespace CookieMonster.CookieMonster_Objects
             txt = new ProcessedText();
             x  = orgX = _x; y = orgY = _y;
             _msg = m;
+            //TODO: Create some Listeners list or sth like that:
+            if(engine.textManager!=null)
             engine.textManager.addText(this);
         }
         public Text(QFont qf,float _x,float _y,string m, QFontAlignment align, int maxWidth)

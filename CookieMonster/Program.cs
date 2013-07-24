@@ -2,11 +2,11 @@
  *  TO DO LIST:
  * * Finish rescaling/repositioning when changing resolution.                   -NEED FIXES
  * * Credits                                                                    -DONE
- * * Kiling player, respawn after killing + hurt textures
- * * Kiling MOB (by another mob, or player bomb) + hurt/dead textures
+ * * Kiling player, respawn after killing + hurt textures                       -DONE (EXCEPT HURT TEXs)
+ * * Kiling MOB (by another mob, or player bomb) + hurt/dead textures           -DONE (EXCEPT HURT TEXs)
  * * Database for high scores, downloading high scores
- *   and uploading player scores to database.
- * * Create gameTips class + graphics and all needed objects of it.
+ *   and uploading player scores to database.                                   -PARTIALLY DONE
+ * * Create gameTips class + graphics and all needed objects of it.             -CLASS DONE
  * * Create rest of maps
  * * Let game difficult, level numbers affect gameplay
  * * Don't let entering illegal chars for filename when setting profile name.   -DONE
@@ -35,15 +35,26 @@ using CookieMonster.CookieMonster_Objects;
 using System.Threading;
 using TextureLoaders;
 using OpenTK.Graphics.OpenGL;
+using System.IO;
+
+//using Microsoft.Samples.Debugging.CorDebug;
+//using Microsoft.Samples.Debugging.MdbgEngine;
 
 namespace EngineApp
 {
+    /// <summary>
+    /// TODO: 'god object' we have here...
+    /// refractoring would be very nice thing to do.
+    /// * Viewport actions should be moved to viewportManager class or sth like that.
+    /// * Key/Mouse Input action => inputManager
+    /// * Render/UpdateManager => i dunno..
+    /// </summary>
     class Game : GameWindow
     {
         [Flags]
         public enum game_state { Undef = 0, Menu = 2, Game = 4 };//ingame menu = Menu|Game
 
-        public game_state gameState = game_state.Undef;
+        public game_state gameState;
         public Viewport gameViewport { get; private set; }
         public Viewport menuViewport { get; private set; }
         public bool activeViewportIsGame { get { return gameViewport == activeViewport; } }
@@ -72,7 +83,7 @@ namespace EngineApp
         }
         public string[] cmdArguments { get; private set; }
         public IntPtr windowHandle { get; private set; }
-        Timers_Manager timeMgr = new Timers_Manager();
+        Timers_Manager timeMgr;
         public Menu_Manager menuManager { get; private set; }
         public SoundManager SoundMan { get; private set; }
         public TextManager textManager { get; private set; }
@@ -86,9 +97,7 @@ namespace EngineApp
         // Those values need to be stored at the begining
         // Used for proper rescale of menu items etc. "GUI" type Obj's
         // Now theese values are straight from configuration class
-
-        //SimpleEngine stuff:
-        Engine.Core core = new Engine.Core();
+        Engine.Core core;
 
 
 
@@ -96,11 +105,23 @@ namespace EngineApp
         public Game(int w, int h)
             : base(w, h)
         {
-            // Set's current engine to currently created object
+            // Set game state at begining of the init:
+            gameState = game_state.Undef;
+
+            // Set's global engine reference to currently created object
             engineReference.setEngine(this);
+
+            // Debug system is first thing to init!
+            debugger = new Debug(); // debug system uses text manager
+            // Time manager:
+            timeMgr = new Timers_Manager();
+
+            // SimpleEngine stuff:
+            core = new Engine.Core();
 
             menuViewport = new Viewport(w, h, true);
             gameViewport = new Viewport(w, h, true);
+            // r: extract
             Mouse.ButtonDown += new EventHandler<MouseButtonEventArgs>(Mouse_ButtonDown);
             Mouse.ButtonUp += new EventHandler<MouseButtonEventArgs>(Mouse_ButtonUp);
             Keyboard.KeyDown += new EventHandler<KeyboardKeyEventArgs>(Keyboard_KeyDown);
@@ -108,8 +129,7 @@ namespace EngineApp
             KeyPress += new EventHandler<KeyPressEventArgs>(Keyboard_KeyPress);
             Keyboard.KeyUp += new EventHandler<KeyboardKeyEventArgs>(Profile.Profile_KeyStroke);
         }
-
-        public void Keyboard_KeyPress(object sender, KeyPressEventArgs p)
+        public void Keyboard_KeyPress(object sender, OpenTK.KeyPressEventArgs p)
         {
             InputManager.KeyPress(sender, p);
 
@@ -153,7 +173,12 @@ namespace EngineApp
         }
         public int fps { get { return (int)RenderFrequency; } }
         protected override void OnLoad(EventArgs e)
-        {   //Loads profiles list + creates default start-up profile which is extremaly important
+        {
+            textManager = new TextManager();
+            menuManager = new Menu_Manager();
+            //Select language:
+            new Lang(Lang.language.PL);
+            //Loads profiles list + creates default start-up profile which is extremaly important
             Profile.Initialize();
 
             //Set proper resolution + full-screen mode:
@@ -183,17 +208,12 @@ namespace EngineApp
             GL.Hint(HintTarget.FragmentShaderDerivativeHint, HintMode.Fastest);
 
 
-            textManager = new TextManager();
-            debugger = new Debug();//debug system uses text manager
             menuViewport = new Viewport(1280, 800, true);
             gameViewport = new Viewport(1280, 800, true);
-            //Select language:
-            new Lang(Lang.language.PL);
-            menuManager = new Menu_Manager();
             gameState = game_state.Menu;//tmp for renderLoadingCaption
             lightEngine = new lightingEngine();
             renderLoadingCaption();//needs profile &txtManager
-            new Menu("forStaticInitiation", null);
+            new Menu("forStaticInitiation", null); //THIS CAUSING CRASH (sometimes)
             gameState = game_state.Undef;
 
             initTextureLoaderParameters();
@@ -363,8 +383,14 @@ namespace EngineApp
         [STAThread]
         static void Main(string[] args)
         {
-            using (Game game = new Game(1280, 800))
+            // TODO: Let TextMannager pin to debug sys as listener!!!
+            // Crash minidump:
+             using (Game game = new Game(1280, 800))
             {
+                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+                //AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceHandler;
+           
+                new DebugMsg("Start running application..");
                 game.cmdArguments = args;
                 //game.VSync = VSyncMode.Adaptive;
                 game.Title = "CookieMonster Pacman";
@@ -447,6 +473,71 @@ namespace EngineApp
             loading.Render();
             engineReference.getEngine().SwapBuffers(); //Render buffer
         }
+
+
+        // debug stuff
+        // minidump enum:
+        public static class MINIDUMP_TYPE
+        {
+            public const int MiniDumpNormal = 0x00000000;
+            public const int MiniDumpWithDataSegs = 0x00000001;
+            public const int MiniDumpWithFullMemory = 0x00000002;
+            public const int MiniDumpWithHandleData = 0x00000004;
+            public const int MiniDumpFilterMemory = 0x00000008;
+            public const int MiniDumpScanMemory = 0x00000010;
+            public const int MiniDumpWithUnloadedModules = 0x00000020;
+            public const int MiniDumpWithIndirectlyReferencedMemory = 0x00000040;
+            public const int MiniDumpFilterModulePaths = 0x00000080;
+            public const int MiniDumpWithProcessThreadData = 0x00000100;
+            public const int MiniDumpWithPrivateReadWriteMemory = 0x00000200;
+            public const int MiniDumpWithoutOptionalData = 0x00000400;
+            public const int MiniDumpWithFullMemoryInfo = 0x00000800;
+            public const int MiniDumpWithThreadInfo = 0x00001000;
+            public const int MiniDumpWithCodeSegs = 0x00002000;
+        }
+        // Method import:
+        [System.Runtime.InteropServices.DllImport("dbg/dbghelp.dll")]
+        public static extern bool MiniDumpWriteDump(IntPtr hProcess,
+                                                    Int32 ProcessId,
+                                                    IntPtr hFile,
+                                                    int DumpType,
+                                                    IntPtr ExceptionParam,
+                                                    IntPtr UserStreamParam,
+                                                    IntPtr CallackParam);
+        static void CurrentDomain_FirstChanceHandler(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            new DebugMsg("First chance exception happen: "+ e.Exception);
+
+        }
+        // Event handler:
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // show error form:
+            new DebugMsg("Execution Ended with crash!!!");
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.Run(new CookieMonster.Forms.errorForm(e));
+            //new CookieMonster.Forms.errorForm().Show();
+            CreateMiniDump();
+        }
+
+        private static void CreateMiniDump()
+        {
+            using (FileStream fs = new FileStream("UnhandledDump.dmp", FileMode.Create))
+            {
+                using (System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess())
+                {
+                    MiniDumpWriteDump(process.Handle,
+                                                     process.Id,
+                                                     fs.SafeFileHandle.DangerousGetHandle(),
+                                                     MINIDUMP_TYPE.MiniDumpWithFullMemory,
+                                                     IntPtr.Zero,
+                                                     IntPtr.Zero,
+                                                     IntPtr.Zero);
+                }
+            }
+        }
+
     }
+
 }
 
